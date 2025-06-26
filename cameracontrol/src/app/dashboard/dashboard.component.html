@@ -1,0 +1,592 @@
+<div class="row">
+    <!-- PREVIEW -->
+    <div class="col-md-8" *ngIf="showPreview">
+        <video #videoPlayer style="width: 100%;height: 100%;" ></video>
+    </div>
+    <!-- SETTINGS -->
+    <div class="col-md-4" [class.col-md-12]="!showPreview">
+        <div class="card">
+            <!-- SHOOTING PANEL -->
+            <div class="card-header">
+                <i class="fa fa-chevron-up" [class.fa-chevron-up]="!panels.shooting" [class.fa-chevron-down]="panels.shooting"   (click)="panels.shooting=!panels.shooting"></i>
+                &nbsp;Shooting 
+            </div>
+            <div class="card-body" *ngIf="panels.shooting">
+                <div class="row">
+                    <div class="col-2">
+                        <button type="button" class="btn btn-sm btn-block" [class.btn-primary]="settings.AEL=='Locked'" (click)="settings.AEL=='Unlocked'?settings.AEL='Locked':settings.AEL='Unlocked';sendSetting('AEL')" >AEL</button>
+                        <button type="button" class="btn btn-sm btn-block" [class.btn-primary]="settings.AWBL=='Locked'" (click)="settings.AWBL=='Unlocked'?settings.AWBL='Locked':settings.AWBL='Unlocked';sendSetting('AWBL')">AWBL</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button type="button" class="btn btn-primary btn-floating m-1">AF</button>
+                        <button type="button" class="btn btn-primary btn-lg btn-floating m-1"><i class="fa fa-camera"></i></button>
+                    </div>
+                     <div class="col-4">
+                        <label>Display</label>
+                        <select class="form-control form-control-sm" [(ngModel)]="settings.DispMode" (ngModelChange)="sendSetting('DispMode')">
+                            <option value="DisplayAllInfo">Tutte le informazioni</option>
+                            <option value="GraphicDisplay">Informazioni grafiche</option>
+                            <option value="NoDispInfo">Nessuna informazione</option>
+                            <option value="Histogram">Istogramma</option>
+                            <option value="Level">Livelli</option>
+                            <option value="ForViewFinder">Viewfinder</option>
+                            <option value="MonitorOff">Spegni</option>
+                            
+                        </select>
+                        <label>Griglia</label>
+                        <select class="form-control form-control-sm" [(ngModel)]="settings.GridLineDisplay" (ngModelChange)="sendSetting('GridLineDisplay')">
+                            <option value="Off">Disattivato</option>
+                            <option value="On">Attivato</option>
+                        
+                        </select>
+                     </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="card mt-2">
+            <!-- MAIN SETTINGS PANEL -->
+            <div class="card-header">
+                <i class="fa fa-chevron-up" [class.fa-chevron-up]="!panels.main" [class.fa-chevron-down]="panels.main"   (click)="panels.main=!panels.main"></i>
+                &nbsp;Main Settings
+            </div>
+            <div class="card-body" *ngIf="panels.main">
+                <div class="row">
+                    <!-- MODE -->
+                    <div class="col-3">
+                        <label>Mode</label>
+                        <br/>
+
+                        <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn dropdown-toggle"
+                                type="button"
+                                id="modality"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Modalità"
+                                >
+                                <i class="fa fa-camera fa-3x"></i>
+                                
+                                <span *ngIf="settings.ExposureProgramMode=='M_Manual'">M</span>
+                                <span *ngIf="settings.ExposureProgramMode=='P_Auto'">P</span>
+                                <span *ngIf="settings.ExposureProgramMode=='Auto'">i</span>
+                                <span *ngIf="settings.ExposureProgramMode=='A_AperturePriority'">A</span>
+                                <span *ngIf="settings.ExposureProgramMode=='S_ShutterSpeedPriority'">S</span>
+                                
+                                
+                                
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="modality">
+                                <li><a class="dropdown-item" href="#" (click)="settings.ExposureProgramMode='M_Manual';sendSetting('ExposureProgramMode')">Manuale (M)</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.ExposureProgramMode='P_Auto';sendSetting('ExposureProgramMode')">Automatico (P)</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.ExposureProgramMode='Auto';sendSetting('ExposureProgramMode')">Programmata auto</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.ExposureProgramMode='A_AperturePriority';sendSetting('ExposureProgramMode')">Priorità diaframma (A)</a></li> A_AperturePriority
+                                <li><a class="dropdown-item" href="#" (click)="settings.ExposureProgramMode='S_ShutterSpeedPriority';sendSetting('ExposureProgramMode')">Priorità tempi (S)</a></li>
+<!--
+                                <li><a class="dropdown-item" href="#">Ritratti</a></li>
+                                <li><a class="dropdown-item" href="#">Eventi sportivi</a></li>
+                                <li><a class="dropdown-item" href="#">Macro</a></li>
+                                <li><a class="dropdown-item" href="#">Paesaggi</a></li>
+                                <li><a class="dropdown-item" href="#">Tramonto</a></li>
+                                <li><a class="dropdown-item" href="#">Scena notturna</a></li>
+                            -->                            
+                            </ul>
+                       </div>
+
+                        
+                    </div>
+                    <!-- SHUTTER SPEED -->
+                    <div class="col-6">
+                        <label>Shutter Speed</label>
+                        <select class="form-control" [(ngModel)]="settings.ShutterSpeed" (ngModelChange)="sendSetting('ShutterSpeed')">
+                            <option value='bulb'>BULB</option>
+                            <option value='30"'>30''</option>
+                            <option value='25"'>25''</option>
+                            <option value='20"'>20''</option>
+                            <option value='15"'>15''</option>
+                            <option value='13"'>13''</option>
+                            <option value='10"'>10''</option>
+                            <option value='8"'>8''</option>
+                            <option value='6"'>6''</option>
+                            <option value='4"'>4''</option>
+                            <option value='3.2"'>3.2''</option>
+                            <option value='2.5"'>2.5''</option>
+                            <option value='2"'>2''</option>
+                            <option value='1.6"'>1.6''</option>
+                            <option value='1.3"'>1.3''</option>
+                            <option value='1"'>1''</option>
+                            <option value='0.8"'>0.8''</option>
+                            <option value='0.6"'>0.6''</option>
+                            <option value='0.5"'>0.5''</option>
+                            <option value='0.4"'>0.4''</option>
+                            <option value='1/3'>1/3</option>
+                            <option value='1/4'>1/4</option>
+                            <option value='1/5'>1/5</option>
+                            <option value='1/6'>1/6</option>
+                            <option value='1/8'>1/8</option>
+                            <option value='1/10'>1/10</option>
+                            <option value='1/13'>1/13</option>
+                            <option value='1/15'>1/15</option>
+                            <option value='1/20'>1/20</option>
+                            <option value='1/25'>1/25</option>
+                            <option value='1/30'>1/30</option>
+                            <option value='1/40'>1/40</option>
+                            <option value='1/50'>1/50</option>
+                            <option value='1/60'>1/60</option>
+                            <option value='1/80'>1/80</option>
+                            <option value='1/100'>1/100</option>
+                            <option value='1/125'>1/125</option>
+                            <option value='1/160'>1/160</option>
+                            <option value='1/200'>1/200</option>
+                            <option value='1/250'>1/250</option>
+                            <option value='1/320'>1/320</option>
+                            <option value='1/400'>1/400</option>
+                            <option value='1/500'>1/500</option>
+                            <option value='1/640'>1/640</option>
+                            <option value='1/800'>1/800</option>
+                            <option value='1/1000'>1/1000</option>
+                            <option value='1/1250'>1/1250</option>
+                            <option value='1/1600'>1/1600</option>
+                            <option value='1/2000'>1/2000</option>
+                            <option value='1/2500'>1/2500</option>
+                            <option value='1/3200'>1/3200</option>
+                            <option value='1/4000'>1/4000</option>
+                        </select>
+                    </div>
+                    <!-- F -->
+                    <div class="col-3">
+                        <label>F</label>
+                        <select class="form-control" [(ngModel)]="settings.FNumber" (ngModelChange)="sendSetting('FNumber')">
+                            <option value="F2.8">2.8</option>
+                            <option value="F3.2">3.2</option>
+                            <option value="F3.5">3.5</option>
+                            <option value="F4">4</option>
+                            <option value="F4.5">4.5</option>
+                            <option value="F5">5</option>
+                            <option value="F5.6">5.6</option>
+                            <option value="F6.3">6.3</option>
+                            <option value="F7">7.1</option>
+                            <option value="F8">8</option>
+                            <option value="F9">9</option>
+                            <option value="F10">10</option>
+                            <option value="F11">11</option>
+                            <option value="F13">13</option>
+                            <option value="F14">14</option>
+                            <option value="F16">16</option>
+                            <option value="F18">18</option>
+                            <option value="F20">20</option>
+                            <option value="F22">22</option>
+                        </select>
+                    </div>
+                    <!-- ISO -->
+                    <div class="col-4">
+                        <label>ISO</label>
+                        <select class="form-control" [(ngModel)]="settings.IsoSensitivity" (ngModelChange)="sendSetting('IsoSensitivity')">
+                            <option value="ISO AUTO">AUTO</option>
+                            <option value="ISO 102400">102400</option>
+                            <option value="ISO 80000">80000</option>
+                            <option value="ISO 64000">64000</option>
+                            <option value="ISO 51200">51200</option>
+                            <option value="ISO 40000">40000</option>
+                            <option value="ISO 32000">32000</option>
+                            <option value="ISO 25600">25600</option>
+                            <option value="ISO 20000">20000</option>
+                            <option value="ISO 16000">16000</option>
+                            <option value="ISO 12800">12800</option>
+                            <option value="ISO 10000">10000</option>
+                            <option value="ISO 8000">8000</option>
+                            <option value="ISO 6400">6400</option>
+                            <option value="ISO 5000">5000</option>
+                            <option value="ISO 4000">4000</option>
+                            <option value="ISO 3200">3200</option>
+                            <option value="ISO 2500">2500</option>
+                            <option value="ISO 2000">2000</option>
+                            <option value="ISO 1600">1600</option>
+                            <option value="ISO 1250">1250</option>
+                            <option value="ISO 1000">1000</option>
+                            <option value="ISO 800">800</option>
+                            <option value="ISO 640">640</option>
+                            <option value="ISO 500">500</option>
+                            <option value="ISO 400">400</option>
+                            <option value="ISO 320">320</option>
+                            <option value="ISO 250">250</option>
+                            <option value="ISO 200">200</option>
+                            <option value="ISO 160">160</option>
+                            <option value="ISO 125">125</option>
+                            <option value="ISO 100">100</option>
+                            <option value="ISO 80">80</option>
+                            <option value="ISO 64">64</option>
+                            <option value="ISO 50">50</option>
+                        </select>
+                    </div>
+                    <!-- EV -->
+                    <div class="col-4">
+                        <label>EV</label>
+                        <select class="form-control" [(ngModel)]="settings.ExposureBiasCompensation" (ngModelChange)="sendSetting('ExposureBiasCompensation')">
+                            <option value="5.0Ev">+5.0</option>
+                            <option>+4.7</option>
+                            <option>+4.3</option>
+                            <option>+4.0</option>
+                            <option>+3.7</option>
+                            <option>+3.3</option>
+                            <option>+3.0</option>
+                            <option>+2.7</option>
+                            <option>+2.3</option>
+                            <option>+2.0</option>
+                            <option>+1.7</option>
+                            <option>+1.3</option>
+                            <option>+1.0</option>
+                            <option>+0.7</option>
+                            <option value="0_3Ev">+0.3</option>
+                            <option value="0Ev">0.0</option>
+                            <option>-0.3</option>
+                            <option>-0.7</option>
+                            <option>-1.0</option>
+                            <option>-1.3</option>
+                            <option>-1.7</option>
+                            <option>-2.0</option>
+                            <option>-2.3</option>
+                            <option>-2.7</option>
+                            <option>-3.0</option>
+                            <option>-3.3</option>
+                            <option>-3.7</option>
+                            <option>-4.0</option>
+                            <option>-4.3</option>
+                            <option>-4.7</option>
+                            <option>-5.0</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <!-- SUB SETTINGS PANEL -->
+            <div class="card-header">
+                <i class="fa fa-chevron-up" [class.fa-chevron-up]="!panels.sub" [class.fa-chevron-down]="panels.sub"   (click)="panels.sub=!panels.sub"></i>
+                &nbsp;Sub Settings
+            </div>
+            <div class="card-body" *ngIf="panels.sub">
+                <div class="row">
+                    <!-- Format -->
+                    <div class="col-3">
+                        <label>Format</label>
+                        <select class="form-control" [(ngModel)]="settings.FileType" (ngModelChange)="sendSetting('FileType')">
+                            <option value="Jpeg">JPEG</option>
+                            <option value="Raw">RAW</option>
+                            <option value="RawJpeg">RAW+J</option>
+                        </select>
+                    </div>
+                    <!-- Type -->
+                    <div class="col-3">
+                        <label>Type</label>
+                        <select class="form-control" [(ngModel)]="settings.RAW_FileCompressionType" (ngModelChange)="sendSetting('RAW_FileCompressionType')" >
+                            <option value="Uncompression">RAW (non compresso)</option>
+                            <option value="LossLessL">RAW L</option>
+                            <option value="LossLessM">RAW M</option>
+                            <option value="LossLessS">RAW S</option>
+                            <option value="Compression">RAW (compresso)</option>
+                        </select>
+                    </div>
+                    <!-- Quality -->
+                    <div class="col-3">
+                        <label>Quality</label>
+                        <select class="form-control" [(ngModel)]="settings.StillImageQuality" (ngModelChange)="sendSetting('StillImageQuality')">
+                            <option value="ExFine">X.FINE</option>
+                            <option value="Fine">FINE</option>
+                            <option value="Standard">STD</option>
+                            <option value="Light">LIGHT</option>
+                        </select>
+                    </div>
+                    <!-- Size -->
+                    <div class="col-3">
+                        <label>Size</label>
+                        <select class="form-control" [(ngModel)]="settings.ImageSize" (ngModelChange)="sendSetting('ImageSize')">
+                            <option>L</option>
+                            <option>M</option>
+                            <option>S</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row border-top mt-1">
+                    <!-- ASPECT RATIO-->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="aspectRatio"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Rapporto aspetto"
+                                >
+
+                                <span *ngIf="settings.AspectRatio=='3_2'">3:2</span>
+                                <span *ngIf="settings.AspectRatio=='4_3'">4:3</span>
+                                <span *ngIf="settings.AspectRatio=='16_9'">16:9</span>
+                                <span *ngIf="settings.AspectRatio=='1_1'">1:1</span>
+
+
+                                
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="AspectRatio">
+                                <li><a class="dropdown-item" href="#" (click)="settings.AspectRatio='3_2';sendSetting('AspectRatio')">3:2</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.AspectRatio='4_3';sendSetting('AspectRatio')">4:3</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.AspectRatio='16_9';sendSetting('AspectRatio')">16:9</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.AspectRatio='1_1';sendSetting('AspectRatio')">1:1</a></li>
+                            </ul>
+                       </div>
+                    </div>
+                    <!-- modeNext -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="modeNext"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Modo avanzamento"
+                                >
+                                {{settings2.modeNext}}
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="modeNext">
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Scatto singolo'">Scatto singolo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Scatto multiplo'">Scatto multiplo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Autoscatto singolo'">Autoscatto singolo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Autoscatto multiplo'">Autoscatto multiplo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Esp. a forc. cont.'">Esp. a forc. cont.</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Esp. a forc. sing.'">Esp. a forc. sing.</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Esp. forc. ms. fco'">Esp. forc. ms. fco</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Esp. forc. WB'">Esp. forc. WB</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings2.modeNext='Esp. forc. DRO'">Esp. forc. DRO</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- WB -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="WB"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Bilanciamento bianco"
+                                >
+
+                                <span *ngIf="settings.WhiteBalance =='AWB'">AWB</span>
+                                
+                                {{settings.WhiteBalance}}
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="WB">
+
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='AWB';sendSetting('WhiteBalance')">Automatico</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Daylight';sendSetting('WhiteBalance')">Luce giorno</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Shadow';sendSetting('WhiteBalance')">Ombra</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Cloudy';sendSetting('WhiteBalance')">Cielo coperto</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Tungsten';sendSetting('WhiteBalance')">A incandescente</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Fluorescent';sendSetting('WhiteBalance')">Fluorescente</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Fluorescent_WarmWhite';sendSetting('WhiteBalance')">Fluorescente bianca calda</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Fluorescent_CoolWhite';sendSetting('WhiteBalance')">Fluorescente bianca fredda</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Fluorescent_Daylight';sendSetting('WhiteBalance')">Fluorescente luce giorno</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Underwater_Auto';sendSetting('WhiteBalance')">Automatico sottoacqua</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.WhiteBalance ='Flush';sendSetting('WhiteBalance')">T. Colore/Filtro</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- optimizer -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="optimizer"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Ottimizzazione gm. din."
+                                >
+                                OFF
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="optimizer">
+                                <li><a class="dropdown-item" href="#">Disattivato</a></li>
+                                <li><a class="dropdown-item" href="#">Automatico</a></li>
+                                <li><a class="dropdown-item" href="#">Lv1</a></li>
+                                <li><a class="dropdown-item" href="#">Lv2</a></li>
+                                <li><a class="dropdown-item" href="#">Lv3</a></li>
+                                <li><a class="dropdown-item" href="#">Lv4</a></li>
+                                <li><a class="dropdown-item" href="#">Lv5</a></li>
+                       
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- focusArea -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="focusArea"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Area messa a fuoco"
+                                >
+                                {{settings.FocusArea}}
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="focusArea">
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Wide';sendSetting('FocusArea')">Ampia</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Zone';sendSetting('FocusArea')">Zona</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Center';sendSetting('FocusArea')">Centro</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Flexible_Spot_L';sendSetting('FocusArea')">Spot: L</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Flexible_Spot_M';sendSetting('FocusArea')">Spot: M</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Flexible_Spot_S';sendSetting('FocusArea')">Spot: S</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusArea ='Expand_Flexible_Spot';sendSetting('FocusArea')">Spot: Espanso</a></li>
+                       
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- modeMisEsp -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="modeMisEsp"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Modo mis.esp."
+                                >
+                                
+                                <span *ngIf="settings.MeteringMode =='Multi'">Multipla</span>
+                                <span *ngIf="settings.MeteringMode =='CenterSpot'">Centro</span>
+                                <span *ngIf="settings.MeteringMode =='Spot_Standard'">Spot STD</span>
+                                <span *ngIf="settings.MeteringMode =='Spot_Large'">Spot largo</span>
+                                <span *ngIf="settings.MeteringMode =='Average'">Media</span>
+                                <span *ngIf="settings.MeteringMode =='HighLightWeigheted'">Luci</span>
+
+
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="modeMisEsp">
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='Multi';sendSetting('MeteringMode')">Multipla</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='CenterSpot';sendSetting('MeteringMode')">Centro spot</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='Spot_Standard';sendSetting('MeteringMode')">Spot: STD</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='Spot_Large';sendSetting('MeteringMode')">Spot: L</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='Average';sendSetting('MeteringMode')">Media schermo intero</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.MeteringMode ='HighLightWeigheted';sendSetting('MeteringMode')">Highlight</a></li>
+                       
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- modeFocus -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="modeFocus"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Modo messa a fuoco"
+                                >
+                                <span *ngIf="settings.FocusMode=='MF'">MF</span>
+                                
+                                <span *ngIf="settings.FocusMode=='AF_S'">AF S</span>
+                                <span *ngIf="settings.FocusMode=='AF_C'">AF C</span>
+                                <span *ngIf="settings.FocusMode=='AF_A'">AF A</span>
+                                <span *ngIf="settings.FocusMode=='DMF'">DMF</span>
+                                <span *ngIf="settings.FocusMode=='PF'">PF</span>
+                                
+                                
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="modeFocus">
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='MF';sendSetting('FocusMode')">Fuoco manuale</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='AF_S';sendSetting('FocusMode')">AF Singolo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='AF_C';sendSetting('FocusMode')">AF Automatico</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='AF_A';sendSetting('FocusMode')">AF Continuo</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='DMF';sendSetting('FocusMode')">Fuoco manuale direzionale</a></li>
+                                <li><a class="dropdown-item" href="#" (click)="settings.FocusMode='PF';sendSetting('FocusMode')">Preset focus</a></li>
+                       
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <!-- Custom -->
+                    <div class="col-2 m-2">
+                       <div mdbDropdown class="dropdown">
+                            <button
+                                class="btn btn-primary dropdown-toggle"
+                                type="button"
+                                id="custom"
+                                aria-expanded="false"
+                                mdbDropdownToggle
+                                title="Aspetto personale"
+                                >
+                                ST
+                            </button>
+                            <ul mdbDropdownMenu class="dropdown-menu" aria-labelledby="custom">
+                                <li><a class="dropdown-item" href="#">ST+</a></li>
+                                <li><a class="dropdown-item" href="#">PT+</a></li>
+                                <li><a class="dropdown-item" href="#">NT+</a></li>
+                                <li><a class="dropdown-item" href="#">VV+</a></li>
+                                <li><a class="dropdown-item" href="#">VV2+</a></li>
+                                <li><a class="dropdown-item" href="#">FL+</a></li>
+                                <li><a class="dropdown-item" href="#">IN+</a></li>
+                                <li><a class="dropdown-item" href="#">SH+</a></li>
+                                <li><a class="dropdown-item" href="#">BW+</a></li>
+                                <li><a class="dropdown-item" href="#">SE+</a></li>
+                       
+                            </ul>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="card">
+
+            <div class="card-header">
+                <i class="fa fa-chevron-up" [class.fa-chevron-up]="!panels.focus" [class.fa-chevron-down]="panels.focus"   (click)="panels.focus=!panels.focus"></i>
+                &nbsp;Focus
+            </div>
+            <div class="card-body" *ngIf="panels.focus">
+               <div class="row">
+                    <div class="col-2">
+                        <button class="btn btn-lg" title="Alterna MF/AF" (click)="settings.FocusModeSetting=='Manual'?settings.FocusModeSetting='Automatic':settings.FocusModeSetting='Manual';sendSetting('FocusModeSetting')">
+                            <span *ngIf="settings.FocusModeSetting=='Manual'">
+                                MF
+                            </span>
+                            <span *ngIf="settings.FocusModeSetting=='Automatic'">
+                                AF
+                            </span>
+ 
+                        </button>
+                    </div>
+                    <div class="col-10">
+                        <small>
+                            <i class="fa fa-user "></i>
+                        </small>
+                        <button class="btn" (click)="setFocalDistanceInMeter(-10)"> <<< </button>
+                        <button class="btn" (click)="setFocalDistanceInMeter(-1)"> << </button>
+                        <button class="btn" (click)="setFocalDistanceInMeter(-0.1)"> < </button>
+                        <button class="btn" (click)="setFocalDistanceInMeter(0.1)"> > </button>
+                        <button class="btn" (click)="setFocalDistanceInMeter(1)"> >> </button>
+                        <button class="btn" (click)="setFocalDistanceInMeter(10)"> >>> </button>
+                        <small>
+                            <i class="fa fa-mountain"></i>
+                        </small>
+                    </div>
+               </div>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
