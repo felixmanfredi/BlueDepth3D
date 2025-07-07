@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, isDevMode, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MdbDropdownModule } from 'mdb-angular-ui-kit/dropdown';
 import { MdbRippleModule } from 'mdb-angular-ui-kit/ripple';
 import Hls from 'hls.js';
 import { SonyApiService } from '../sony-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,19 +16,35 @@ import { SonyApiService } from '../sony-api.service';
 })
 export class DashboardComponent implements OnInit,AfterViewInit {
 
+  MESSAGE_LOADING="Caricamento impostazioni camera in corso ...";
+  MESSAGE_LOADED="Caricamento impostazioni completato!";
 
+  isLoaded=false;
+  isLoaded2=true;
+  message_error="";
+  message_loading=this.MESSAGE_LOADING
   constructor(private sonyApi:SonyApiService){
 
   }
 
-  panels={
-    "shooting":true,
-    "main":true,
-    "sub":true,
-    "focus":true
+  mode="photo";
+
+  dataset={
+    "datasetname": "test",
+    "description": "example_desc",
+    "acquisition_device": "camera",
+    "interval": 0.5
   }
 
+  panels={
+    "dataset":true,
+    "shooting":false,
+    "main":true,
+    "sub":false,
+    "focus":false
+  }
 
+  statusDataset=false;
   showPreview=false;
   
   
@@ -36,7 +53,8 @@ export class DashboardComponent implements OnInit,AfterViewInit {
   }
   
   ngOnInit(): void {
-    this.getSettings();
+    //if(!isDevMode())
+      this.getSettings();
   }
 
   @ViewChild('videoPlayer', { static: false }) videoPlayer!: ElementRef<HTMLVideoElement>;
@@ -78,29 +96,20 @@ export class DashboardComponent implements OnInit,AfterViewInit {
     
   }
 
-
-  settings2={
-    modality:"A",
-    ShutterSpeed:"1/500",
-    F:2.8,
-    ISO:100,
-    EV:0.0,
-    format:"RAW",
-    type:"RAW (non compresso)",
-    quality:"X.FINE",
-    size:"L",
-    aspectRatio:"3:2",
-    modeNext:"Scatto singolo",
-    WB:"AWB",
-    FocusMode:"MF"
-
-  }
-
   getSettings(){
+    this.message_loading=this.MESSAGE_LOADING;
+    this.message_error="";
+    this.isLoaded=false;
     this.sonyApi.getSettings((result:any)=>{
+      this.message_loading=this.MESSAGE_LOADED;
+      this.isLoaded=true;
       if(result.data){
         this.settings=result.data[0];
       }
+    },(error: HttpErrorResponse)=>{
+      this.message_loading=this.MESSAGE_LOADED;
+      this.isLoaded=false;
+      this.message_error="Errore durante lo scaricamento delle impostazioni della camera"
     })
   }
 
@@ -133,6 +142,14 @@ export class DashboardComponent implements OnInit,AfterViewInit {
       this.settings.FocalDistanceInMeter=0;
 
     this.sendSetting("FocalDistanceInMeter");
+  }
+
+  startDataset(){
+      this.sonyApi.startDataset(this.dataset,(result:any)=>{
+
+      },(error:any)=>{
+
+      });
   }
 
 

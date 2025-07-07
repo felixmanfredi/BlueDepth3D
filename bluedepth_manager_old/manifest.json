@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "main_module": "ZEDManager",
+  "main_class": "ZEDXOneStereoManager",
+  "dependencies": [
+    "opencv-python~=4.11.0.86",
+    "numpy~=2.2.3",
+    "pillow~=11.1.0",
+    "PyOpenGL==3.1.0",
+    "pyglet==1.5.27",
+    "pyrender~=0.1.45",
+    "trimesh~=4.6.12"
+  ],
+  "init_params": {
+    "zed_init_params": {
+      "depth_minimum_distance": 1000.0,
+      "depth_maximum_distance": 20000.0,
+      "camera_disable_self_calib": false,
+      "enable_right_side_measure": true,
+      "depth_stabilization": 0,
+      "input_stream_ip": "192.168.1.235",
+      "input_stream_port": 34002,
+      "depth_mode": 1
+    },
+    "zed_runtime_params": {
+      "enable_fill_mode": false,
+      "confidence_threshold": 95,
+      "texture_confidence_threshold": 100,
+      "remove_saturated_areas": false,
+      "enable_depth": true
+    },
+    "streamer_params": {
+      "image_url": "/zed-image",
+      "image_overlay_url": "/zed-overlay",
+      "image_port": 8001,
+      "image_overlay_port": 8101,
+      "ply_image_url": "/zed-ply",
+      "ply_image_port": 8201,
+      "ply_stream_view": 2
+    },
+    "overlay_runtime_params": {
+      "transparency": 0.4,
+      "depth_scale": 3.0
+    }
+  }
+}

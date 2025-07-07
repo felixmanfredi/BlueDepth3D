@@ -1,0 +1,4 @@
+__pycache__/**/*
+devices/__pycache__/**/*
+events/__pycache__/**/*
+utils/__pycache__/**/*

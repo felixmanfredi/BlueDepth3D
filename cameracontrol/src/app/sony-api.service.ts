@@ -43,11 +43,24 @@ export class SonyApiService {
   return throwError(() => new Error('Something bad happened; please try again later.'));
 }
 
-  getSettings(callback:any){
-    this.http.get(this.baseUrl+"/camera/settings").subscribe((result:any)=>{
+  getSettings(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/camera/settings").pipe(catchError(callback_error)).subscribe((result:any)=>{
       if(callback)
         callback(result);
     })
+  }
+
+
+  startDataset(dataset:any,callback:any,callback_error:any){
+    this.http.post(this.baseUrl+"/datasets/start",dataset).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      callback(result);
+    });
+  }
+
+  stopDataset(callback:any,callback_error:any){
+    this.http.put(this.baseUrl+"/datasets/stop",{}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      callback(result);
+    });
   }
 
 }

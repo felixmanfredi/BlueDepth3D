@@ -1,0 +1,27 @@
+### CONFIG FILE ZED STEREO CAMERA ###
+
+# PARAM SETTINGS FOR IMAGE AND DEPTH STREAMING
+camera_params:
+  resolution: VGA
+  fps: 30
+
+streaming:
+  resolution: VGA
+  fps: 60
+  format: "I420"
+  encoder: "H264"
+  URL_IMAGE: "/zed-image" # port: 8001
+  URL_DEPTH: "/zed-depth" # port: 8101
+
+# Initial Camera Available Parameters
+init_params:
+  min_depth: 0.3
+  max_depth: 10.0
+
+# Depth Mode Available Parameters
+depth_sensing:
+  mode: 0     # 0: PERFORMANCE, 1: QUALITY, 2: ULTRA, 3: NEURAL, 4: NEURAL_PLUS, 5: NONE
+  confidence_threshold: 100
+  texture_confidence_threshold: 100
+  remove_saturated_areas: True
+  enable_fill_mode: False
