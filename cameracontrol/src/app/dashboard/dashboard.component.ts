@@ -55,6 +55,24 @@ export class DashboardComponent implements OnInit,AfterViewInit {
   ngOnInit(): void {
     //if(!isDevMode())
       this.getSettings();
+   
+  }
+
+  capture(){
+
+     (window as any).pywebview.api.capture().then((response : any)=>{
+      console.log(response);
+    })
+    /*
+    this.sonyApi.capture((img:any)=>{
+      var image = new Image()
+      
+      image.src="data:image/jpeg,base64,"+img;
+      var w=window.open();
+      w?.document.write("<html><body>"+image.outerHTML+"</body></html>");
+    },(error:any)=>{
+
+    });ù*/
   }
 
   @ViewChild('videoPlayer', { static: false }) videoPlayer!: ElementRef<HTMLVideoElement>;
@@ -145,11 +163,31 @@ export class DashboardComponent implements OnInit,AfterViewInit {
   }
 
   startDataset(){
-      this.sonyApi.startDataset(this.dataset,(result:any)=>{
 
+    (window as any).pywebview.api.startDataset(this.dataset).then((response : any)=>{
+      
+      this.statusDataset=false;
+      
+      console.log(response);
+    })
+
+/*
+      this.sonyApi.startDataset(this.dataset,(result:any)=>{
+        console.log(result);  
+        this.statusDataset=true;
       },(error:any)=>{
 
-      });
+      });*/
+  }
+
+   stopDataset(){
+      (window as any).pywebview.api.stopDataset().then((response : any)=>{
+      
+      this.statusDataset=true;
+      
+      console.log(response);
+    })
+
   }
 
 

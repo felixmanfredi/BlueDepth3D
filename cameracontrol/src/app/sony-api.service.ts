@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { text } from 'node:stream/consumers';
 import { catchError, throwError } from 'rxjs';
 
 @Injectable({
@@ -50,11 +51,29 @@ export class SonyApiService {
     })
   }
 
+   capture(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/camera/capture",{responseType:"text"}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
 
   startDataset(dataset:any,callback:any,callback_error:any){
-    this.http.post(this.baseUrl+"/datasets/start",dataset).pipe(catchError(callback_error)).subscribe((result:any)=>{
-      callback(result);
-    });
+
+    let headers:HttpHeaders=new HttpHeaders();
+    headers = headers.set('Access-Control-Allow-Origin', '*');
+
+    this.http.post(this.baseUrl+"/datasets/start",dataset).pipe(catchError(
+      this.handleError
+    
+    
+    )).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+
+    
   }
 
   stopDataset(callback:any,callback_error:any){
