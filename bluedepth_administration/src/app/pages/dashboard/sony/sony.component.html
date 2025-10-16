@@ -1,0 +1,129 @@
+<!-- <div class="card sony-card"> -->
+
+
+
+
+  <!-- <div class="card-body" *ngIf="sonyData"> -->
+
+<div class="card-body" *ngIf="sonyData; else loading">   
+    
+    <div class="info-grid">
+
+      <!-- <div class="info-block" [ngClass]="{'is-connected-error': sonyData.state === 'error'}"> -->
+
+
+<!-- Photo Controls Box -->
+<!-- <div class="info-block photo-controls" *ngIf="sonyData.isPowered"> -->
+      <div class="info-block photo-controls" *ngIf="sonyData.isPowered">
+        <div class="info-label" style="display: flex; align-items: center; gap: 55px;">
+          <span><i class="fas fa-camera-retro"></i> Photo Controls</span>
+          <span style="display: flex; align-items: center; gap: 40px;">
+            <span style="color: #2980b9; display: flex; align-items: center; gap: 5px;"
+            title="Foto scattate">
+              <i class="fas fa-images"></i>
+              <ng-container *ngIf="sonyData.PictureCount !== undefined && sonyData.PictureCount !== null; else totLoading">
+                {{ sonyData.PictureCount }}
+              </ng-container>
+              <ng-template #totLoading><span class="loading-placeholder">--</span></ng-template>
+            </span>
+                        <span style="color: #27ae60; display: flex; align-items: center; gap: 5px;"
+            title="Foto confermate">
+              <i class="fas fa-images"></i>
+              <ng-container *ngIf="sonyData.SuccessPictureCount !== undefined && sonyData.SuccessPictureCount !== null; else succLoading">
+                {{ sonyData.SuccessPictureCount }}
+              </ng-container>
+              <ng-template #succLoading><span class="loading-placeholder">--</span></ng-template>
+            </span>
+          </span>
+        </div>
+
+
+
+
+
+<div class="photo-controls-box" style="display: flex; align-items: center; gap: 18px;">
+  <div class="photo-switch" style="display: flex; align-items: center;" 
+  title="Scatta una foto"  >
+      
+      <button class="btn btn-primary" [disabled]="isUpdating || isPhoto" (click)="triggerPhoto()" style="margin-right: 10px;">
+        <i class="fas fa-camera"></i> Take Photo
+      </button>
+    <!-- Stato con larghezza fissa -->
+    <span class="photo-status" [class.disabled]="isUpdating" style="margin-left: 1px; width: 60px; display: inline-block;">
+      
+      {{ isPhoto ? 'Photo...' : 'Ready' }}
+      
+    </span>
+    <!-- Exp sempre alla stessa distanza dal bottone -->
+    <span class="exp-time" style="margin-left: 18px; display: flex; align-items: center;">
+      <span class="label" style="margin-right: 4px;" title="Tempo di esposizione">Exp:</span>
+      <span *ngIf="sonyData.expTime !== undefined && sonyData.expTime !== null">
+        {{ (sonyData.expTime / 1000).toFixed(2) }} mS
+      </span>
+      <span class="loading-placeholder" *ngIf="sonyData.expTime === undefined || sonyData.expTime === null">--</span>
+    </span>
+  </div>
+  <span 
+  (click)="isFlash = !isFlash"
+  [style.cursor]="'pointer'"
+  [style.color]="isFlash ? '#f1c40f' : '#888'"
+  style="display: flex; align-items: center; font-weight: 500; user-select: none; margin-left: 14px; transition: color 0.2s;"
+  title="Attiva o disattiva i flash">
+  <i class="fas" [ngClass]="isFlash ? 'fa-bolt' : 'fa-bolt-lightning'" style="margin-right: 6px;"></i>
+  Flash
+</span>
+</div>
+
+  <div style="height: 20px;"></div> <!-- crea spazio verticale -->
+
+
+
+    <!-- Flash -->
+     <div style="display: flex; align-items: center;">
+    <span 
+      (click)="triggerFlash()"
+      [style.cursor]="'pointer'"
+      [style.color]="isFlashing ? '#f1c40f' : '#888'"
+      style="display: flex; align-items: center; font-weight: 500; user-select: none; margin-left: 14px; transition: color 0.2s;"
+      title="Check flash">
+      <i class="fas" [ngClass]="isFlashing ? 'fa-bolt' : 'fa-bolt-lightning'" style="margin-right: 6px;"></i>
+      Flash
+    </span>
+    <!-- Focus -->
+    <span 
+      (click)="triggerFocus()"
+      [style.cursor]="'pointer'"
+      [style.color]="isFocusing ? '#27ae60' : '#888'"
+      style="display: flex; align-items: center; font-weight: 500; user-select: none; margin-left: 14px; transition: color 0.2s;"
+      title="Check focus">
+      <i class="fas" [ngClass]="isFocusing ? 'fa-crosshairs' : 'fa-dot-circle'" style="margin-right: 6px;"></i>
+      Focus
+    </span>
+    </div>
+
+      </div>
+<!-- </div> -->
+
+
+  
+
+
+    <!-- </div> -->
+  </div>
+
+  <!-- <div class="loading-container" *ngIf="!sonyData">
+    <div class="spinner"></div>
+    <p>Loading data...</p>
+  </div> -->
+
+  </div>
+  <ng-template #loading>
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading data...</p>
+    </div>
+  </ng-template>  
+
+
+
+<!-- </div> -->

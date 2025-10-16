@@ -1,0 +1,11 @@
+footer{
+    z-index: 9999;
+    font-size: 0.75rem;
+}
+
+.container{
+    padding-left: calc(60px + 0.75rem);
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+}

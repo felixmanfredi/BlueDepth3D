@@ -1,0 +1,58 @@
+<!-- Tabs navs -->
+<ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" [class.active]="tab==1" (click)="tab=1">System</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" [class.active]="tab==2" (click)="tab=2">Network</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" [class.active]="tab==3" (click)="tab=3">Maintaince</a>
+  </li>
+  
+</ul>
+<!-- Tabs navs -->
+
+<!-- Tabs content -->
+<div class="tab-content" id="ex1-content">
+  <div class="tab-pane fade show active" *ngIf="tab==1">
+    <div class="row">
+        <div class="col-4"><label>Date Time</label></div>
+        
+        <div class="col-8">
+            <div class="input-group">
+                <input type="date" class="form-control">
+                <input type="time" class="form-control">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-4"><label>NTP Server</label></div>
+        
+        <div class="col-8">
+            <div class="input-group">
+                <input type="url" class="form-control">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-12">
+            <button class="btn btn-success ms-3">Save</button>
+            <button class="btn btn-danger ms-3">Reboot</button>
+        </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" *ngIf="tab==2">
+    Tab 2 content
+  </div>
+  <div class="tab-pane fade" *ngIf="tab==3">
+    Tab 3 content
+  </div>
+  
+</div>
+<!-- Tabs content -->
