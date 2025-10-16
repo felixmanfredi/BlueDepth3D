@@ -5,6 +5,7 @@
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" [class.active]="tab==2" (click)="tab=2">Network</a>
+    <!-- <app-network></app-network> -->
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" [class.active]="tab==3" (click)="tab=3">Maintaince</a>
@@ -16,6 +17,7 @@
 <!-- Tabs content -->
 <div class="tab-content" id="ex1-content">
   <div class="tab-pane fade show active" *ngIf="tab==1">
+    
     <div class="row">
         <div class="col-4"><label>Date Time</label></div>
         
@@ -47,11 +49,28 @@
         </div>
     </div>
   </div>
-  <div class="tab-pane fade" *ngIf="tab==2">
-    Tab 2 content
+
+
+
+
+  <!-- Tab 2 Content -->
+  <div class="tab-pane fade" 
+       [class.show]="tab==2" 
+       [class.active]="tab==2" 
+       [hidden]="tab!=2">
+    <app-network></app-network>
   </div>
-  <div class="tab-pane fade" *ngIf="tab==3">
-    Tab 3 content
+
+
+
+
+
+  <!-- Tab 3 Content -->
+  <div class="tab-pane fade"
+         [class.show]="tab==3" 
+       [class.active]="tab==3" 
+       [hidden]="tab!=3">
+       <app-maintenance></app-maintenance>
   </div>
   
 </div>

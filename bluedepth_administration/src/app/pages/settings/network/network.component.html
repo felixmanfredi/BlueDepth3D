@@ -1,0 +1,198 @@
+
+<div class="settings-card">
+
+  <!-- <div class="card-header">
+    <i class="fas fa-network-wired"></i>
+    Network Configuration
+    <button class="btn-reload" (click)="reloadSettings()" [disabled]="loading">
+      <i class="fas fa-sync-alt"></i> Reload
+    </button>
+  </div> -->
+
+  <div class="card-body">
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading network settings...</p>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <form *ngIf="!loading" [formGroup]="networkForm" (ngSubmit)="saveSettings()">
+      <div formGroupName="system_config">
+
+
+        <!-- SEPARATORE -->
+        <div class="section-separator">
+          <span class="separator-line"></span>
+          <span class="separator-text">Network Configuration</span>
+          <span class="separator-line"></span>
+        </div>           
+        
+        <!-- SEZIONE NETWORK -->
+        <h3 class="section-title">
+          <i class="fas fa-ethernet"></i> Network Settings
+        </h3>
+
+     
+
+        <!-- Connection Type -->
+        <!-- <div class="form-group">
+          <label for="conn_type">
+            Connection Type
+            <span class="info-tip" data-tip="Seleziona il tipo di connessione: Ethernet, WiFi AP o WiFi Client">?</span>
+          </label>
+          <select id="conn_type" class="form-control" formControlName="conn_type">
+            <option *ngFor="let type of connectionTypeMap; let i = index" [value]="i">
+              {{ type }}
+            </option>
+          </select>
+        </div> -->
+
+        <!-- DHCP Client -->
+        <div class="form-group">
+          <label for="dhcp_client">
+            DHCP Client
+            <span class="info-tip" data-tip="Abilita DHCP per ottenere automaticamente indirizzo IP">?</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="dhcp_client" formControlName="dhcp_client">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- IP Address -->
+        <div class="form-group">
+          <label for="ip">
+            IP Address
+            <span class="info-tip" data-tip="Indirizzo IP del dispositivo">?</span>
+          </label>
+          <input type="text" id="ip" class="form-control" formControlName="ip" placeholder="192.168.1.100">
+          <div *ngIf="networkForm.get('system_config.ip')?.invalid && networkForm.get('system_config.ip')?.touched" class="error-text">
+            Indirizzo IP non valido
+          </div>
+        </div>
+
+        <!-- Gateway, Subnet, DNS (condizionali) -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gateway">
+              Gateway
+              <span class="info-tip" data-tip="Indirizzo IP del gateway">?</span>
+            </label>
+            <input type="text" id="gateway" class="form-control" formControlName="gateway" placeholder="192.168.1.1">
+            <div *ngIf="networkForm.get('system_config.gateway')?.invalid && networkForm.get('system_config.gateway')?.touched" class="error-text">
+              Gateway non valido
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subnet">
+              Subnet Mask
+              <span class="info-tip" data-tip="Maschera di sottorete">?</span>
+            </label>
+            <input type="text" id="subnet" class="form-control" formControlName="subnet" placeholder="255.255.255.0">
+            <div *ngIf="networkForm.get('system_config.subnet')?.invalid && networkForm.get('system_config.subnet')?.touched" class="error-text">
+              Subnet non valida
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dns1">
+              DNS Primary
+              <span class="info-tip" data-tip="Server DNS primario">?</span>
+            </label>
+            <input type="text" id="dns1" class="form-control" formControlName="dns1" placeholder="8.8.8.8">
+            <div *ngIf="networkForm.get('system_config.dns1')?.invalid && networkForm.get('system_config.dns1')?.touched" class="error-text">
+              DNS primario non valido
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dns2">
+              DNS Secondary
+              <span class="info-tip" data-tip="Server DNS secondario">?</span>
+            </label>
+            <input type="text" id="dns2" class="form-control" formControlName="dns2" placeholder="8.8.4.4">
+            <div *ngIf="networkForm.get('system_config.dns2')?.invalid && networkForm.get('system_config.dns2')?.touched" class="error-text">
+              DNS secondario non valido
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+        <!-- SEPARATORE -->
+        <div class="section-separator">
+          <span class="separator-line"></span>
+          <span class="separator-text">NTP Configuration</span>
+          <span class="separator-line"></span>
+        </div>
+
+        <!-- SEZIONE NTP -->
+        <h3 class="section-title">
+          <i class="fas fa-clock"></i> NTP Settings
+        </h3>
+
+        <!-- NTP IP -->
+        <div class="form-group">
+          <label for="ntp_ip">
+            NTP Server IP
+            <span class="info-tip" data-tip="Indirizzo IP del server NTP per la sincronizzazione dell'ora">?</span>
+          </label>
+          <input type="text" id="ntp_ip" class="form-control" formControlName="ntp_ip" placeholder="129.6.15.28">
+          <div *ngIf="networkForm.get('system_config.ntp_ip')?.invalid && networkForm.get('system_config.ntp_ip')?.touched" class="error-text">
+            Indirizzo NTP non valido
+          </div>
+        </div>
+
+        <!-- NTP Port & Offset -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ntp_port">
+              NTP Port
+              <span class="info-tip" data-tip="Porta del server NTP (default: 123)">?</span>
+            </label>
+            <input type="number" id="ntp_port" class="form-control" formControlName="ntp_port" min="1" max="65535">
+            <div *ngIf="networkForm.get('system_config.ntp_port')?.invalid && networkForm.get('system_config.ntp_port')?.touched" class="error-text">
+              Porta deve essere tra 1 e 65535
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ntp_offset">
+              NTP Offset (ms)
+              <span class="info-tip" data-tip="Offset fuso orario in millisecondi&#10;Range: -12000000000 to 14000000000 ms">?</span>
+            </label>
+            <input type="number" id="ntp_offset" class="form-control" formControlName="ntp_offset" min="-12000000000" max="14000000000">
+            <div *ngIf="networkForm.get('system_config.ntp_offset')?.invalid && networkForm.get('system_config.ntp_offset')?.touched" class="error-text">
+              Offset fuori range
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn-default" (click)="loadDefaultSettings()" [disabled]="isSaving || loading">
+          <i class="fas fa-undo"></i>
+          <span *ngIf="!loading">Load Defaults</span>
+          <span *ngIf="loading" class="spinner-button"></span>
+        </button>
+        <button type="submit" class="btn-save" [disabled]="networkForm.invalid || isSaving">
+          <i class="fas fa-save"></i>
+          <span *ngIf="!isSaving">Save Changes</span>
+          <span *ngIf="isSaving" class="spinner-button"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

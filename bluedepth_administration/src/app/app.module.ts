@@ -16,6 +16,8 @@ import { SettingsComponent } from "./pages/settings/settings.component";
 import { StorageComponent } from "./pages/storage/storage.component";
 import { PluginsComponent } from "./pages/plugins/plugins.component";
 import { SonyComponent } from "./pages/dashboard/sony/sony.component";
+import { NetworkComponent } from "./pages/settings/network/network.component";
+import { MaintenanceComponent } from "./pages/settings/maintenance/maintenance.component";
 @NgModule(
     {
         declarations:[
@@ -37,8 +39,9 @@ import { SonyComponent } from "./pages/dashboard/sony/sony.component";
     MdbModalModule,
     MdbDropdownModule,
     HttpClientModule,
-    SonyComponent
-    
+    SonyComponent,
+    NetworkComponent,
+    MaintenanceComponent
 ],providers:[],
         bootstrap:[AppComponent]
     }

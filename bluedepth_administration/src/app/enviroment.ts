@@ -10,7 +10,10 @@ export const BlueDepthBoardEnvironment = {
     sonyID: 1,
     videoencID: 2,
     mcuID:3,
-    settingsID:4
+    settingsID:4,
+
+    ota_server_url: "https://marinerobotics-support.3dresearch.it/products/updates/getUpdate",
+    ota_server_token: "8cbb019f431857f31fa6fde795da47445040c62d"
 
 
   };

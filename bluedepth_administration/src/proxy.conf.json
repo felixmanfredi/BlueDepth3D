@@ -1,6 +1,18 @@
 {
   "/api": {
-    "target": "http://192.168.1.230",
+    "target": "http://192.168.1.250",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+    "/ota": {
+    "target": "http://192.168.1.250",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+    "/getUpdate": {
+    "target": "https://marinerobotics-support.3dresearch.it/products/updates",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
