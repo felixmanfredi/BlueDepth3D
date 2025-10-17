@@ -1,0 +1,56 @@
+<div class="container">
+  <h1>Manutenzione Firmware</h1>
+  <div class="version">Versione firmware attuale: {{ currentVersion }}</div>
+
+  <div class="section">
+    <h2 class="section-title">🔍 Controllo Aggiornamenti</h2>
+    <button class="btn btn-primary" [disabled]="isChecking || isUpdating" (click)="checkFirmwareUpdate()">
+      {{ isChecking ? '⏳ Controllo in corso...' : 'Controlla Aggiornamenti' }}
+    </button>
+    <div class="status" [ngClass]="checkStatus.type" [class.hidden]="!checkStatus.message">
+      <span class="spinner" *ngIf="isChecking"></span>
+      {{ checkStatus.message }}
+    </div>
+    <!-- Progress per check (opzionale, nasconibile se non voluta) -->
+    <div class="progress-container" [class.hidden]="!showCheckProgress">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="checkProgress"></div>
+      </div>
+      <div class="progress-text">{{ checkProgress | number:'1.0-0' }}%</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <h2 class="section-title">📁 Caricamento Manuale</h2>
+    <label class="btn btn-secondary" for="fileInput">Seleziona File .bin</label>
+    <input type="file" id="fileInput" accept=".bin" (change)="onFileSelected($event)" class="hidden">
+    <div class="status" [ngClass]="uploadStatus.type" [class.hidden]="!uploadStatus.message && !selectedFirmware">
+      {{ uploadStatus.message }}
+    </div>
+    <div *ngIf="selectedFirmware" class="info-box">
+      File pronto: {{ selectedFirmware.name }} ({{ (selectedFirmware.size / (1024*1024)).toFixed(2) }} MB)
+    </div>
+  </div>
+
+  <div class="section" *ngIf="selectedFirmware">
+    <button class="btn btn-primary" [disabled]="isUpdating" (click)="uploadFirmware()">
+      {{ isUpdating ? '⏳ Upload in corso...' : '🚀 Upload e Programma' }}
+    </button>
+  </div>
+
+  <div class="update-info" *ngIf="updateInfo.available">
+    <h3>Aggiornamento Trovato</h3>
+    <p>Versione: {{ updateInfo.version }}</p>
+    <p>Dimensione: {{ updateInfo.size }}</p>
+    <p>Premi Upload per procedere.</p>
+  </div>
+
+  <div class="progress-container" [class.hidden]="!showProgressBar">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+    <div class="progress-text">{{ progress | number:'1.0-0' }}%</div>
+  </div>
+</div>

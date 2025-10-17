@@ -21,7 +21,7 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
+              "src/bluedepth3d.ico",
               "src/assets"
             ],
             "styles": [
