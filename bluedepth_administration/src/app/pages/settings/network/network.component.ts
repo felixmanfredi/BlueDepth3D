@@ -37,10 +37,24 @@ export class NetworkComponent implements OnInit, OnDestroy, AfterViewInit {
         dhcp_client: [true],
         ntp_ip: ['', [Validators.required, ipValidator()]],
         ntp_port: [123, [Validators.required, Validators.min(1), Validators.max(65535)]],
-        ntp_offset: [0, [Validators.required, Validators.min(-12000000000), Validators.max(14000000000)]]
+        ntp_offset: [0, [Validators.required, Validators.min(-12), Validators.max(14)]]
       })
     });
   }
+
+
+
+
+  private normalizeNtpOffsetFromSeconds(data: any): any {
+  if (data?.system_config?.ntp_offset != null) {
+    // 🔹 Converti secondi → ore per mostrare nel form
+    data.system_config.ntp_offset = data.system_config.ntp_offset / 3600;
+  }
+  return data;
+}
+
+
+
 
   private logInvalidControls(context: string) {
     const invalidControls: string[] = [];
@@ -142,6 +156,9 @@ export class NetworkComponent implements OnInit, OnDestroy, AfterViewInit {
     this.http.get(`${this.apiUrl}/api/settings/get/default`).subscribe({
       next: (data) => {
         console.log('[API] default settings payload:', data);
+              //Converti ntp_offset in ore prima di patchare
+      const normalized = this.normalizeNtpOffsetFromSeconds(data);
+
         this.networkForm.patchValue(data as any);
         this.applyVisibilityRules();
         this.loading = false;
@@ -155,54 +172,124 @@ export class NetworkComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  loadSettings(): void {
-    this.loading = true;
-    console.log('[API] GET settings');
-    this.http.get(`${this.apiUrl}/api/settings`).subscribe({
-      next: (data) => {
-        console.log('[API] settings payload:', data);
-        this.networkForm.patchValue(data as any);
-        this.applyVisibilityRules();
-        this.loading = false;
-        this.logInvalidControls('after loadSettings');
-      },
-      error: (err) => {
-        this.error = 'Error loading settings';
-        console.error('[API] settings error:', err);
-        this.loading = false;
-      }
-    });
-  }
+  // loadSettings(): void {
+  //   this.loading = true;
+  //   console.log('[API] GET settings');
+  //   this.http.get(`${this.apiUrl}/api/settings`).subscribe({
+  //     next: (data) => {
+  //       console.log('[API] settings payload:', data);
+  //       this.networkForm.patchValue(data as any);
+  //       this.applyVisibilityRules();
+  //       this.loading = false;
+  //       this.logInvalidControls('after loadSettings');
+  //     },
+  //     error: (err) => {
+  //       this.error = 'Error loading settings';
+  //       console.error('[API] settings error:', err);
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
 
-  saveSettings(): void {
-    if (this.networkForm.invalid) {
-      const markAll = (ctrl: AbstractControl) => {
-        (ctrl as any).markAllAsTouched?.();
-        const g = ctrl as FormGroup;
-        if (g && g.controls) {
-          Object.values(g.controls).forEach(c => {
-            (c as any).markAsTouched?.();
-          });
-        }
-      };
-      markAll(this.networkForm);
-      console.error('[Save] form INVALID -> abort');
-      this.logInvalidControls('on save attempt');
-      return;
+  // saveSettings(): void {
+  //   if (this.networkForm.invalid) {
+  //     const markAll = (ctrl: AbstractControl) => {
+  //       (ctrl as any).markAllAsTouched?.();
+  //       const g = ctrl as FormGroup;
+  //       if (g && g.controls) {
+  //         Object.values(g.controls).forEach(c => {
+  //           (c as any).markAsTouched?.();
+  //         });
+  //       }
+  //     };
+  //     markAll(this.networkForm);
+  //     console.error('[Save] form INVALID -> abort');
+  //     this.logInvalidControls('on save attempt');
+  //     return;
+  //   }
+
+  //   const payload = this.networkForm.value;
+  //   console.log('[Save] form VALID. Payload:', payload);
+  //   this.isSaving = true;
+  //   this.http.post(`${this.apiUrl}/api/settings/network/save`, payload).subscribe({
+  //     next: () => {
+  //       console.log('[Save] success');
+  //       this.isSaving = false;
+  //     },
+  //     error: (err) => {
+  //       console.error('[Save] error:', err);
+  //       this.isSaving = false;
+  //     }
+  //   });
+  // }
+
+loadSettings(): void {
+  this.loading = true;
+  console.log('[API] GET settings');
+  this.http.get(`${this.apiUrl}/api/settings`).subscribe({
+    next: (data) => {
+      console.log('[API] settings payload (raw):', data);
+
+      //Converti ntp_offset in ore prima di patchare
+      const normalized = this.normalizeNtpOffsetFromSeconds(data);
+
+      this.networkForm.patchValue(normalized as any);
+      this.applyVisibilityRules();
+      this.loading = false;
+      this.logInvalidControls('after loadSettings');
+    },
+    error: (err) => {
+      this.error = 'Error loading settings';
+      console.error('[API] settings error:', err);
+      this.loading = false;
     }
+  });
+}
 
-    const payload = this.networkForm.value;
-    console.log('[Save] form VALID. Payload:', payload);
-    this.isSaving = true;
-    this.http.post(`${this.apiUrl}/api/settings/network/save`, payload).subscribe({
-      next: () => {
-        console.log('[Save] success');
-        this.isSaving = false;
-      },
-      error: (err) => {
-        console.error('[Save] error:', err);
-        this.isSaving = false;
+
+
+
+
+saveSettings(): void {
+  if (this.networkForm.invalid) {
+    const markAll = (ctrl: AbstractControl) => {
+      (ctrl as any).markAllAsTouched?.();
+      const g = ctrl as FormGroup;
+      if (g && g.controls) {
+        Object.values(g.controls).forEach(c => {
+          (c as any).markAsTouched?.();
+        });
       }
-    });
+    };
+    markAll(this.networkForm);
+    console.error('[Save] form INVALID -> abort');
+    this.logInvalidControls('on save attempt');
+    return;
   }
+
+  // Clona il valore del form per non modificarlo direttamente
+  const payload = structuredClone(this.networkForm.value);
+
+  // ✅ Moltiplica per 3600 il campo ntp_offset (ore → secondi)
+  if (payload?.system_config?.ntp_offset != null) {
+    payload.system_config.ntp_offset = payload.system_config.ntp_offset * 3600;
+  }
+
+  console.log('[Save] form VALID. Payload (with ntp_offset in seconds):', payload);
+  this.isSaving = true;
+  this.http.post(`${this.apiUrl}/api/settings/network/save`, payload).subscribe({
+    next: () => {
+      console.log('[Save] success');
+      this.isSaving = false;
+    },
+    error: (err) => {
+      console.error('[Save] error:', err);
+      this.isSaving = false;
+    }
+  });
+}
+
+
+
+
 }

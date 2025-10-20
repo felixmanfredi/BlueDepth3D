@@ -7,18 +7,7 @@ import { BlueDepthBoardEnvironment } from '../../../enviroment';
 import * as CryptoJS from 'crypto-js';
 import { interval, Subscription } from 'rxjs';
 
-interface MCUData {
-  health: boolean;
-  temperature: number;
-  RTC: number;
-  current: number;
-  power: number;
-  voltage:number;
-  OutVolt:number;
-  SonyCur: number;
-  VidEncCur: number;
-  JetCur: number;
-}
+
 
 interface ErrorEvent {
   errorCode: number;
@@ -33,83 +22,42 @@ interface ErrorLog {
 }
 
 @Component({
-  selector: 'app-systemsettings',
+  selector: 'app-logerrors',
   standalone: true,
-  templateUrl: './system.component.html',
-  styleUrl: './system.component.css',
+  templateUrl: './logerrors.component.html',
+  styleUrl: './logerrors.component.css',
   imports: [
     CommonModule // CommonModule perNgClass, NgFor, NgIfsu comp standalone.
     //HttpClient   // L'HttpClient va aggiunto anche qui (se non è fornito a livello root)
   ]
 })
-export class SystemSettingsComponent implements OnInit, OnDestroy {
+export class LogErrorsComponent implements OnInit, OnDestroy {
   private apiUrl = BlueDepthBoardEnvironment.apiUrl;
-  private pollingSubscription?: Subscription;
+
   private eventSource?: EventSource;
   
-  health: boolean = false;
-  temperature: number = 0;
-  current: number = 0;
-  power: number = 0;
-  voltage:number = 0;
-  OutVolt:number = 0;
-  RTC: number = 0;
-  dateTime: Date | undefined;
-  SonyCur: number = 0;
-  VidEncCur: number = 0;
-  JetCur: number = 0;
 
-  totCurrent: number = 0;
   errorLogs: ErrorLog[] = [];
+  health: boolean = true;
 
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.startPolling();
+ 
     this.connectToSSE();
   }
 
   ngOnDestroy(): void {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
-    }
+
     if (this.eventSource) {
       this.eventSource.close();
     }
   }
 
-  private startPolling(): void {
-    // Polling ogni 5 secondi
-    this.pollingSubscription = interval(1000).subscribe(() => {
-      this.fetchMCUData();
-    });
-    
-    // Prima chiamata immediata
-    this.fetchMCUData();
-  }
 
-  private fetchMCUData(): void {
-    this.http.get<MCUData>(`${this.apiUrl}/api/user`).subscribe({
-      next: (data) => {
-        this.health = data.health;
-        this.RTC = data.RTC;
-        this.temperature = data.temperature;
-        this.current = data.current;
-        this.power = data.power;
-        this.voltage = data.voltage;
-        this.OutVolt = data.OutVolt;
-        this.totCurrent = this.VidEncCur + this.SonyCur+ this.JetCur;
 
-        const timestampInMilliseconds: number = this.RTC * 1000;
-        this.dateTime = new Date(timestampInMilliseconds);
 
-      },
-      error: (error) => {
-        console.error('Error fetching MCU data:', error);
-      }
-    });
-  }
 
   private connectToSSE(): void {
     this.eventSource = new EventSource(`${this.apiUrl}/events`);
@@ -161,6 +109,12 @@ export class SystemSettingsComponent implements OnInit, OnDestroy {
             idDevice: data.idDevice,
             errorCode: data.errorCode
           });
+
+        //Se c'è almeno un errore, imposta health = false
+        if (this.errorLogs.length > 0) {
+          this.health = false;
+        }
+
         }
         
       } catch (error) {

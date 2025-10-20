@@ -1,6 +1,8 @@
 /* Importa tutti gli stili esistenti da settings.component.css */
 /* Oppure copia il contenuto completo qui sotto */
 
+/* Rimosso .settings-card e la sua max-width, ora gestiti da Bootstrap col-xl-8 mx-auto nell'HTML */
+/*
 .settings-card {
   max-width: 800px;
   margin: 24px auto;
@@ -10,15 +12,19 @@
   font-family: 'Segoe UI', Arial, sans-serif;
   overflow: hidden;
 }
+*/
 
 .card-header {
+  /* Modificato per adattarsi meglio a una card Bootstrap con utility class (es. bg-primary) */
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(90deg, #2c3e50 60%, #34495e 100%);
+  /* background: linear-gradient(90deg, #2c3e50 60%, #34495e 100%); Rimosso per usare bg-primary */
   color: #fff;
   padding: 18px 22px;
   font-size: 1.3em;
+  border-top-left-radius: 17px !important; /* Coerenza con il card-header del system component */
+  border-top-right-radius: 17px !important;
 }
 
 .card-header i {
@@ -26,6 +32,7 @@
 }
 
 .card-body {
+  /* Rimosso padding-top/bottom 22px 28px per usare il p-4 nell'HTML, che è più Bootstrap-like */
   padding: 22px 28px;
 }
 
@@ -195,14 +202,15 @@ input:checked + .slider:before {
   cursor: not-allowed;
 }
 
+/* Modificato il colore di sfondo per integrarsi meglio nel card-header */
 .btn-reload {
-  background: #f5f7fa;
-  color: #4285f4;
-  border: 1px solid #4285f4;
+  background: rgba(255, 255, 255, 0.15); /* Sfondo semi-trasparente */
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   padding: 6px 16px;
   font-size: 0.98em;
-  margin-left: auto;
+  /* margin-left: auto; Rimosso, ora usa ms-auto nell'HTML */
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   display: flex;
@@ -211,8 +219,8 @@ input:checked + .slider:before {
 }
 
 .btn-reload:hover:not(:disabled) {
-  background: #e3ebf8;
-  color: #3367d6;
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
 }
 
 .btn-reload:disabled {
@@ -311,10 +319,7 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 768px) {
-  .settings-card {
-    margin: 10px;
-    border-radius: 12px;
-  }
+  /* Rimosso .settings-card qui */
 
   .card-body {
     padding: 15px;

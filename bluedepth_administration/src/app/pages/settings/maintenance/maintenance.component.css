@@ -4,39 +4,48 @@
   box-sizing: border-box;
 }
 
-body {
+/* Rimosso body e container originali per usare lo stile Card Network e limitare la larghezza */
+
+/* Nuovi stili per la Card e l'Header (Adattati da NetworkComponent) */
+.settings-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  overflow: hidden;
+}
+
+.card-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  gap: 14px;
+  /* Palette NetworkComponent: Gradiente Dark Blue / Primary */
+  background: linear-gradient(90deg, #2c3e50 60%, #34495e 100%);
+  color: #fff;
+  padding: 18px 22px;
+  font-size: 1.3em;
+  font-weight: 600;
+  border-bottom: none;
 }
 
-.container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 40px;
-  max-width: 500px;
-  width: 100%;
+.card-header i {
+    font-size: 1.6em;
 }
 
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 10px;
-  font-size: 24px;
+.card-body {
+    padding: 25px;
 }
 
+/* Stili versione (adattati) */
 .version {
-  text-align: center;
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.7); /* Colore chiaro nell'header */
+    font-size: 0.9em;
+    font-weight: 400;
 }
 
+
+/* SEZIONI E TITOLI ORIGINALI */
 .section {
   margin-bottom: 30px;
 }
@@ -51,9 +60,10 @@ h1 {
   gap: 8px;
 }
 
+/* PULSANTI (Adattati al look Network) */
 .btn {
-  width: 100%;
-  padding: 14px 20px;
+  width: 100%; /* Ripristinato 100% come nell'originale */
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
   font-size: 15px;
@@ -67,39 +77,42 @@ h1 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Gradiente coerente con il componente Network (es. blue/green) */
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
   color: white;
+  box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+  opacity: 0.9;
+  box-shadow: 0 6px 15px rgba(66, 133, 244, 0.4);
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
-  margin-top: 10px;
+  background: #6c757d; /* Grigio scuro per coerenza */
+  color: white;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #e0e0e0;
+  background: #5a6268;
 }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .divider {
   height: 1px;
-  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  background: #e0e0e0; /* Divisore semplice */
   margin: 30px 0;
 }
 
+/* BOX INFORMAZIONI */
 .info-box {
   background: #f8f9fa;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #4285f4; /* Blu primario */
   padding: 15px;
   border-radius: 4px;
   margin-top: 15px;
@@ -107,9 +120,30 @@ h1 {
   color: #555;
 }
 
+.update-info {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.update-info h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #856404;
+}
+
+.update-info p {
+  font-size: 14px;
+  color: #856404;
+  margin-bottom: 5px;
+}
+
+
+/* PROGRESS BAR (Adattato al look Network) */
 .progress-container {
   margin-top: 20px;
-  /* Rimosso display: none - gestito da .hidden */
 }
 
 .progress-container.hidden {
@@ -127,7 +161,8 @@ h1 {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  /* Sfumatura primaria per coerenza */
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
   width: 0%;
   transition: width 0.3s;
 }
@@ -138,12 +173,15 @@ h1 {
   color: #666;
 }
 
+/* STATUS MESSAGES (Colori standard mantenuti) */
 .status {
   padding: 12px;
   border-radius: 8px;
   margin-top: 15px;
   font-size: 14px;
-  /* Rimosso display: none - gestito da *ngIf nel template */
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .status.success {
@@ -159,6 +197,7 @@ h1 {
 }
 
 .status.info {
+  /* Blu coerente con la palette */
   background: #d1ecf1;
   color: #0c5460;
   border: 1px solid #bee5eb;
@@ -166,13 +205,11 @@ h1 {
 
 .spinner {
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #667eea;
+  border-top: 3px solid #4285f4; /* Blu primario */
   border-radius: 50%;
   width: 20px;
   height: 20px;
   animation: spin 1s linear infinite;
-  display: inline-block;
-  margin-right: 10px;
 }
 
 @keyframes spin {
@@ -180,31 +217,11 @@ h1 {
   100% { transform: rotate(360deg); }
 }
 
+/* UTILITY */
 .hidden {
   display: none;
 }
 
 input[type="file"] {
   display: none;
-}
-
-.update-info {
-  background: #fff3cd;
-  border-left: 4px solid #ffc107;
-  padding: 15px;
-  border-radius: 4px;
-  margin-top: 15px;
-  /* Rimosso display: none - gestito da *ngIf nel template */
-}
-
-.update-info h3 {
-  font-size: 16px;
-  margin-bottom: 8px;
-  color: #856404;
-}
-
-.update-info p {
-  font-size: 14px;
-  color: #856404;
-  margin-bottom: 5px;
 }

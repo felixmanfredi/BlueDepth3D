@@ -5,6 +5,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+    "/events": {
+    "target": "http://192.168.1.250",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
     "/ota": {
     "target": "http://192.168.1.250",
     "secure": false,
