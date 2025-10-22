@@ -5,6 +5,18 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+    "/reboot": {
+    "target": "http://192.168.1.250",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+    "/reset": {
+    "target": "http://192.168.1.250",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
     "/events": {
     "target": "http://192.168.1.250",
     "secure": false,
@@ -22,5 +34,12 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+    "/hls": {
+    "target": "http://192.168.1.120",
+    "secure": false,
+    "changeOrigin": true,
+     "followRedirects": true, 
+    "autoRewrite": true 
   }
 }

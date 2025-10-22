@@ -9,13 +9,14 @@ import { TickService } from './tick.service'; // <-- IMPORTA IL SERVIZIO
 import { Subscription } from 'rxjs';
 import { BlueDepthBoardEnvironment } from '../../../enviroment';
 import { BluedepthBoardService } from '../../../bluedepth-board.service';
+import { VideoStreamingComponent } from './video-streaming/video-streaming.component';
 
 
 @Component({
   selector: 'app-sony',
   standalone: true,
   //imports: [CommonModule, HttpClientModule, MdbFormsModule, MatCardModule, MatIconModule, MatButtonModule],
-  imports: [FormsModule, CommonModule, HttpClientModule],
+  imports: [FormsModule, CommonModule, HttpClientModule, VideoStreamingComponent],
   templateUrl: './sony.component.html',
   styleUrls: ['./sony.component.css']
 })

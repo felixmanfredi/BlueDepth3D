@@ -1,78 +1,194 @@
 <div class="row">
-    <div class="col-12 col-xl-6 mx-auto"> 
-        <div class="settings-card shadow-sm">
-            
-            <div class="card-header bg-dark text-white">
-                <div class="d-flex align-items-center w-100">
-                    <i class="fas fa-tools fa-lg me-3"></i>
-                    <div><h5 class="mb-1">Manutenzione Firmware</h5></div>
-                    <div class="version ms-auto">
-                         Versione: {{ currentVersion }}
+    <div class="col-12 col-xl-8 mx-auto">
+        
+        <form>
+
+            <div>
+                <!-- FIRMWARE INFORMATION SECTION -->
+                <div class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <div class="section-title">
+                            <h3>Firmware Information</h3>
+                            <p class="section-description">Current device firmware version and details</p>
+                        </div>
+                        <div class="version-badge">
+                            <span class="version-label">Version</span>
+                            <span class="version-value">{{ currentVersion }}</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-content">
+                        <div class="info-card">
+                            <div class="info-card-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="info-card-content">
+                                <p class="info-card-title">Device Status</p>
+                                <p class="info-card-text">System is running firmware version <strong>{{ currentVersion }}</strong>. Check for updates regularly to ensure optimal performance and security.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- AUTOMATIC UPDATE SECTION -->
+                <div class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </div>
+                        <div class="section-title">
+                            <h3>Automatic Update Check</h3>
+                            <p class="section-description">Check and download firmware updates from the server</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-content">
+                        <div class="action-group">
+                            <button class="btn-check-update" 
+                                    [disabled]="isChecking || isUpdating" 
+                                    (click)="checkFirmwareUpdate()">
+                                <i class="fas" [ngClass]="isChecking ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+                                <span>{{ isChecking ? 'Checking for Updates...' : 'Check for Updates' }}</span>
+                            </button>
+                        </div>
+
+                        <!-- Loading inline nella sezione -->
+                        <div *ngIf="isChecking" class="loading-inline">
+                            <div class="spinner-inline"></div>
+                            <p>Checking for firmware updates...</p>
+                        </div>
+
+                        <!-- Messaggi di stato DOPO il click su Check for Updates -->
+                        <div class="status-message success" *ngIf="checkStatus.type === 'success' && !isChecking && checkStatus.message">
+                            <i class="fas fa-check-circle"></i>
+                            <span>{{ checkStatus.message }}</span>
+                        </div>
+
+                        <div class="status-message error" *ngIf="checkStatus.type === 'error' && !isChecking && checkStatus.message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>{{ checkStatus.message }}</span>
+                        </div>
+
+                        <div class="status-message info" *ngIf="checkStatus.type === 'info' && !isChecking && checkStatus.message">
+                            <i class="fas fa-info-circle"></i>
+                            <span>{{ checkStatus.message }}</span>
+                        </div>
+
+                        <div class="update-card" *ngIf="updateInfo.available && !isChecking">
+                            <div class="update-card-header">
+                                <i class="fas fa-gift"></i>
+                                <h4>Update Available</h4>
+                            </div>
+                            <div class="update-card-body">
+                                <div class="update-detail">
+                                    <span class="update-label">New Version:</span>
+                                    <span class="update-value">{{ updateInfo.version }}</span>
+                                </div>
+                                <div class="update-detail">
+                                    <span class="update-label">File Size:</span>
+                                    <span class="update-value">{{ updateInfo.size }}</span>
+                                </div>
+                            </div>
+                            <div class="update-card-actions">
+                                <button class="btn-install" 
+                                        [disabled]="isUpdating" 
+                                        (click)="uploadFirmware()">
+                                    <i class="fas" [ngClass]="isUpdating ? 'fa-spinner fa-spin' : 'fa-upload'"></i>
+                                    <span>{{ isUpdating ? 'Installing...' : 'Install Update' }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MANUAL UPLOAD SECTION -->
+                <div class="settings-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <div class="section-title">
+                            <h3>Manual Firmware Upload</h3>
+                            <p class="section-description">Upload and install a custom firmware file (.bin)</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-content">
+                        <div class="upload-zone">
+                            <label class="btn-file-select" for="fileInput">
+                                <i class="fas fa-folder-open"></i>
+                                <span>Select .bin File</span>
+                            </label>
+                            <input type="file" 
+                                   id="fileInput" 
+                                   accept=".bin" 
+                                   (change)="onFileSelected($event)" 
+                                   class="file-input-hidden">
+                        </div>
+
+                        <div class="file-info" *ngIf="selectedFirmware && !isUpdating">
+                            <div class="file-icon">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div class="file-details">
+                                <p class="file-name">{{ selectedFirmware.name }}</p>
+                                <p class="file-size">{{ ((selectedFirmware.size) / (1024*1024)).toFixed(2) }} MB</p>
+                            </div>
+                            <div class="file-status">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+
+                        <!-- Loading inline per l'upload -->
+                        <div *ngIf="isUpdating && !isChecking" class="loading-inline">
+                            <div class="spinner-inline"></div>
+                            <p>Uploading and flashing firmware...</p>
+                        </div>
+
+                        <div class="status-message error" *ngIf="uploadStatus.type === 'error' && uploadStatus.message && !isUpdating">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>{{ uploadStatus.message }}</span>
+                        </div>
+
+                        <div class="status-message info" *ngIf="uploadStatus.type === 'info' && uploadStatus.message && !isUpdating">
+                            <i class="fas fa-info-circle"></i>
+                            <span>{{ uploadStatus.message }}</span>
+                        </div>
+
+                        <div class="status-message success" *ngIf="uploadStatus.type === 'success' && uploadStatus.message && !isUpdating">
+                            <i class="fas fa-check-circle"></i>
+                            <span>{{ uploadStatus.message }}</span>
+                        </div>
+
+                        <div class="progress-section" *ngIf="showProgressBar">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" [style.width.%]="progress"></div>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-percentage">{{ progress | number:'1.0-0' }}%</span>
+                                <span class="progress-status">
+                                    <span *ngIf="progress < 20">Calculating hash...</span>
+                                    <span *ngIf="progress >= 20 && progress < 90">Uploading firmware...</span>
+                                    <span *ngIf="progress >= 90">Flashing device...</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="action-group" *ngIf="selectedFirmware && !showProgressBar && !isUpdating">
+                            <button class="btn-upload" 
+                                    [disabled]="isUpdating" 
+                                    (click)="uploadFirmware()">
+                                <i class="fas" [ngClass]="isUpdating ? 'fa-spinner fa-spin' : 'fa-rocket'"></i>
+                                <span>{{ isUpdating ? 'Uploading...' : 'Upload and Program' }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-            <div class="card-body">
-                
-                <div class="section">
-                    <h2 class="section-title">🔍 Controllo Aggiornamenti</h2>
-                    <button class="btn btn-primary" [disabled]="isChecking || isUpdating" (click)="checkFirmwareUpdate()">
-                      {{ isChecking ? '⏳ Controllo in corso...' : 'Controlla Aggiornamenti' }}
-                    </button>
-                    
-                    <div class="status" [ngClass]="checkStatus.type" [class.hidden]="!checkStatus.message">
-                      <span class="spinner" *ngIf="isChecking"></span>
-                      {{ checkStatus.message }}
-                    </div>
-                    
-
-                </div>
-
-                <div class="update-info" *ngIf="updateInfo.available">
-                    <h3>Aggiornamento Trovato</h3>
-                    <p>Versione: <strong>{{ updateInfo.version }}</strong></p>
-                    <p>Dimensione: {{ updateInfo.size }}</p>
-
-                    
-                    <button class="btn btn-primary mt-3" [disabled]="isUpdating" (click)="uploadFirmware()">
-                        <span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i> Aggiornamento in corso...</span>
-                        <span *ngIf="!isUpdating">Upload e Programma</span>
-                    </button>
-                </div>
-            
-                <div class="divider"></div>
-
-                <div class="section">
-                    <h2 class="section-title">📁 Caricamento Manuale</h2>
-                    <label class="btn btn-secondary" for="fileInput">Seleziona File .bin</label>
-                    <input type="file" id="fileInput" accept=".bin" (change)="onFileSelected($event)" class="hidden">
-                    
-                    <div class="status" [ngClass]="uploadStatus.type" [class.hidden]="!uploadStatus.message && !selectedFirmware">
-                      {{ uploadStatus.message }}
-                    </div>
-                    
-                    <div *ngIf="selectedFirmware" class="info-box">
-                      File pronto: <strong>{{ selectedFirmware.name }}</strong> ({{ ((selectedFirmware.size) / (1024*1024)).toFixed(2) }} MB)
-                    </div>
-                </div>
-
-                      <div class="progress-container" [class.hidden]="!showProgressBar">
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="progress"></div>
+        </form>
     </div>
-    <div class="progress-text">{{ progress | number:'1.0-0' }}%</div>
-  </div>
-
-                <div class="section" *ngIf="selectedFirmware">
-
-                    
-                    <button class="btn btn-primary" [disabled]="isUpdating" (click)="uploadFirmware()">
-                      {{ isUpdating ? '⏳ Upload in corso...' : '🚀 Upload e Programma' }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </div>

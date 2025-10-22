@@ -1,3 +1,7 @@
+
+
+
+
 <!-- <div class="card sony-card"> -->
 
 
@@ -36,6 +40,8 @@
             </span>
           </span>
         </div>
+
+
 
 
 
@@ -99,6 +105,11 @@
       <i class="fas" [ngClass]="isFocusing ? 'fa-crosshairs' : 'fa-dot-circle'" style="margin-right: 6px;"></i>
       Focus
     </span>
+
+
+
+
+
     </div>
 
       </div>
@@ -117,6 +128,15 @@
   </div> -->
 
   </div>
+
+                <!-- Componente Video Streaming -->
+        <div class="info-block" style="grid-column: span 2;">
+          <div class="info-label" style="margin-bottom: 8px;">
+            <i class="fas fa-video"></i> Video Stream
+          </div>
+          <app-video-streaming></app-video-streaming>
+        </div>  
+        
   <ng-template #loading>
     <div class="loading-container">
       <div class="spinner"></div>

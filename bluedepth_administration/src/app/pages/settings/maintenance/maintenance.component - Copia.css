@@ -1,0 +1,227 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Rimosso body e container originali per usare lo stile Card Network e limitare la larghezza */
+
+/* Nuovi stili per la Card e l'Header (Adattati da NetworkComponent) */
+.settings-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  /* Palette NetworkComponent: Gradiente Dark Blue / Primary */
+  background: linear-gradient(90deg, #2c3e50 60%, #34495e 100%);
+  color: #fff;
+  padding: 18px 22px;
+  font-size: 1.3em;
+  font-weight: 600;
+  border-bottom: none;
+}
+
+.card-header i {
+    font-size: 1.6em;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* Stili versione (adattati) */
+.version {
+    color: rgba(255, 255, 255, 0.7); /* Colore chiaro nell'header */
+    font-size: 0.9em;
+    font-weight: 400;
+}
+
+
+/* SEZIONI E TITOLI ORIGINALI */
+.section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* PULSANTI (Adattati al look Network) */
+.btn {
+  width: 100%; /* Ripristinato 100% come nell'originale */
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  /* Gradiente coerente con il componente Network (es. blue/green) */
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
+  color: white;
+  box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  box-shadow: 0 6px 15px rgba(66, 133, 244, 0.4);
+}
+
+.btn-secondary {
+  background: #6c757d; /* Grigio scuro per coerenza */
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.divider {
+  height: 1px;
+  background: #e0e0e0; /* Divisore semplice */
+  margin: 30px 0;
+}
+
+/* BOX INFORMAZIONI */
+.info-box {
+  background: #f8f9fa;
+  border-left: 4px solid #4285f4; /* Blu primario */
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.update-info {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.update-info h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #856404;
+}
+
+.update-info p {
+  font-size: 14px;
+  color: #856404;
+  margin-bottom: 5px;
+}
+
+
+/* PROGRESS BAR (Adattato al look Network) */
+.progress-container {
+  margin-top: 20px;
+}
+
+.progress-container.hidden {
+  display: none;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  /* Sfumatura primaria per coerenza */
+  background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.progress-text {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* STATUS MESSAGES (Colori standard mantenuti) */
+.status {
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status.info {
+  /* Blu coerente con la palette */
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #4285f4; /* Blu primario */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* UTILITY */
+.hidden {
+  display: none;
+}
+
+input[type="file"] {
+  display: none;
+}

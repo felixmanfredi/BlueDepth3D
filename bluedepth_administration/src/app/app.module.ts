@@ -19,8 +19,9 @@ import { SonyComponent } from "./pages/dashboard/sony/sony.component";
 import { NetworkComponent } from "./pages/settings/network/network.component";
 import { MaintenanceComponent } from "./pages/settings/maintenance/maintenance.component";
 import { SystemSettingsComponent } from "./pages/settings/system/system.component";
-import { LogErrorsComponent } from "./pages/settings/logerrors/logerrors.component";
+//import { LogErrorsComponent } from "./pages/settings/logerrors/logerrors.component";
 import { SystemComponent } from "./pages/dashboard/system/system.component";
+import { LogErrorsComponent } from './component/logerrors/logerrors.component';
 @NgModule(
     {
         declarations:[

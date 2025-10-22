@@ -1,0 +1,78 @@
+<div class="row">
+    <div class="col-12 col-xl-6 mx-auto"> 
+        <div class="settings-card shadow-sm">
+            
+            <div class="card-header bg-dark text-white">
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas fa-tools fa-lg me-3"></i>
+                    <div><h5 class="mb-1">Manutenzione Firmware</h5></div>
+                    <div class="version ms-auto">
+                         Versione: {{ currentVersion }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                
+                <div class="section">
+                    <h2 class="section-title">🔍 Controllo Aggiornamenti</h2>
+                    <button class="btn btn-primary" [disabled]="isChecking || isUpdating" (click)="checkFirmwareUpdate()">
+                      {{ isChecking ? '⏳ Controllo in corso...' : 'Controlla Aggiornamenti' }}
+                    </button>
+                    
+                    <div class="status" [ngClass]="checkStatus.type" [class.hidden]="!checkStatus.message">
+                      <span class="spinner" *ngIf="isChecking"></span>
+                      {{ checkStatus.message }}
+                    </div>
+                    
+
+                </div>
+
+                <div class="update-info" *ngIf="updateInfo.available">
+                    <h3>Aggiornamento Trovato</h3>
+                    <p>Versione: <strong>{{ updateInfo.version }}</strong></p>
+                    <p>Dimensione: {{ updateInfo.size }}</p>
+
+                    
+                    <button class="btn btn-primary mt-3" [disabled]="isUpdating" (click)="uploadFirmware()">
+                        <span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i> Aggiornamento in corso...</span>
+                        <span *ngIf="!isUpdating">Upload e Programma</span>
+                    </button>
+                </div>
+            
+                <div class="divider"></div>
+
+                <div class="section">
+                    <h2 class="section-title">📁 Caricamento Manuale</h2>
+                    <label class="btn btn-secondary" for="fileInput">Seleziona File .bin</label>
+                    <input type="file" id="fileInput" accept=".bin" (change)="onFileSelected($event)" class="hidden">
+                    
+                    <div class="status" [ngClass]="uploadStatus.type" [class.hidden]="!uploadStatus.message && !selectedFirmware">
+                      {{ uploadStatus.message }}
+                    </div>
+                    
+                    <div *ngIf="selectedFirmware" class="info-box">
+                      File pronto: <strong>{{ selectedFirmware.name }}</strong> ({{ ((selectedFirmware.size) / (1024*1024)).toFixed(2) }} MB)
+                    </div>
+                </div>
+
+                      <div class="progress-container" [class.hidden]="!showProgressBar">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+    <div class="progress-text">{{ progress | number:'1.0-0' }}%</div>
+  </div>
+
+                <div class="section" *ngIf="selectedFirmware">
+
+                    
+                    <button class="btn btn-primary" [disabled]="isUpdating" (click)="uploadFirmware()">
+                      {{ isUpdating ? '⏳ Upload in corso...' : '🚀 Upload e Programma' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

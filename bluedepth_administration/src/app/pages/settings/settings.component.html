@@ -7,13 +7,13 @@
     <a class="nav-link" [class.active]="tab==2" (click)="tab=2">Network</a>
     <!-- <app-network></app-network> -->
   </li>
-  <li class="nav-item" role="presentation">
+  <!-- <li class="nav-item" role="presentation">
     <a class="nav-link" [class.active]="tab==3" (click)="tab=3">Maintaince</a>
-  </li>
+  </li> -->
 
-  <li class="nav-item" role="presentation">
+  <!-- <li class="nav-item" role="presentation">
     <a class="nav-link" [class.active]="tab==3" (click)="tab=4">Log Errors</a>
-  </li>
+  </li> -->
   
 </ul>
 <!-- Tabs navs -->
@@ -21,7 +21,9 @@
 <!-- Tabs content -->
 <div class="tab-content" id="ex1-content">
   <div class="tab-pane fade show active" *ngIf="tab==1">
-    <app-systemsettings></app-systemsettings>
+    <app-systemsettings></app-systemsettings>  
+    <app-maintenance></app-maintenance>
+    <!-- <app-network></app-network> -->
      
     <!-- <div class="row">
         <div class="col-4"><label>Date Time</label></div>
@@ -71,20 +73,20 @@
 
 
   <!-- Tab 3 Content -->
-  <div class="tab-pane fade"
+  <!-- <div class="tab-pane fade"
          [class.show]="tab==3" 
        [class.active]="tab==3" 
        [hidden]="tab!=3">
        <app-maintenance></app-maintenance>
-  </div>
+  </div> -->
 
   <!-- Tab 4 Content -->
-  <div class="tab-pane fade"
+  <!-- <div class="tab-pane fade"
          [class.show]="tab==4" 
        [class.active]="tab==4" 
        [hidden]="tab!=4">
        <app-logerrors></app-logerrors>
-  </div>  
+  </div>   -->
   
 </div>
 <!-- Tabs content -->

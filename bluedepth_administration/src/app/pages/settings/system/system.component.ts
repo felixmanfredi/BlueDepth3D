@@ -1,184 +1,188 @@
-
-import { Component, OnInit, NgZone,OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BlueDepthBoardEnvironment } from '../../../enviroment';
-import * as CryptoJS from 'crypto-js';
 import { interval, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
-interface MCUData {
-  health: boolean;
-  temperature: number;
-  RTC: number;
-  current: number;
-  power: number;
-  voltage:number;
-  OutVolt:number;
-  SonyCur: number;
-  VidEncCur: number;
-  JetCur: number;
-}
-
-interface ErrorEvent {
-  errorCode: number;
-  idDevice: number;
-  error: string;
-}
-
-interface ErrorLog {
-  timestamp: number;
-  idDevice: number;
-  errorCode: number;
-}
 
 @Component({
   selector: 'app-systemsettings',
   standalone: true,
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './system.component.html',
-  styleUrl: './system.component.css',
-  imports: [
-    CommonModule // CommonModule perNgClass, NgFor, NgIfsu comp standalone.
-    //HttpClient   // L'HttpClient va aggiunto anche qui (se non è fornito a livello root)
-  ]
+  styleUrls: ['./system.component.css']
 })
 export class SystemSettingsComponent implements OnInit, OnDestroy {
-  private apiUrl = BlueDepthBoardEnvironment.apiUrl;
-  private pollingSubscription?: Subscription;
-  private eventSource?: EventSource;
+  systemTime: Date | null = null;
+  localTime: Date = new Date();
+  loading = true;
+  error: string | null = null;
+  isSyncing = false;
+  showSuccessPopup = false;
+  showRebootPopup = false;
+  showRebootConfirm = false;
+  syncMessage = '';
+  rebootMessage = '';
   
-  health: boolean = false;
-  temperature: number = 0;
-  current: number = 0;
-  power: number = 0;
-  voltage:number = 0;
-  OutVolt:number = 0;
-  RTC: number = 0;
-  dateTime: Date | undefined;
-  SonyCur: number = 0;
-  VidEncCur: number = 0;
-  JetCur: number = 0;
-
-  totCurrent: number = 0;
-  errorLogs: ErrorLog[] = [];
-
+  private apiUrl = BlueDepthBoardEnvironment.apiUrl;
+  private timeSubscription?: Subscription;
+  private localTimeInterval?: any;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.startPolling();
-    this.connectToSSE();
+    // Fetch system time every second
+    this.timeSubscription = interval(1000)
+      .pipe(
+        switchMap(() => this.http.get<any>(`${this.apiUrl}/api/mcu`))
+      )
+      .subscribe({
+        next: (data) => {
+          if (data.RTC) {
+            // Convert Unix timestamp to Date
+            this.systemTime = new Date(data.RTC * 1000);
+            this.loading = false;
+            this.error = null;
+          }
+        },
+        error: (err) => {
+          this.error = 'Error loading system time';
+          console.error('[API] system time error:', err);
+          this.loading = false;
+        }
+      });
+
+    // Update local time every second
+    this.localTimeInterval = setInterval(() => {
+      this.localTime = new Date();
+    }, 1000);
   }
 
   ngOnDestroy(): void {
-    if (this.pollingSubscription) {
-      this.pollingSubscription.unsubscribe();
+    if (this.timeSubscription) {
+      this.timeSubscription.unsubscribe();
     }
-    if (this.eventSource) {
-      this.eventSource.close();
+    if (this.localTimeInterval) {
+      clearInterval(this.localTimeInterval);
     }
   }
 
-  private startPolling(): void {
-    // Polling ogni 5 secondi
-    this.pollingSubscription = interval(1000).subscribe(() => {
-      this.fetchMCUData();
-    });
+  synchronizeTime(): void {
+    this.isSyncing = true;
+    const now = new Date();
     
-    // Prima chiamata immediata
-    this.fetchMCUData();
-  }
-
-  private fetchMCUData(): void {
-    this.http.get<MCUData>(`${this.apiUrl}/api/user`).subscribe({
-      next: (data) => {
-        this.health = data.health;
-        this.RTC = data.RTC;
-        this.temperature = data.temperature;
-        this.current = data.current;
-        this.power = data.power;
-        this.voltage = data.voltage;
-        this.OutVolt = data.OutVolt;
-        this.totCurrent = this.VidEncCur + this.SonyCur+ this.JetCur;
-
-        const timestampInMilliseconds: number = this.RTC * 1000;
-        this.dateTime = new Date(timestampInMilliseconds);
-
-      },
-      error: (error) => {
-        console.error('Error fetching MCU data:', error);
-      }
-    });
-  }
-
-  private connectToSSE(): void {
-    this.eventSource = new EventSource(`${this.apiUrl}/events`);
-    
-    // Aggiungiamo un listener  per 'info'
-    this.eventSource.addEventListener('info', (event: MessageEvent) => {
-        this.processSSEEvent(event);
-    });
-
-    // Aggiungiamo un listener specifico per 'criticalError' e 'info' se 
-    // sappiamo che ci sono, perché il browser potrebbe non inviarli a 'message'.
-    this.eventSource.addEventListener('criticalError', (event: MessageEvent) => {
-        this.processSSEEvent(event);
-    });
-
-     
-    // ... Se il tuo server invia eventi con altri nomi, dovresti aggiungerli qui
-
-    this.eventSource.onerror = (error) => {
-      console.error('SSE connection error:', error);
+    const timePayload = {
+      hour: now.getHours(),
+      minute: now.getMinutes(),
+      second: now.getSeconds(),
+      day: now.getDate(),
+      month: now.getMonth() + 1, // JavaScript months are 0-indexed
+      year: now.getFullYear()
     };
+
+    console.log('[Sync] Sending time:', timePayload);
+
+    this.http.post<any>(`${this.apiUrl}/api/settings/time`, timePayload).subscribe({
+      next: (response) => {
+        console.log('[Sync] success:', response);
+        this.syncMessage = response.message || 'Time synchronized successfully!';
+        this.showSuccessPopup = true;
+        this.isSyncing = false;
+        
+        // Auto-hide popup after 3 seconds
+        setTimeout(() => {
+          this.showSuccessPopup = false;
+        }, 3000);
+      },
+      error: (err) => {
+        console.error('[Sync] error:', err);
+        this.syncMessage = 'Failed to synchronize time. Please try again.';
+        this.showSuccessPopup = true;
+        this.isSyncing = false;
+        
+        setTimeout(() => {
+          this.showSuccessPopup = false;
+        }, 3000);
+      }
+    });
   }
 
-  // ✅ Nuovo metodo per la logica unificata di processamento degli eventi
-  private processSSEEvent(event: MessageEvent): void {
-      try {
-        // Ignoriamo i messaggi vuoti o non JSON come "connected"
-        if (!event.data || event.data === 'connected') {
-          return;
-        }
+  confirmReboot(): void {
+    this.showRebootConfirm = true;
+  }
 
-        // Tentativo di parsare i dati come JSON
-        const data = JSON.parse(event.data);
+  cancelReboot(): void {
+    this.showRebootConfirm = false;
+  }
 
-        // ✅ Filtro Strutturale: Verifica che l'oggetto JSON abbia i campi richiesti 
-        // con il tipo atteso, indipendentemente dal nome dell'evento.
-        if (typeof data.idDevice === 'number' && typeof data.errorCode === 'number' && typeof data.timeStamp === 'number') {
-            
-          // event.lastEventId è l'ID (timestamp in millisecondi)
-          const timestampMilliseconds = data.timeStamp;//parseInt(event.lastEventId);
-          
-          // Conversione in secondi (parte intera)
-          //const timestampSeconds = Math.floor(timestampMilliseconds / 1000); 
-          const timestampSeconds = timestampMilliseconds / 1000;
-          
-          // Popola l'array con i campi richiesti.
-          this.errorLogs.unshift({
-            timestamp: timestampSeconds,
-            idDevice: data.idDevice,
-            errorCode: data.errorCode
-          });
-        }
+  rebootSystem(): void {
+    this.showRebootConfirm = false;
+    
+    console.log('[Reboot] Initiating system reboot to:', `${this.apiUrl}/reboot`);
+    
+    // Use text response type since the device returns plain text
+    this.http.get(`${this.apiUrl}/reboot`, { 
+      responseType: 'text',
+      observe: 'response' // To get full response including headers
+    }).subscribe({
+      next: (response) => {
+        console.log('[Reboot] Full response:', response);
+        console.log('[Reboot] Status:', response.status);
+        console.log('[Reboot] Body:', response.body);
         
-      } catch (error) {
-        // Log solo per i dati non parsabili, non per la logica di filtro
-        console.warn(`Skipping event (Type: ${event.type || 'message'}): Non-JSON or malformed SSE data.`, event.data);
+        // Display the actual message from the system
+        this.rebootMessage = response.body || 'RESET ESP in 2 Seconds...';
+        this.showRebootPopup = true;
+        
+        // Keep popup visible for 5 seconds
+        setTimeout(() => {
+          this.showRebootPopup = false;
+        }, 5000);
+      },
+      error: (err) => {
+        console.error('[Reboot] Full error:', err);
+        console.error('[Reboot] Error status:', err.status);
+        console.error('[Reboot] Error message:', err.message);
+        
+        // Check if we got a 200 response but HttpClient treated it as error
+        if (err.status === 200 || err.status === 0) {
+          // Device might have rebooted immediately, connection lost
+          this.rebootMessage = 'RESET ESP in 2 Seconds...';
+          this.showRebootPopup = true;
+          
+          setTimeout(() => {
+            this.showRebootPopup = false;
+          }, 5000);
+        } else {
+          this.rebootMessage = 'Failed to reboot the device. Please try again.';
+          this.showRebootPopup = true;
+          
+          setTimeout(() => {
+            this.showRebootPopup = false;
+          }, 3000);
+        }
       }
+    });
+  }
+
+  closePopup(): void {
+    this.showSuccessPopup = false;
+    this.showRebootPopup = false;
+  }
+
+  formatTime(date: Date | null): string {
+    if (!date) return '--:--:--';
+    return date.toLocaleTimeString('en-GB');
+  }
+
+  formatDate(date: Date | null): string {
+    if (!date) return '---';
+    return date.toLocaleDateString('en-GB', { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
