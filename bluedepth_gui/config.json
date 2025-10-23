@@ -3,5 +3,6 @@
   "windowWidth": 300,
   "alwaysOnTop": true,
   "frame": false,
-  "marginright":0
+  "marginright":0,
+  "trasparent":false
 }

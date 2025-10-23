@@ -17,7 +17,8 @@ function loadConfig() {
       windowWidth: 800,
       alwaysOnTop: true,
       frame: true,
-      marginright: 0
+      marginright: 0,
+      transparent: false
     };
   }
 }
@@ -37,6 +38,7 @@ const createWindow = () => {
     transparent:false,
     alwaysOnTop: config.alwaysOnTop,
     frame: config.frame,
+    transparent: config.transparent,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
