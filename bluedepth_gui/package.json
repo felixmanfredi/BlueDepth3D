@@ -1,0 +1,30 @@
+{
+  "name": "bluedepth_gui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+      "build-linux": "electron-builder --linux deb"
+  },
+  "author": "3D Research srl",
+  "license": "ISC",
+   "build": {
+    "appId": "com.3dresearch.bluedepth3d",
+    "productName": "BlueDepth3D Gui",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    },
+    "linux": {
+      "target": ["deb"],
+      "category": "Utility",
+      "maintainer": "info@3dresearch.it"
+    }
+  },
+  "devDependencies": {
+    "electron": "^38.4.0",
+    "electron-builder": "^26.0.12"
+  }
+}
