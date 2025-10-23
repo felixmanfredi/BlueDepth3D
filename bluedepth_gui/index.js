@@ -2,10 +2,10 @@ const { app, BrowserWindow,screen  } = require('electron')
 const path = require('path');
 const fs = require('fs');
 
-
+var basepath = app.getAppPath();
 
 function loadConfig() {
-  const configPath = path.join(__dirname, 'config.json');
+  const configPath = path.join(basepath, 'config.json');
   try {
     const configData = fs.readFileSync(configPath, 'utf-8');
     return JSON.parse(configData);
@@ -18,9 +18,23 @@ function loadConfig() {
       alwaysOnTop: true,
       frame: true,
       marginright: 0,
-      transparent: false
+      margintop: 0,
+      marginbottom: 0,
+      transparent: true
     };
   }
+}
+
+function isValidHttpUrl(string) {
+  let url;
+  
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;  
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
 }
 
 const createWindow = () => {
@@ -32,9 +46,9 @@ const createWindow = () => {
 
   const win = new BrowserWindow({
     width: windowWidth,
-    height: screenHeight,
+    height: screenHeight-config.margintop-config.marginbottom,
     x: screenWidth - windowWidth - config.marginright, // posiziona in alto a destra
-    y: 0, 
+    y: config.margintop, 
     transparent:false,
     alwaysOnTop: config.alwaysOnTop,
     frame: config.frame,
@@ -44,12 +58,17 @@ const createWindow = () => {
       contextIsolation: false,
     },
   })
-   //win.webContents.openDevTools();
-  // Percorso del file index.html compilato da Angular
-  const indexPath = path.join(__dirname,config.path);
+      //win.webContents.openDevTools();
  
-  // Carica la pagina Angular
-  win.loadFile(indexPath);
+  if(isValidHttpUrl(config.path)){
+      win.loadURL(config.path);
+ 
+  }else{
+    const indexPath = path.join(__dirname,config.path);
+    win.loadFile(indexPath);
+ 
+  }
+  
 }
 
 app.whenReady().then(() => {

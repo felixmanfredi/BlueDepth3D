@@ -1,66 +1,10 @@
-// import { CommonModule } from '@angular/common';
-// import { Component, ViewChild } from '@angular/core';
-// import { RouterOutlet } from '@angular/router';
-// import { SidebarComponent } from './component/sidebar/sidebar.component';
-// import {MdbModalModule, MdbModalService} from 'mdb-angular-ui-kit/modal';
-
-// @Component({
-//   selector: 'app-root',
-//   standalone: false,
-//   templateUrl: './app.component.html',
-//   styleUrl: './app.component.css'
-// })
-// export class AppComponent {
-
-//   static app:AppComponent;  
-//   @ViewChild("modalMessage")
-//   modalMessage:any;
-//   modalMessageRef:any;
-//   modalMessageType="info";
-//   message:String="";
-  
-//   title = 'bluedepth_administration';
-//   version="1.0.0";
-//   isLogin=true;
-
-//   user:any={name:"",role:""};
-
-
-
-//   constructor(public modalService:MdbModalService){
-//     AppComponent.app=this;
-//   }
-
-
-//   logout(){
-
-//   }
-
-//   showMessage(message:String,type="info",delay=2000){
-//     this.message=message;
-//     this.modalMessageType=type;
-//     this.modalMessageRef=this.modalService.open(this.modalMessage);
-//     if(delay>0){
-//       setTimeout(()=>{
-//         this.closeMessage();
-//       },delay)
-//     }
-//   }
-
-//   closeMessage(){
-//     this.modalMessageRef.close();
-//   }
-
-// }
-
-
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
-import { SidebarComponent } from './component/sidebar/sidebar.component';
 import { MdbModalService } from 'mdb-angular-ui-kit/modal';
 import { ErrorMonitorService } from '../app/error-monitor.service'; // Adatta il path
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { SocketService } from './socket-service.service';
 
 @Component({
   selector: 'app-root',
@@ -79,7 +23,13 @@ export class AppComponent implements OnInit, OnDestroy {
   version = "1.0.0";
   isLogin = true;
   user: any = { name: "", role: "" };
-  
+  board_status={
+    cpu_usage: 0,
+    free_disk: { "/": 0, "/boot/efi": 0 },
+    free_ram: 0,
+    used_disk: { "/": 0, "/boot/efi": 0 },​
+    used_ram: 0
+  };
   frame=true;
 
   hasErrors: boolean = false;
@@ -90,12 +40,16 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     public modalService: MdbModalService,
     private router: Router,
-    private errorMonitor: ErrorMonitorService
+    private errorMonitor: ErrorMonitorService,
+    private socketService: SocketService
   ) {
     AppComponent.app = this;
-    if (document.location.href.indexOf('kiosk') > -1) {
+
+
+    if (document.location.href.indexOf('dock') > -1) {
       console.log('Kiosk mode detected - hiding frame');
       this.frame=false;
+      this.router.navigate(["/dock"]);
     }
 
   }
@@ -117,6 +71,16 @@ export class AppComponent implements OnInit, OnDestroy {
           this.showLogErrors = false;
         }
       });
+      
+
+    this.socketService.listen('board_status').subscribe((msg) => {
+      this.board_status=msg;
+    });
+
+    this.socketService.listen('device_status').subscribe((msg) => {
+      
+    });
+    
   }
 
   ngOnDestroy(): void {
@@ -150,5 +114,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   closeMessage() {
     this.modalMessageRef.close();
+  }
+
+
+  connectWebsocket(){
+    
   }
 }

@@ -32,6 +32,29 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                <label>CPU:</label>
+                                            </td>
+                                            <td class="text-end">
+                                                <span *ngIf="board_status.cpu_usage==0">
+                                                    nd
+                                                </span>
+                                                <span *ngIf="board_status.cpu_usage>0">
+                                                {{ board_status.cpu_usage/100 | percent}}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>RAM:</label>
+                                            </td>
+                                            <td class="text-end">
+                                                <span *ngIf="board_status.used_ram==0">nd</span>
+                                                <span *ngIf="board_status.used_ram>0">{{ board_status.used_ram | fileSize }}</span>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <label>Temperature:</label>
                                             </td>
                                             <td class="text-end">

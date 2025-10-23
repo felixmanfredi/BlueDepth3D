@@ -56,7 +56,7 @@
 </div>
 
 <!-- Main layout -->
-<main style="margin: 4.5rem 0;" [style.display]="showLogErrors ? 'none' : 'block'">
+<main [class.main_top]="frame" [style.display]="showLogErrors ? 'none' : 'block'">
   <div [class.container]="isLogin && frame">
     <router-outlet *ngIf="isLogin"></router-outlet>
     

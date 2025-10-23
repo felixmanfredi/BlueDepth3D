@@ -19,12 +19,13 @@ export class MpeApiService {
   }
 
 
-  setSettings(settings:any,callback:any){
+  setSettings(settings:any,callback:any,onerror:any=null){
     let headers:HttpHeaders=new HttpHeaders();
     headers = headers.set('Access-Control-Allow-Origin', '*');
 
 
     this.http.put(this.baseUrl+"/camera/settings",settings,{headers:headers}).pipe(catchError(
+      
       this.handleError
     
     
@@ -91,5 +92,31 @@ export class MpeApiService {
     this.http.put(this.baseUrl+"/datasets/stop",{}).pipe(catchError(callback_error)).subscribe((result:any)=>{
       callback(result);
     });
+  }
+
+  getDatasets(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/datasets",{}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      callback(result);
+    });
+  }
+
+  getDatasetInfo(id_dataset:number,callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/datasets/"+id_dataset.toString()+"/info",{}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      callback(result);
+    });
+  }
+
+   version(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/version").pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  getPlugins(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/plugins").pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
   }
 }

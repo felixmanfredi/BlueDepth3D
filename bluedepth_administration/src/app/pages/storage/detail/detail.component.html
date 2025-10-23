@@ -1,0 +1,19 @@
+<div class="modal-header">
+    #{{record.dataset_id}} del {{record.created_at | date:"dd/MM/YYYY HH:mm"}}
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12">
+            <label>Type:</label>&nbsp;<b>{{record.type}}</b><br/>
+            <label>Type:</label>&nbsp;<b>{{record.type}}</b><br/>
+            
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    
+</div>
+
+<p>{{record | json}}</p>

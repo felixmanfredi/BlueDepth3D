@@ -15,7 +15,7 @@
         </a>
         <ul class="list-group list-group-flush" (click)="collapsed=true">
           <ng-container *ngFor="let r of routes">
-            <li class="list-group-item py-1" *ngIf="r.path!='' && checkPermission(r.data.permissions)"  [routerLinkActive]="'current'">
+            <li class="list-group-item py-1" *ngIf="r.path!='' && checkPermission(r.data.permissions) && r.title!=''"  [routerLinkActive]="'current'">
                 <a [routerLink]="r.path" class="text-reset">
                     <i class="{{r.data.icon}} fa-fw me-3" title="{{r.title}}"></i>
                     <span *ngIf="!collapsed">{{r.title}}</span>

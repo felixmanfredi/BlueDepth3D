@@ -1,0 +1,332 @@
+
+<div class="row">
+  <div class="col-md-6 d-none d-none d-sm-block">
+    <app-video-streaming></app-video-streaming>
+  </div>
+  
+  <div class="col-md-6" *ngIf="sonyData; else loading">
+
+    <div class="row">
+
+        
+        
+
+        <!-- Capture -->
+        <div class="col-sm-4 btns_position">
+            <div class="btn-group" style="width: 100%;">
+                <button class="btn btn-outline-primary" [disabled]="isUpdating || isPhoto" (click)="triggerPhoto()">
+                    <i class="fas fa-camera"></i>&nbsp;
+                    <span class="badge badge-light">{{ sonyData.SuccessPictureCount }}</span>
+                    
+                </button>
+               
+                <button class="btn btn-outline-primary" [class.bg-warning]="isFlash" (click)="isFlash = !isFlash"  title="Attiva o disattiva i flash">
+                    <i class="fa fa-lightbulb" ></i>
+                </button>
+
+                
+            </div>
+        </div>
+
+        <!-- Focus -->
+        <div class="col-sm-4 btns_position">
+        <button  class="btn btn-outline-primary btn-block" (click)="triggerFocus()" [class.btn-secondary]="isFocusing" title="Check focus">
+            <i class="fa fa-arrows-to-eye"></i>
+        </button>
+        </div>
+
+        
+        <!-- Flash -->
+        <div class="col-sm-4 btns_position">
+        <button class="btn btn-outline-primary btn-block" (click)="triggerFlash()" [class.btn-secondary]="isFlashing" title="Check flash">
+            <i class="fa fa-bolt"></i>
+        </button>
+        </div>
+        <!-- PREVIEW -->
+         <!--
+        <div class="col-sm-4 btns_position">
+            <button class="btn btn-block btn-outline-primary"  title="Foto di anteprima" (click)="capture()">
+                    <i class="fa fa-image" ></i>
+                </button>
+        </div>
+-->
+        
+                
+        <hr/>
+
+        <!-- MODE -->
+        <div class="col-sm-4 btns_position">
+
+            <div mdbDropdown class="dropdown" *ngIf="mode=='photo'">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="modality"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Modalità"
+                    >
+                    
+                    <span *ngIf="settings.ExposureProgramMode=='M_Manual'">M</span>
+                    <span *ngIf="settings.ExposureProgramMode=='P_Auto'">P</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Auto'">i</span>
+                    <span *ngIf="settings.ExposureProgramMode=='A_AperturePriority'">A</span>
+                    <span *ngIf="settings.ExposureProgramMode=='S_ShutterSpeedPriority'">S</span>
+                    
+                    
+                    
+                </button>
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="modality">
+                    <li><a class="btn dropdown-item text-center" (click)="settings.ExposureProgramMode='M_Manual';sendSetting('ExposureProgramMode')">M<br><small>Manuale</small></a></li>
+                    <li><a class="btn dropdown-item text-center" (click)="settings.ExposureProgramMode='P_Auto';sendSetting('ExposureProgramMode')">P<br><small>Automatico</small></a></li>
+                    <li><a class="btn dropdown-item text-center" (click)="settings.ExposureProgramMode='Auto';sendSetting('ExposureProgramMode')">i<br><small>Smart</small></a></li>
+                    <li><a class="btn dropdown-item text-center" (click)="settings.ExposureProgramMode='A_AperturePriority';sendSetting('ExposureProgramMode')">A<br><small>Diaframma</small></a></li>
+                    <li><a class="btn dropdown-item text-center" (click)="settings.ExposureProgramMode='S_ShutterSpeedPriority';sendSetting('ExposureProgramMode')">S<br><small>Tempi</small></a></li>
+    <!--
+                    <li><a class="dropdown-item" >Ritratti</a></li>
+                    <li><a class="dropdown-item" >Eventi sportivi</a></li>
+                    <li><a class="dropdown-item" >Macro</a></li>
+                    <li><a class="dropdown-item" >Paesaggi</a></li>
+                    <li><a class="dropdown-item" >Tramonto</a></li>
+                    <li><a class="dropdown-item" >Scena notturna</a></li>
+                -->                            
+                </ul>
+            </div>
+
+            <div mdbDropdown class="dropdown" *ngIf="mode=='video'">
+                <button
+                    class="btn btn-primary btn-block dropdown-toggle"
+                    type="button"
+                    id="modalityVideo"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Modalità"
+                    >
+                    <i class="fa fa-camera fa-3x"></i>
+                    
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_P '">P</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_A'">A</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_S'">S</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_M'">M</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_Auto'">i</span>
+                    <span *ngIf="settings.ExposureProgramMode=='Movie_F'">F</span>
+
+                    
+                        
+                    
+                    
+                    
+                </button>
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="modalityVideo">
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_P ';sendSetting('ExposureProgramMode')">Movie Recording(P)</a></li>
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_A';sendSetting('ExposureProgramMode')">Movie Recording(A)</a></li>
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_S';sendSetting('ExposureProgramMode')">Movie Recording(S)</a></li>
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_M';sendSetting('ExposureProgramMode')">Movie Recording(M)</a></li>
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_Auto';sendSetting('ExposureProgramMode')">Movie Recording(AUTO)</a></li>
+                    <li><a class="dropdown-item" (click)="settings.ExposureProgramMode='Movie_F';sendSetting('ExposureProgramMode')">Movie Recording(F Mode)</a></li>
+                </ul>
+            </div>
+
+            
+        </div>
+        <!-- SHUTTER SPEED -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+            <button
+                class="btn btn-light btn-block dropdown-toggle "
+                type="button"
+                id="shutterSpeedDropdown"
+                aria-expanded="false"
+                mdbDropdownToggle
+                title="Shutter Speed"
+            >
+                <span>{{settings.ShutterSpeed}}</span>
+            </button>
+
+            <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="shutterSpeedDropdown">
+                <li *ngFor="let speed of shutterValues">
+                <a class="dropdown-item" (click)="settings.ShutterSpeed = speed; sendSetting('ShutterSpeed')">
+                    {{ speed }}
+                </a>
+                </li>
+            </ul>
+            </div>
+        </div>
+        <!-- F -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="fnumberDropdown"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="FNumber"
+                >
+                    <span>{{ settings.FNumber }}</span>
+                </button>
+
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="fnumberDropdown">
+                    <li *ngFor="let fnum of fnumberValues">
+                    <a class="dropdown-item" (click)="settings.FNumber = fnum; sendSetting('FNumber')">
+                        {{ fnum.replace('F', '') }}
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- ISO -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+            <button
+                class="btn btn-light btn-block dropdown-toggle"
+                type="button"
+                id="isoDropdown"
+                aria-expanded="false"
+                mdbDropdownToggle
+                title="ISO Sensitivity"
+            >
+                <span>{{ settings.IsoSensitivity }}</span>
+            </button>
+
+            <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="isoDropdown">
+                <li *ngFor="let iso of isoValues">
+                <a class="dropdown-item" 
+                    (click)="settings.IsoSensitivity = iso; sendSetting('IsoSensitivity')">
+                    {{ iso.replace('ISO ', '') === 'AUTO' ? 'AUTO' : iso.replace('ISO ', '') }}
+                </a>
+                </li>
+            </ul>
+            </div>
+        </div>
+        <!-- EV -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="exposureBiasDropdown"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Exposure Bias"
+                >
+                    <span>{{ settings.ExposureBiasCompensation.replace('Ev', '') }}</span>
+                </button>
+
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="exposureBiasDropdown">
+                    <li *ngFor="let bias of biasValues">
+                    <a class="dropdown-item"
+                        (click)="settings.ExposureBiasCompensation = bias; sendSetting('ExposureBiasCompensation')">
+                        {{ bias.replace('Ev', '') }}
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        
+        </div>
+        <!-- WB -->
+        <div class="col-sm-4 btns_position" >
+            <div mdbDropdown class="dropdown">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="WB"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Bilanciamento bianco"
+                    >
+
+                    <span *ngIf="settings.WhiteBalance =='AWB'">AWB</span>
+                    
+                    {{settings.WhiteBalance}}
+                </button>
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="WB">
+
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='AWB';sendSetting('WhiteBalance')">Automatico</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Daylight';sendSetting('WhiteBalance')">Luce giorno</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Shadow';sendSetting('WhiteBalance')">Ombra</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Cloudy';sendSetting('WhiteBalance')">Cielo coperto</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Tungsten';sendSetting('WhiteBalance')">A incandescente</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Fluorescent';sendSetting('WhiteBalance')">Fluorescente</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Fluorescent_WarmWhite';sendSetting('WhiteBalance')">Fluorescente bianca calda</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Fluorescent_CoolWhite';sendSetting('WhiteBalance')">Fluorescente bianca fredda</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Fluorescent_Daylight';sendSetting('WhiteBalance')">Fluorescente luce giorno</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Underwater_Auto';sendSetting('WhiteBalance')">Automatico sottoacqua</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.WhiteBalance ='Flush';sendSetting('WhiteBalance')">T. Colore/Filtro</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <hr/>
+        <!-- focusArea -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="focusArea"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Area messa a fuoco"
+                    >
+                    {{settings.FocusArea}}
+                </button>
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="focusArea">
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Wide';sendSetting('FocusArea')">Ampia</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Zone';sendSetting('FocusArea')">Zona</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Center';sendSetting('FocusArea')">Centro</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Flexible_Spot_L';sendSetting('FocusArea')">Spot: L</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Flexible_Spot_M';sendSetting('FocusArea')">Spot: M</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Flexible_Spot_S';sendSetting('FocusArea')">Spot: S</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusArea ='Expand_Flexible_Spot';sendSetting('FocusArea')">Spot: Espanso</a></li>
+            
+                </ul>
+            </div>
+
+        </div>
+        <!-- focusMode -->
+        <div class="col-sm-4 btns_position">
+            <div mdbDropdown class="dropdown">
+                <button
+                    class="btn btn-light btn-block dropdown-toggle"
+                    type="button"
+                    id="modeFocus"
+                    aria-expanded="false"
+                    mdbDropdownToggle
+                    title="Modo messa a fuoco"
+                    >
+                    <span *ngIf="settings.FocusMode=='MF'">MF</span>
+                    
+                    <span *ngIf="settings.FocusMode=='AF_S'">AF S</span>
+                    <span *ngIf="settings.FocusMode=='AF_C'">AF C</span>
+                    <span *ngIf="settings.FocusMode=='AF_A'">AF A</span>
+                    <span *ngIf="settings.FocusMode=='DMF'">DMF</span>
+                    <span *ngIf="settings.FocusMode=='PF'">PF</span>
+                    
+                    
+                </button>
+                <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="modeFocus">
+                    <li><a class="dropdown-item" (click)="settings.FocusMode='MF';sendSetting('FocusMode')">Fuoco manuale</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusMode='AF_S';sendSetting('FocusMode')">AF Singolo</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusMode='AF_C';sendSetting('FocusMode')">AF Automatico</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusMode='AF_A';sendSetting('FocusMode')">AF Continuo</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusMode='DMF';sendSetting('FocusMode')">Fuoco manuale direzionale</a></li>
+                    <li><a class="dropdown-item"  (click)="settings.FocusMode='PF';sendSetting('FocusMode')">Preset focus</a></li>
+            
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+  </div>
+</div>
+
+
+<ng-template #loading>
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading data...</p>
+    </div>
+  </ng-template>  

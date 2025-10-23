@@ -1,7 +1,7 @@
 // src/app/services/tick.service.ts
 import { Injectable } from '@angular/core';
 import { interval, Subject } from 'rxjs';
-import { BlueDepthBoardEnvironment } from '../../../enviroment';
+import { BlueDepthBoardEnvironment } from '../../enviroment';
 
 @Injectable({
   providedIn: 'root'

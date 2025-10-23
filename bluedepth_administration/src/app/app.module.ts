@@ -15,13 +15,17 @@ import { HttpClientModule, provideHttpClient } from "@angular/common/http";
 import { SettingsComponent } from "./pages/settings/settings.component";
 import { StorageComponent } from "./pages/storage/storage.component";
 import { PluginsComponent } from "./pages/plugins/plugins.component";
-import { SonyComponent } from "./pages/dashboard/sony/sony.component";
+import { CameraComponent } from "./pages/camera/camera.component";
 import { NetworkComponent } from "./pages/settings/network/network.component";
 import { MaintenanceComponent } from "./pages/settings/maintenance/maintenance.component";
 import { SystemSettingsComponent } from "./pages/settings/system/system.component";
 //import { LogErrorsComponent } from "./pages/settings/logerrors/logerrors.component";
 import { SystemComponent } from "./pages/dashboard/system/system.component";
 import { LogErrorsComponent } from './component/logerrors/logerrors.component';
+import { VideoStreamingComponent } from "./pages/camera/video-streaming/video-streaming.component";
+import { DockComponent } from "./pages/dock/dock.component";
+import { FileSizePipe } from "./filesize.pipe";
+import { DatasetDetailComponent } from "./pages/storage/detail/detail.component";
 @NgModule(
     {
         declarations:[
@@ -32,6 +36,12 @@ import { LogErrorsComponent } from './component/logerrors/logerrors.component';
             StorageComponent,
             SettingsComponent,
             PluginsComponent,
+            CameraComponent,
+            VideoStreamingComponent,
+            DockComponent,
+            FileSizePipe,
+            SystemComponent,
+            DatasetDetailComponent
         ],
         imports: [
     AppRoutingModule,
@@ -43,12 +53,12 @@ import { LogErrorsComponent } from './component/logerrors/logerrors.component';
     MdbModalModule,
     MdbDropdownModule,
     HttpClientModule,
-    SonyComponent,
+    
     NetworkComponent,
     MaintenanceComponent,
-    SystemComponent,
     SystemSettingsComponent,
     LogErrorsComponent
+    
 ],providers:[],
         bootstrap:[AppComponent]
     }

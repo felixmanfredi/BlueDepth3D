@@ -1,4 +1,4 @@
-export interface SonyData {
+export interface CameraData {
     voltage: number;
     current: number;
     power: number;

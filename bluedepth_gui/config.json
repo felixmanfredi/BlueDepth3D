@@ -1,8 +1,10 @@
 {
-  "path":"html/index.html",
-  "windowWidth": 300,
+  "path":"http://localhost:4200?dock",
+  "windowWidth": 120,
   "alwaysOnTop": true,
-  "frame": false,
-  "marginright":0,
-  "trasparent":false
+  "frame": true,
+  "marginright":-350,
+  "margintop":100,
+  "marginbottom":0,
+  "transparent":true
 }

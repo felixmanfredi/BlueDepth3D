@@ -1,11 +1,8 @@
 <div class="row" *ngIf="isLoaded2">
-    <div class="col-md-12 btns_position">
-        <button type="button" class="btn btn-primary btn-floating m-1" (click)="camerafocus()">AF</button>
-    </div>
-    <div class="col-md-12 btns_position">
-        <button type="button" class="btn btn-primary btn-floating m-1" (click)="capture()"><i class="fa fa-camera"></i></button>
-    </div>
-    <hr/>
+   
+    
+    
+   
 
     <!-- MODE -->
     <div class="col-md-4 btns_position">
@@ -83,65 +80,6 @@
         
     </div>
     <!-- SHUTTER SPEED -->
-    <!--
-    <div class="col-md-6">
-        <label>Shutter Speed</label>
-        <select class="form-control" [(ngModel)]="settings.ShutterSpeed" (ngModelChange)="sendSetting('ShutterSpeed')">
-            <option value='bulb'>BULB</option>
-            <option value='30"'>30''</option>
-            <option value='25"'>25''</option>
-            <option value='20"'>20''</option>
-            <option value='15"'>15''</option>
-            <option value='13"'>13''</option>
-            <option value='10"'>10''</option>
-            <option value='8"'>8''</option>
-            <option value='6"'>6''</option>
-            <option value='4"'>4''</option>
-            <option value='3.2"'>3.2''</option>
-            <option value='2.5"'>2.5''</option>
-            <option value='2"'>2''</option>
-            <option value='1.6"'>1.6''</option>
-            <option value='1.3"'>1.3''</option>
-            <option value='1"'>1''</option>
-            <option value='0.8"'>0.8''</option>
-            <option value='0.6"'>0.6''</option>
-            <option value='0.5"'>0.5''</option>
-            <option value='0.4"'>0.4''</option>
-            <option value='1/3'>1/3</option>
-            <option value='1/4'>1/4</option>
-            <option value='1/5'>1/5</option>
-            <option value='1/6'>1/6</option>
-            <option value='1/8'>1/8</option>
-            <option value='1/10'>1/10</option>
-            <option value='1/13'>1/13</option>
-            <option value='1/15'>1/15</option>
-            <option value='1/20'>1/20</option>
-            <option value='1/25'>1/25</option>
-            <option value='1/30'>1/30</option>
-            <option value='1/40'>1/40</option>
-            <option value='1/50'>1/50</option>
-            <option value='1/60'>1/60</option>
-            <option value='1/80'>1/80</option>
-            <option value='1/100'>1/100</option>
-            <option value='1/125'>1/125</option>
-            <option value='1/160'>1/160</option>
-            <option value='1/200'>1/200</option>
-            <option value='1/250'>1/250</option>
-            <option value='1/320'>1/320</option>
-            <option value='1/400'>1/400</option>
-            <option value='1/500'>1/500</option>
-            <option value='1/640'>1/640</option>
-            <option value='1/800'>1/800</option>
-            <option value='1/1000'>1/1000</option>
-            <option value='1/1250'>1/1250</option>
-            <option value='1/1600'>1/1600</option>
-            <option value='1/2000'>1/2000</option>
-            <option value='1/2500'>1/2500</option>
-            <option value='1/3200'>1/3200</option>
-            <option value='1/4000'>1/4000</option>
-        </select>
-    </div>
-    -->
     <div class="col-md-4 btns_position">
         <div mdbDropdown class="dropdown">
         <button
@@ -164,8 +102,6 @@
         </ul>
         </div>
     </div>
-
-
     <!-- F -->
     <div class="col-md-4 btns_position">
         <div mdbDropdown class="dropdown">
@@ -189,7 +125,7 @@
             </ul>
         </div>
     </div>
-        <!-- ISO -->
+    <!-- ISO -->
     <div class="col-md-4 btns_position">
         <div mdbDropdown class="dropdown">
         <button
@@ -238,7 +174,6 @@
         </div>
     
     </div>
-
     <!-- WB -->
     <div class="col-md-4 btns_position" >
         <div mdbDropdown class="dropdown">
@@ -272,12 +207,11 @@
         </div>
 
     </div>
-
-        <!-- focusArea -->
+    <!-- focusArea -->
     <div class="col-md-4 btns_position">
         <div mdbDropdown class="dropdown">
             <button
-                class="btn btn-primary btn-floating dropdown-toggle"
+                class="btn btn-light btn-floating dropdown-toggle"
                 type="button"
                 id="focusArea"
                 aria-expanded="false"
@@ -299,11 +233,11 @@
         </div>
 
     </div>
-
+    <!-- focusMode -->
     <div class="col-md-4 btns_position">
         <div mdbDropdown class="dropdown">
             <button
-                class="btn btn-primary btn-floating dropdown-toggle"
+                class="btn btn-light btn-floating dropdown-toggle"
                 type="button"
                 id="modeFocus"
                 aria-expanded="false"

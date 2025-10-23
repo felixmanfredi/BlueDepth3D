@@ -41,11 +41,38 @@
     "changeOrigin": true,
      "followRedirects": true, 
     "autoRewrite": true 
-  },
+  }
+  ,
     "/camera": {
     "target": "http://192.168.1.235:45032",
     "secure": false,
     "changeOrigin": true
     }
+    ,
+    "/datasets": {
+    "target": "http://192.168.1.235:45032",
+    "secure": false,
+    "changeOrigin": true
+    },
+    "/version": {
+    "target": "http://192.168.1.235:45032",
+    "secure": false,
+    "changeOrigin": true
+    },
+    "/plugins": {
+    "target": "http://192.168.1.235:45032",
+    "secure": false,
+    "changeOrigin": true
+    },
+    "/socket": {
+    "target": "http://192.168.1.235:45032",
+    "secure": false,
+    "changeOrigin": true
+    }
+    
+    
+   
+  
+
 
 }

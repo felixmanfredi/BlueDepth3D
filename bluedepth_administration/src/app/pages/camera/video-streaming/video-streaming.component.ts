@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { BlueDepthBoardEnvironment } from '../../../../enviroment';
+import { BlueDepthBoardEnvironment } from '../../../enviroment';
 import Hls from 'hls.js';
 
 interface SettingsResponse {
@@ -12,8 +12,7 @@ interface SettingsResponse {
 
 @Component({
   selector: 'app-video-streaming',
-  imports: [CommonModule, HttpClientModule],
-  standalone: true,
+  standalone: false,
   templateUrl: './video-streaming.component.html',
   styleUrls: ['./video-streaming.component.css']
 })

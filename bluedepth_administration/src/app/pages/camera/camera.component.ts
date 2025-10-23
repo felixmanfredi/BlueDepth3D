@@ -1,27 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, isDevMode, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SonyData } from './sony.model';
-import { interval } from 'rxjs';
+import { CameraData } from './camera.model';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 //import { SonyService } from './sony.service';
 import { TickService } from './tick.service'; // <-- IMPORTA IL SERVIZIO
 import { Subscription } from 'rxjs';
-import { BlueDepthBoardEnvironment } from '../../../enviroment';
-import { BluedepthBoardService } from '../../../bluedepth-board.service';
+import { BlueDepthBoardEnvironment } from '../../enviroment';
+import { BluedepthBoardService } from '../../bluedepth-board.service';
 import { VideoStreamingComponent } from './video-streaming/video-streaming.component';
-
+import { ShutterSpeedValues } from './shutterspeed.enum';
+import { FNumber } from './fnumber.enum';
+import { IsoSensitivity } from './iso-sensitivity.enum';
+import { ExposureBiasCompensation } from './exposure-bias.enum';
+import { MpeApiService } from '../../mpe-api.service';
 
 @Component({
-  selector: 'app-sony',
-  standalone: true,
-  //imports: [CommonModule, HttpClientModule, MdbFormsModule, MatCardModule, MatIconModule, MatButtonModule],
-  imports: [FormsModule, CommonModule, HttpClientModule, VideoStreamingComponent],
-  templateUrl: './sony.component.html',
-  styleUrls: ['./sony.component.css']
+  selector: 'app-camera',
+  standalone: false,
+  templateUrl: './camera.component.html',
+  styleUrls: ['./camera.component.css']
 })
-export class SonyComponent implements OnInit {
-  sonyData: SonyData | null = null; // Utilizza il modello
+export class CameraComponent implements OnInit {
+  sonyData: CameraData | null = null; // Utilizza il modello
   loading = true;
   error: string | null = null;
   isUpdating = false;
@@ -37,8 +38,39 @@ export class SonyComponent implements OnInit {
   isFlashing = false;
   flashPulseTime = 50;
   focusTime = 500; //imposto il tempo a minimo 50ms
+  
+  mode="photo";
+  dataset={
+    "datasetname": "test",
+    "description": "example_desc",
+    "acquisition_device": "camera",
+    "interval": 0.5
+  }
+  statusDataset=false;
+  showPreview=false;
+  
+  shutterValues = Object.values(ShutterSpeedValues); // array di valori per *ngFor
+  fnumberValues = Object.values(FNumber);
+  isoValues = Object.values(IsoSensitivity);
+  biasValues = Object.values(ExposureBiasCompensation);
 
-  constructor(private http: HttpClient, private tickService: TickService,private bluedepthBoardService: BluedepthBoardService) { }
+  MESSAGE_LOADING="Caricamento impostazioni camera in corso ...";
+  MESSAGE_LOADED="Caricamento impostazioni completato!";
+
+  isLoaded=false;
+  isLoaded2=true;
+  message_error="";
+  message_loading=this.MESSAGE_LOADING
+
+  constructor(private mpeApi:MpeApiService,private http: HttpClient, private tickService: TickService,private bluedepthBoardService: BluedepthBoardService) { 
+    if(isDevMode()){
+      this.apiUrl=""
+    }else{
+      this.apiUrl="192.168.1.230"
+    }
+
+
+  }
 
   ngOnInit(): void {
     this.tickSub = this.tickService.tick$.subscribe(tick => {
@@ -59,7 +91,7 @@ export class SonyComponent implements OnInit {
     this.loading = true;
     this.error = null;
     console.log(this.apiUrl);
-    this.http.get<SonyData>(`${this.apiUrl}/api/sony`).subscribe({
+    this.http.get<CameraData>(`${this.apiUrl}/api/sony`).subscribe({
       next: (data) => {
         this.sonyData = data;
         this.loading = false;
@@ -70,7 +102,7 @@ export class SonyComponent implements OnInit {
         this.loading = false;
       }
     });
-    //console.log(this.sonyData);
+    this.getSettings();
   }
 
   togglePower(): void {
@@ -78,7 +110,7 @@ export class SonyComponent implements OnInit {
     this.isUpdating = true;
     if (this.sonyData) {
       //this.http.post<SonyData>(`${this.apiUrl}/sony`, { state: !this.sonyData.isPowered }).subscribe({
-      this.http.post<SonyData>(`${this.apiUrl}/api/sony/power`, { isPowered: this.sonyData.isPowered }).subscribe({
+      this.http.post<CameraData>(`${this.apiUrl}/api/sony/power`, { isPowered: this.sonyData.isPowered }).subscribe({
         next: (data) => {
           this.sonyData = data;
           this.isUpdating = false;
@@ -96,7 +128,7 @@ export class SonyComponent implements OnInit {
     this.isUpdating = true;
     if (this.sonyData) {
       //this.http.post<SonyData>(`${this.apiUrl}/sony`, { state: !this.sonyData.isPowered }).subscribe({
-      this.http.post<SonyData>(`${this.apiUrl}/api/settings/FlashAllTime`, { isFlashAllTime: !this.sonyData.isFlashAllTime }).subscribe({
+      this.http.post<CameraData>(`${this.apiUrl}/api/settings/FlashAllTime`, { isFlashAllTime: !this.sonyData.isFlashAllTime }).subscribe({
         next: (data) => {
           this.sonyData = data;
           this.isUpdating = false;
@@ -280,5 +312,140 @@ export class SonyComponent implements OnInit {
   // }
 
 
+
+
+  capture(){
+        
+      
+      this.mpeApi.capture((img:any)=>{
+        var image = new Image()
+        
+        image.src="data:image/jpeg,base64,"+img;
+        var w=window.open();
+        w?.document.write("<html><body>"+image.outerHTML+"</body></html>");
+      },(error:any)=>{
+  
+      });
+      
+    }
+  
+    camerafocus(){  
+       this.bluedepthBoardService.triggerFocus(false, true, 1000, ()=>{
+       });
+  
+    }
+  
+    
+  
+   
+  
+    settings:any={
+      DispMode:"DisplayAllInfo",
+      GridLineDisplay:"Off",
+      AEL:"Unlocked",
+      AWBL:"Unlocked",
+      FNumber:"F22",
+      ExposureBiasCompensation:"0Ev",
+      ShutterSpeed:"bulb",
+      IsoSensitivity:"ISO 100",
+      ExposureProgramMode:"M_Manual",
+      FocusModeSetting:"Manual",
+      FileType:"Jpeg",
+      RAW_FileCompressionType:"Uncompression",
+      StillImageQuality:"Fine",
+      WhiteBalance:"AWB",
+      FocusMode:"MF",
+      MeteringMode:"Multi",
+      DriveMode:"Single",
+      DRO:"Auto",
+      ImageSize:"L",
+      AspectRatio:"3_2",
+      FocusArea:"Wide",
+      ColorTemp:0,
+      ColorTuningAB:"B0.00",
+      ColorTuningGM:"M0.00",
+      LiveViewDisplayEffect:"ON",
+      StillImageStoreDestination:"MemoryCard",
+      PriorityKeySettings:"CameraPosition",
+      AFTrackingSensitivity:"3",
+      FocalDistanceInMeter:2
+      
+    }
+  
+    getSettings(){
+      this.message_loading=this.MESSAGE_LOADING;
+      this.message_error="";
+      this.isLoaded=false;
+      this.mpeApi.getSettings((result:any)=>{
+        this.message_loading=this.MESSAGE_LOADED;
+        this.isLoaded=true;
+        if(result.data){
+          this.settings=result.data[0];
+        }
+      },(error: HttpErrorResponse)=>{
+        this.message_loading=this.MESSAGE_LOADED;
+        this.isLoaded=false;
+        this.message_error="Errore durante lo scaricamento delle impostazioni della camera"
+      })
+    }
+  
+     sendSetting(attributeName:any){
+  
+      let tosend:any={};
+      tosend[attributeName]=this.settings[attributeName];
+  
+      this.mpeApi.setSettings(tosend,(result:any)=>{
+        console.log(result);
+      })
+    }
+  
+    sendSettings(){
+      this.mpeApi.setSettings(this.settings,(result:any)=>{
+        console.log(result);
+      })
+    }
+  
+  
+    setFocalDistanceInMeter(delta:any){
+      if(delta<0){
+        if(this.settings.FocalDistanceInMeter==0){
+          return;
+        }
+      }
+       
+      this.settings.FocalDistanceInMeter+delta;
+      if(this.settings.FocalDistanceInMeter<0)
+        this.settings.FocalDistanceInMeter=0;
+  
+      this.sendSetting("FocalDistanceInMeter");
+    }
+  
+    startDataset(){
+  
+      (window as any).pywebview.api.startDataset(this.dataset).then((response : any)=>{
+        
+        this.statusDataset=false;
+        
+        console.log(response);
+      })
+  
+  /*
+        this.sonyApi.startDataset(this.dataset,(result:any)=>{
+          console.log(result);  
+          this.statusDataset=true;
+        },(error:any)=>{
+  
+        });*/
+    }
+  
+     stopDataset(){
+        (window as any).pywebview.api.stopDataset().then((response : any)=>{
+        
+        this.statusDataset=true;
+        
+        console.log(response);
+      })
+  
+    }
   
 }

@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { BlueDepthBoardEnvironment } from '../../../enviroment';
 import * as CryptoJS from 'crypto-js';
 import { interval, Subscription } from 'rxjs';
+import { AppComponent } from '../../../app.component';
 
 interface MCUData {
   health: boolean;
@@ -24,19 +25,19 @@ interface MCUData {
 
 @Component({
   selector: 'app-system',
-  standalone: true,
+  
   templateUrl: './system.component.html',
   styleUrl: './system.component.css',
-  imports: [
-    CommonModule // CommonModule perNgClass, NgFor, NgIfsu comp standalone.
-    //HttpClient   // L'HttpClient va aggiunto anche qui (se non è fornito a livello root)
-  ]
+  
 })
 export class SystemComponent implements OnInit, OnDestroy {
   private apiUrl = BlueDepthBoardEnvironment.apiUrl;
   private pollingSubscription?: Subscription;
 
-  
+  get board_status(){
+      return  AppComponent.app.board_status;
+    }
+
   health: boolean = false;
   temperature: number = 0;
   current: number = 0;

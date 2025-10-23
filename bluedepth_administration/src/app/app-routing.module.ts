@@ -7,12 +7,14 @@ import { CameraControlComponent } from "./pages/cameracontrol/cameracontrol.comp
 import { SettingsComponent } from "./pages/settings/settings.component";
 import { StorageComponent } from "./pages/storage/storage.component";
 import { PluginsComponent } from "./pages/plugins/plugins.component";
+import { CameraComponent } from "./pages/camera/camera.component";
+import { DockComponent } from "./pages/dock/dock.component";
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, title: 'Dashboard',data:{icon:'fa fa-gauge'},canActivate:[AuthService]},
+  { path: '', component: DashboardComponent, title: 'Dashboard',data:{icon:'fa fa-gauge'},canActivate:[AuthService],pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent, title: 'Dashboard',data:{icon:'fa fa-gauge'},canActivate:[AuthService]},
-  { path: 'camerasetting', component: CameraControlComponent, title: 'Camera',data:{icon:'fa fa-camera'},canActivate:[AuthService]},
-  { path: 'camerasetting-kiosk', component: CameraControlComponent, title: 'Camera',data:{icon:'fa fa-camera'},canActivate:[AuthService]},
+  { path: 'camera', component: CameraComponent, title: 'Camera',data:{icon:'fa fa-camera'},canActivate:[AuthService]},
+  { path: 'dock', component: DockComponent, title: '',data:{icon:'fa fa-camera'},canActivate:[AuthService]},
   
   { path: 'storage', component: StorageComponent, title: 'Camera',data:{icon:'fa fa-database'},canActivate:[AuthService]},
   { path: 'plugins', component: PluginsComponent, title: 'Plugin',data:{icon:'fa fa-plug'},canActivate:[AuthService]},

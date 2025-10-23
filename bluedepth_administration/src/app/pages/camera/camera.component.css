@@ -260,3 +260,12 @@ justify-content: space-between;
     transform: scale(0.8);
   }
 }
+
+.btns_position{
+  padding:5px;
+}
+
+.scrollable-dropdown {
+  max-height: 200px; /* altezza massima della dropdown */
+  overflow-y: auto;  /* scroll verticale */
+}
