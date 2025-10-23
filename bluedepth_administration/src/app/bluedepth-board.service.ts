@@ -53,4 +53,17 @@ export class BluedepthBoardService {
           callback(result);
       })
     }
+
+    triggerFocus(isFlash:boolean, isFocusing:boolean, focusTime:number, callback:any){
+      this.http.post(`${this.baseUrl}/api/sony/focus`, { focusTime: focusTime, isFlashing: isFlash, isFocusing: isFocusing })    //lo stato del flash è impostato dal flòash generale della pagina
+        .subscribe({
+          next: () => {
+            callback();
+          },
+          error: (err) => {
+            console.error('Errore POST:', err);
+          }
+        });
+    }
+  
 }

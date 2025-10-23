@@ -1,4 +1,4 @@
-<header>
+<header *ngIf="frame">
   <!-- Intro settings -->
   <app-sidebar *ngIf="isLogin"></app-sidebar>
   
@@ -57,7 +57,7 @@
 
 <!-- Main layout -->
 <main style="margin: 4.5rem 0;" [style.display]="showLogErrors ? 'none' : 'block'">
-  <div [class.container]="isLogin">
+  <div [class.container]="isLogin && frame">
     <router-outlet *ngIf="isLogin"></router-outlet>
     
     <!-- Login section -->

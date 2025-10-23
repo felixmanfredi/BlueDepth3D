@@ -1,6 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MpeApiService } from '../../mpe-api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ShutterSpeedValues } from './shutterspeed.enum';
+import { FNumber } from './fnumber.enum';
+import { IsoSensitivity } from './iso-sensitivity.enum';
+import { ExposureBiasCompensation } from './exposure-bias.enum';
+import { BluedepthBoardService } from '../../bluedepth-board.service';
 
 @Component({
   selector: 'app-cameracontrol',
@@ -17,7 +22,7 @@ export class CameraControlComponent {
   isLoaded2=true;
   message_error="";
   message_loading=this.MESSAGE_LOADING
-  constructor(private mpeApi:MpeApiService){
+  constructor(private mpeApi:MpeApiService,private bluedepthBoardService:BluedepthBoardService){
 
   }
 
@@ -31,7 +36,7 @@ export class CameraControlComponent {
   }
 
   panels={
-    "dataset":true,
+    "dataset":false,
     "shooting":false,
     "main":true,
     "sub":false,
@@ -41,6 +46,11 @@ export class CameraControlComponent {
   statusDataset=false;
   showPreview=false;
   
+  shutterValues = Object.values(ShutterSpeedValues); // array di valori per *ngFor
+  fnumberValues = Object.values(FNumber);
+  isoValues = Object.values(IsoSensitivity);
+  biasValues = Object.values(ExposureBiasCompensation);
+
   
   ngAfterViewInit(): void {
      //this.initVideoPlayer();
@@ -53,12 +63,12 @@ export class CameraControlComponent {
   }
 
   capture(){
-
+      /*
      (window as any).pywebview.api.capture().then((response : any)=>{
       console.log(response);
-    })
-    /*
-    this.sonyApi.capture((img:any)=>{
+    })*/
+    
+    this.mpeApi.capture((img:any)=>{
       var image = new Image()
       
       image.src="data:image/jpeg,base64,"+img;
@@ -66,7 +76,13 @@ export class CameraControlComponent {
       w?.document.write("<html><body>"+image.outerHTML+"</body></html>");
     },(error:any)=>{
 
-    });ù*/
+    });
+  }
+
+  camerafocus(){  
+     this.bluedepthBoardService.triggerFocus(false, true, 1000, ()=>{
+     });
+
   }
 
   @ViewChild('videoPlayer', { static: false }) videoPlayer!: ElementRef<HTMLVideoElement>;

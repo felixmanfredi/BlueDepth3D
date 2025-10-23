@@ -80,6 +80,8 @@ export class AppComponent implements OnInit, OnDestroy {
   isLogin = true;
   user: any = { name: "", role: "" };
   
+  frame=true;
+
   hasErrors: boolean = false;
   showLogErrors: boolean = false;
   private healthSubscription?: Subscription;
@@ -91,6 +93,11 @@ export class AppComponent implements OnInit, OnDestroy {
     private errorMonitor: ErrorMonitorService
   ) {
     AppComponent.app = this;
+    if (document.location.href.indexOf('kiosk') > -1) {
+      console.log('Kiosk mode detected - hiding frame');
+      this.frame=false;
+    }
+
   }
 
   ngOnInit(): void {

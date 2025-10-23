@@ -13,6 +13,7 @@ function loadConfig() {
     console.error('Errore nel caricamento di config.json:', error);
     // valori di default in caso di errore
     return {
+      path:"",
       windowWidth: 800,
       alwaysOnTop: true,
       frame: true,
@@ -43,7 +44,7 @@ const createWindow = () => {
   })
    //win.webContents.openDevTools();
   // Percorso del file index.html compilato da Angular
-  const indexPath = path.join(__dirname, 'html', 'index.html');
+  const indexPath = path.join(__dirname,config.path);
  
   // Carica la pagina Angular
   win.loadFile(indexPath);

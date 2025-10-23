@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,11 @@ export class MpeApiService {
   baseUrl="http://192.168.1.235:45032"
   constructor(
     private http:HttpClient
-  ) { }
+  ) { 
+
+    if(isDevMode()) this.baseUrl="";
+  
+  }
 
 
   setSettings(settings:any,callback:any){
@@ -53,6 +57,13 @@ export class MpeApiService {
 
    capture(callback:any,callback_error:any){
     this.http.get(this.baseUrl+"/camera/capture",{responseType:"text"}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+     focus(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/camera/focus",{responseType:"text"}).pipe(catchError(callback_error)).subscribe((result:any)=>{
       if(callback)
         callback(result);
     })

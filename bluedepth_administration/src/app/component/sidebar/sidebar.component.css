@@ -26,9 +26,6 @@
   }
   
   @media (max-width: 991.98px) {
-    .sidebar.collapse {
-      display: none !important;
-    }
     .sidebar {
       width: 100%;
     }

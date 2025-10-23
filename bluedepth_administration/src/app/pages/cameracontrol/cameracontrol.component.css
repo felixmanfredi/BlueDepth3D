@@ -1,0 +1,8 @@
+.scrollable-dropdown {
+  max-height: 200px; /* altezza massima della dropdown */
+  overflow-y: auto;  /* scroll verticale */
+}
+
+.btns_position{
+    text-align: center;
+}
