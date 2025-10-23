@@ -1,0 +1,43 @@
+<button class="navbar-toggler d-block d-lg-none" type="button" (click)="collapsed=!collapsed">
+  <i class="fas fa-bars"></i>
+</button>
+<nav id="sidebarMenu" [class.collapse]="collapsed" class="collapse d-block sidebar bg-white">   
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">     
+        <a
+          class="d-none d-lg-inline list-group-item list-group-item-action py-2 ripple"
+          (click)="collapsed=!collapsed"
+        >
+            <ng-container *ngIf="!collapsed">
+                <i class="fas fa-chevron-left fa-fw me-3"></i><span>Menu</span>
+            </ng-container>
+            <ng-container *ngIf="collapsed">
+                <i class="fas fa-chevron-right fa-fw me-3"></i><span></span>
+            </ng-container>
+        </a>
+        <ul class="list-group list-group-flush" (click)="collapsed=true">
+          <ng-container *ngFor="let r of routes">
+            <li class="list-group-item py-1" *ngIf="r.path!='' && checkPermission(r.data.permissions)"  [routerLinkActive]="'current'">
+                <a [routerLink]="r.path" class="text-reset">
+                    <i class="{{r.data.icon}} fa-fw me-3" title="{{r.title}}"></i>
+                    <span *ngIf="!collapsed">{{r.title}}</span>
+                </a>
+            </li>
+          </ng-container>
+          <li class="list-group-item py-1">
+            <a class="text-reset" (click)="logout()">
+              <i  class="fa fa-fw fa-sign-out me-3" title="Esci"></i>
+              <span *ngIf="!collapsed">Esci</span>
+            </a>        
+          </li>
+        </ul>        
+      </div>
+    </div>
+    <footer class="bg-white shadow-inner fixed-bottom small d-block d-lg-none">    
+      <div class="text-center p-1">
+          Versione {{version}}<br>
+          © <a class="text-dark" href="https://www.codingictsolution.it/" target="_blank"><strong>Coding ICT Solutions</strong></a><br>
+          <a href="https://www.codingictsolution.it/privacy.html">Privacy e termini</a>
+      </div>
+    </footer>
+</nav>

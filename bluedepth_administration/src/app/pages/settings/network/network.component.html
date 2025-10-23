@@ -1,0 +1,263 @@
+<div class="row">
+    <div class="col-12 col-xl-8 mx-auto">
+        
+        <!-- Toast Notification per errori -->
+        <div class="toast-notification error" *ngIf="error" [@slideIn]>
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="toast-message">
+                    <p class="toast-title">Connection Error</p>
+                    <p class="toast-text">{{ error }}</p>
+                </div>
+                <button class="toast-close" (click)="error = null">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <form [formGroup]="networkForm" (ngSubmit)="saveSettings()">
+            
+            <div *ngIf="loading" class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading network settings...</p>
+            </div>
+
+            <div *ngIf="!loading">
+                <div formGroupName="system_config">
+                    
+                    <!-- CONNECTIVITY SECTION -->
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-ethernet"></i>
+                            </div>
+                            <div class="section-title">
+                                <h3>Network Connectivity</h3>
+                                <p class="section-description">Configure device network parameters and DNS settings</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-content">
+                            <div class="form-group">
+                                <label for="dhcp_client" class="form-label-inline">
+                                    <span class="label-text">
+                                        DHCP Client
+                                        <span class="info-tip" data-tip="Enable DHCP to automatically obtain IP address">?</span>
+                                    </span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="dhcp_client" formControlName="dhcp_client">
+                                        <span class="slider"></span>
+                                    </label>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ip" class="form-label">
+                                    IP Address
+                                    <span class="info-tip" data-tip="Device IP address">?</span>
+                                </label>
+                                <input type="text" id="ip" class="form-control" formControlName="ip" placeholder="192.168.1.100">
+                                <div *ngIf="networkForm.get('system_config.ip')?.invalid && networkForm.get('system_config.ip')?.touched" class="error-text">
+                                    Invalid IP address
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subnet" class="form-label">
+                                    Subnet Mask
+                                    <span class="info-tip" data-tip="Network subnet mask">?</span>
+                                </label>
+                                <input type="text" id="subnet" class="form-control" formControlName="subnet" placeholder="255.255.255.0">
+                                <div *ngIf="networkForm.get('system_config.subnet')?.invalid && networkForm.get('system_config.subnet')?.touched" class="error-text">
+                                    Invalid subnet mask
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gateway" class="form-label">
+                                    Gateway
+                                    <span class="info-tip" data-tip="Default gateway IP address">?</span>
+                                </label>
+                                <input type="text" id="gateway" class="form-control" formControlName="gateway" placeholder="192.168.1.1">
+                                <div *ngIf="networkForm.get('system_config.gateway')?.invalid && networkForm.get('system_config.gateway')?.touched" class="error-text">
+                                    Invalid gateway address
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dns1" class="form-label">
+                                    Primary DNS Server
+                                    <span class="info-tip" data-tip="Primary DNS server address">?</span>
+                                </label>
+                                <input type="text" id="dns1" class="form-control" formControlName="dns1" placeholder="8.8.8.8">
+                                <div *ngIf="networkForm.get('system_config.dns1')?.invalid && networkForm.get('system_config.dns1')?.touched" class="error-text">
+                                    Invalid DNS address
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dns2" class="form-label">
+                                    Secondary DNS Server
+                                    <span class="info-tip" data-tip="Secondary DNS server address">?</span>
+                                </label>
+                                <input type="text" id="dns2" class="form-control" formControlName="dns2" placeholder="8.8.4.4">
+                                <div *ngIf="networkForm.get('system_config.dns2')?.invalid && networkForm.get('system_config.dns2')?.touched" class="error-text">
+                                    Invalid DNS address
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIME SYNCHRONIZATION SECTION -->
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="section-title">
+                                <h3>Time Synchronization (NTP)</h3>
+                                <p class="section-description">Configure NTP server and timezone for accurate time synchronization</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-content">
+                            <div class="form-group">
+                                <label for="ntp_ip" class="form-label">
+                                    NTP Server Address
+                                    <span class="info-tip" data-tip="IP address of the NTP time server">?</span>
+                                </label>
+                                <input type="text" id="ntp_ip" class="form-control" formControlName="ntp_ip" placeholder="129.6.15.28">
+                                <div *ngIf="networkForm.get('system_config.ntp_ip')?.invalid && networkForm.get('system_config.ntp_ip')?.touched" class="error-text">
+                                    Invalid NTP server address
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ntp_port" class="form-label">
+                                    NTP Port
+                                    <span class="info-tip" data-tip="NTP server port (default: 123)">?</span>
+                                </label>
+                                <input type="number" id="ntp_port" class="form-control" formControlName="ntp_port" min="1" max="65535" placeholder="123">
+                                <div *ngIf="networkForm.get('system_config.ntp_port')?.invalid && networkForm.get('system_config.ntp_port')?.touched" class="error-text">
+                                    Port must be between 1 and 65535
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ntp_timezone" class="form-label">
+                                    Timezone
+                                    <span class="info-tip" data-tip="Select the timezone for your geographical location">?</span>
+                                </label>
+                                <select id="ntp_timezone" class="form-control" formControlName="ntp_offset">
+                                    <optgroup label="Africa">
+                                        <option value="0">UTC - Coordinated Universal Time (Africa/Abidjan)</option>
+                                        <option value="1">WAT - West Africa Time (Africa/Lagos)</option>
+                                        <option value="2">CAT - Central Africa Time (Africa/Cairo)</option>
+                                        <option value="3">EAT - East Africa Time (Africa/Nairobi)</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Americas">
+                                        <option value="-10">HST - Hawaii Standard Time (Pacific/Honolulu)</option>
+                                        <option value="-9">AKST - Alaska Standard Time (America/Anchorage)</option>
+                                        <option value="-8">PST - Pacific Standard Time (America/Los_Angeles)</option>
+                                        <option value="-7">MST - Mountain Standard Time (America/Denver)</option>
+                                        <option value="-6">CST - Central Standard Time (America/Chicago)</option>
+                                        <option value="-5">EST - Eastern Standard Time (America/New_York)</option>
+                                        <option value="-4">AST - Atlantic Standard Time (America/Halifax)</option>
+                                        <option value="-3">ART - Argentina Time (America/Buenos_Aires)</option>
+                                        <option value="-3">BRT - Brasilia Time (America/Sao_Paulo)</option>
+                                        <option value="-3.5">NST - Newfoundland Standard Time (America/St_Johns)</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Asia">
+                                        <option value="3.5">IRST - Iran Standard Time (Asia/Tehran)</option>
+                                        <option value="4">GST - Gulf Standard Time (Asia/Dubai)</option>
+                                        <option value="4.5">AFT - Afghanistan Time (Asia/Kabul)</option>
+                                        <option value="5">PKT - Pakistan Time (Asia/Karachi)</option>
+                                        <option value="5.5">IST - India Standard Time (Asia/Kolkata)</option>
+                                        <option value="5.75">NPT - Nepal Time (Asia/Kathmandu)</option>
+                                        <option value="6">BST - Bangladesh Time (Asia/Dhaka)</option>
+                                        <option value="6.5">MMT - Myanmar Time (Asia/Yangon)</option>
+                                        <option value="7">ICT - Indochina Time (Asia/Bangkok)</option>
+                                        <option value="8">CST - China Standard Time (Asia/Shanghai)</option>
+                                        <option value="8">SGT - Singapore Time (Asia/Singapore)</option>
+                                        <option value="9">JST - Japan Standard Time (Asia/Tokyo)</option>
+                                        <option value="9">KST - Korea Standard Time (Asia/Seoul)</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Europe">
+                                        <option value="0">GMT - Greenwich Mean Time (Europe/London)</option>
+                                        <option value="1">CET - Central European Time (Europe/Rome)</option>
+                                        <option value="1">CET - Central European Time (Europe/Paris)</option>
+                                        <option value="1">CET - Central European Time (Europe/Berlin)</option>
+                                        <option value="2">EET - Eastern European Time (Europe/Athens)</option>
+                                        <option value="2">EET - Eastern European Time (Europe/Helsinki)</option>
+                                        <option value="3">MSK - Moscow Time (Europe/Moscow)</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="Oceania">
+                                        <option value="9.5">ACST - Australian Central Standard Time (Australia/Adelaide)</option>
+                                        <option value="10">AEST - Australian Eastern Standard Time (Australia/Sydney)</option>
+                                        <option value="11">SBT - Solomon Islands Time (Pacific/Guadalcanal)</option>
+                                        <option value="12">NZST - New Zealand Standard Time (Pacific/Auckland)</option>
+                                        <option value="13">TOT - Tonga Time (Pacific/Tongatapu)</option>
+                                    </optgroup>
+                                    
+                                    <optgroup label="UTC Offsets">
+                                        <option value="-12">UTC-12:00</option>
+                                        <option value="-11">UTC-11:00</option>
+                                        <option value="-10">UTC-10:00</option>
+                                        <option value="-9">UTC-09:00</option>
+                                        <option value="-8">UTC-08:00</option>
+                                        <option value="-7">UTC-07:00</option>
+                                        <option value="-6">UTC-06:00</option>
+                                        <option value="-5">UTC-05:00</option>
+                                        <option value="-4">UTC-04:00</option>
+                                        <option value="-3">UTC-03:00</option>
+                                        <option value="-2">UTC-02:00</option>
+                                        <option value="-1">UTC-01:00</option>
+                                        <option value="0">UTC±00:00</option>
+                                        <option value="1">UTC+01:00</option>
+                                        <option value="2">UTC+02:00</option>
+                                        <option value="3">UTC+03:00</option>
+                                        <option value="4">UTC+04:00</option>
+                                        <option value="5">UTC+05:00</option>
+                                        <option value="6">UTC+06:00</option>
+                                        <option value="7">UTC+07:00</option>
+                                        <option value="8">UTC+08:00</option>
+                                        <option value="9">UTC+09:00</option>
+                                        <option value="10">UTC+10:00</option>
+                                        <option value="11">UTC+11:00</option>
+                                        <option value="12">UTC+12:00</option>
+                                        <option value="13">UTC+13:00</option>
+                                        <option value="14">UTC+14:00</option>
+                                    </optgroup>
+                                </select>
+                                <div *ngIf="networkForm.get('system_config.ntp_offset')?.invalid && networkForm.get('system_config.ntp_offset')?.touched" class="error-text">
+                                    Please select a valid timezone
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="settings-actions">
+                    <button type="button" class="btn-default" (click)="loadDefaultSettings()" [disabled]="isSaving || loading">
+                        <i class="fas fa-undo"></i>
+                        <span *ngIf="!loading">Load Defaults</span>
+                        <span *ngIf="loading" class="spinner-button"></span>
+                    </button>
+                    <button type="submit" class="btn-save" [disabled]="networkForm.invalid || isSaving">
+                        <i class="fas fa-save"></i>
+                        <span *ngIf="!isSaving">Save Configuration</span>
+                        <span *ngIf="isSaving" class="spinner-button"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

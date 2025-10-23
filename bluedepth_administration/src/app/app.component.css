@@ -1,0 +1,69 @@
+/* footer{
+    z-index: 9999;
+    font-size: 0.75rem;
+}
+
+.container{
+    padding-left: calc(60px + 0.75rem);
+    width: 100%;
+    max-width: 100%;
+    overflow: auto;
+} */
+
+/* Stili per il footer */
+footer {
+  z-index: 9999;
+  font-size: 0.75rem;
+}
+
+/* Container principale con padding per la sidebar */
+.container {
+  padding-left: calc(60px + 0.75rem);
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* Icona di errore nell'header */
+.error-icon-container {
+  position: relative;
+  cursor: pointer;
+  animation: pulse 2s infinite;
+  background-color: #fff3cd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  margin-left: 15px;
+  transition: all 0.3s ease;
+}
+
+.error-icon {
+  font-size: 22px;
+  color: #dc3545;
+  transition: transform 0.3s ease;
+}
+
+.error-icon-container:hover {
+  background-color: #fff3cd;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
+}
+
+.error-icon-container:hover .error-icon {
+  transform: scale(1.2);
+}
+
+/* Animazione pulse per l'icona */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 2px 12px rgba(220, 53, 69, 0.6);
+  }
+}

@@ -1,0 +1,153 @@
+<div class="system-component">
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <div class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ error }}
+    </div>
+  </div>
+
+
+<div class="col-12 col-xl-8 mx-auto">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading system information...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div *ngIf="!loading">
+
+        <!-- TIME SECTIONS WRAPPER (affianca i due blocchi orari) -->
+        <div class="time-sections-wrapper">
+            
+            <!-- System Time Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="section-title">
+                        <h3>System Time</h3>
+                        <p class="section-description">Device time information</p>
+                    </div>
+                </div>
+
+                <div class="settings-content">
+                    <div class="time-display-box">
+                        <div class="time-label">System Time</div>
+                        <div class="time-value">{{ formatTime(systemTime) }}</div>
+                        <div class="date-value">{{ formatDate(systemTime) }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local PC Time Section -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="section-title">
+                        <h3>Local PC Time</h3>
+                        <p class="section-description">Your computer's current time</p>
+                    </div>
+                </div>
+
+                <div class="settings-content">
+                    <div class="time-display-box local-time">
+                        <div class="time-label">PC Time</div>
+                        <div class="time-value">{{ formatTime(localTime) }}</div>
+                        <div class="date-value">{{ formatDate(localTime) }}</div>
+                    </div>
+
+                    <div class="sync-actions">
+                        <button 
+                            class="btn-sync" 
+                            (click)="synchronizeTime()" 
+                            [disabled]="isSyncing">
+                            <i class="fas fa-sync-alt" [class.spinning]="isSyncing"></i>
+                            <span *ngIf="!isSyncing">Synchronize Time</span>
+                            <span *ngIf="isSyncing">Synchronizing...</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- fine wrapper dei due orari -->
+
+        <!-- System Control Section -->
+        <div class="settings-section">
+            <div class="section-header">
+                <div class="section-icon danger">
+                    <i class="fas fa-power-off"></i>
+                </div>
+                <div class="section-title">
+                    <h3>System Control</h3>
+                    <p class="section-description">Device power management</p>
+                </div>
+            </div>
+
+            <div class="settings-content">
+                <div class="control-actions">
+                    <button class="btn-reboot" (click)="confirmReboot()">
+                        <i class="fas fa-redo"></i>
+                        Reboot System
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <!-- Success Popup -->
+  <div class="popup-overlay" *ngIf="showSuccessPopup" (click)="closePopup()">
+    <div class="popup-content success" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <i class="fas fa-check-circle"></i>
+        <h4>Time Synchronization</h4>
+      </div>
+      <div class="popup-body">
+        <p>{{ syncMessage }}</p>
+      </div>
+      <div class="popup-actions">
+        <button class="btn-popup-close" (click)="closePopup()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reboot Confirmation Popup -->
+  <div class="popup-overlay" *ngIf="showRebootConfirm">
+    <div class="popup-content warning" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h4>Confirm Reboot</h4>
+      </div>
+      <div class="popup-body">
+        <p>The device will be rebooted. Are you sure you want to continue?</p>
+        <p class="warning-text">This action will temporarily interrupt all operations.</p>
+      </div>
+      <div class="popup-actions">
+        <button class="btn-popup-cancel" (click)="cancelReboot()">Cancel</button>
+        <button class="btn-popup-confirm" (click)="rebootSystem()">Reboot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reboot In Progress Popup -->
+  <div class="popup-overlay" *ngIf="showRebootPopup">
+    <div class="popup-content info" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <i class="fas fa-spinner fa-spin"></i>
+        <h4>System Rebooting</h4>
+      </div>
+      <div class="popup-body">
+        <p>The device is rebooting. Please wait...</p>
+        <p class="info-text">This page will need to be refreshed once the device is back online.</p>
+      </div>
+    </div>
+  </div>
+
+  
+</div>

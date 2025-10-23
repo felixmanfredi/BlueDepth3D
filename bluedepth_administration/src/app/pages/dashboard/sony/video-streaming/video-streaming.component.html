@@ -1,0 +1,62 @@
+<div class="video-streaming-card">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
+  <!-- Card header come il componente Sony -->
+  <!-- <div class="card-header">
+    <i class="fas fa-video"></i>
+    <span>Video Streaming</span>
+    <div 
+      class="status-indicator"
+      [class.loading]="loading"
+      [style.background-color]="loading ? '#ffa500' : (error ? '#f44336' : '#4CAF50')">
+    </div>
+  </div> -->
+
+  <!-- Card body -->
+  <!-- <div class="card-body"> -->
+    <div class="video-container">
+      <!-- Loading spinner -->
+      <div *ngIf="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Caricamento stream...</p>
+      </div>
+      
+      <!-- Error message -->
+      <div *ngIf="error && !loading" class="error-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+      </div>
+      
+      <!-- Video player -->
+      <video 
+        #videoPlayer 
+        id="videoPlayer" 
+        class="video-player"
+        controls 
+        playsinline
+        [class.hidden]="loading || error">
+      </video>
+      
+      <!-- Custom controls overlay -->
+      <div class="custom-controls" *ngIf="!loading && !error">
+        <!-- Unmute button (visibile solo se muted) -->
+        <!-- <button 
+          *ngIf="isMuted" 
+          class="unmute-button"
+          (click)="toggleMute()"
+          title="Attiva audio">
+          <i class="fas fa-volume-mute"></i>
+          <span>Attiva audio</span>
+        </button> -->
+        
+        <!-- Mute button (visibile solo se unmuted) -->
+        <button 
+          *ngIf="!isMuted" 
+          class="mute-button"
+          (click)="toggleMute()"
+          title="Disattiva audio">
+          <i class="fas fa-volume-up"></i>
+        </button>
+      </div>
+    </div>
+  <!-- </div> -->
+</div>
