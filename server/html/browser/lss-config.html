@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Laser Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles-KSLPMDF4.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #3b71ca;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .controls-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .control-group {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .control-group h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #3b71ca;
+            font-size: 1.2rem;
+        }
+        
+        .slider-container {
+            margin-bottom: 20px;
+        }
+        
+        .slider-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4f4f4f;
+        }
+        
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            transition: background 0.3s;
+        }
+        
+        .slider:hover {
+            background: #bbb;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b71ca;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            background: #2f5aa2;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b71ca;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            font-weight: bold;
+            color: #3b71ca;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .slider-value.updating {
+            color: #ff9800;
+            transform: scale(1.1);
+        }
+        
+        .slider-value.updated {
+            color: #4caf50;
+        }
+        
+        .white-balance-controls {
+            margin-top: 20px;
+        }
+        
+        .white-balance-style {
+            margin-bottom: 15px;
+        }
+        
+        .white-balance-style select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #bdbdbd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+        }
+        
+        .manual-controls {
+            display: none;
+        }
+        
+        .manual-controls.active {
+            display: block;
+        }
+        
+        .button-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: #3b71ca;
+            color: white;
+            box-shadow: 0 4px 9px -4px rgba(59, 113, 202, 0.35);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2f5aa2;
+            box-shadow: 0 8px 9px -4px rgba(0, 0, 0, 0.15), 0 4px 18px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .btn-primary:disabled:hover {
+            background-color: #adb5bd;
+            box-shadow: none;
+        }
+        
+        .btn-success {
+            background-color: #14a44d;
+            color: white;
+            box-shadow: 0 4px 9px -4px rgba(20, 164, 77, 0.35);
+        }
+        
+        .btn-success:hover {
+            background-color: #0f8540;
+            box-shadow: 0 8px 9px -4px rgba(0, 0, 0, 0.15), 0 4px 18px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 4px 9px -4px rgba(108, 117, 125, 0.35);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            box-shadow: 0 8px 9px -4px rgba(0, 0, 0, 0.15), 0 4px 18px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .reset-button-container {
+            margin-top: 20px;
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .btn-danger {
+            background-color: #dc4c64;
+            color: white;
+            box-shadow: 0 4px 9px -4px rgba(220, 76, 100, 0.35);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c23650;
+            box-shadow: 0 8px 9px -4px rgba(0, 0, 0, 0.15), 0 4px 18px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .loading .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b71ca;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .controls-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LSS Settings</h1>
+        </div>
+        
+        <div class="content">
+            
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <!-- Image Adjustment Controls -->
+                <div class="control-group">
+                    <h3>Image Adjustment</h3>
+                    
+                    <div class="slider-container">
+                        <label for="contrast">Contrast</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="contrast" class="slider" min="0" max="100" value="50">
+                            <span class="slider-value" id="contrast-value">50</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="brightness">Brightness</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="brightness" class="slider" min="0" max="100" value="50">
+                            <span class="slider-value" id="brightness-value">50</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="saturation">Saturation</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="saturation" class="slider" min="0" max="100" value="50">
+                            <span class="slider-value" id="saturation-value">50</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="sharpness">Sharpness</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="sharpness" class="slider" min="0" max="100" value="50">
+                            <span class="slider-value" id="sharpness-value">50</span>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="hue">Hue</label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="hue" class="slider" min="0" max="100" value="50">
+                            <span class="slider-value" id="hue-value">50</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Reset Button -->
+                    <div class="reset-button-container">
+                        <button id="reset-adjustment" class="btn btn-primary">Reset to Default (50)</button>
+                    </div>
+                </div>
+                
+                <!-- White Balance Controls -->
+                <div class="control-group">
+                    <h3>White Balance</h3>
+                    
+                    <div class="white-balance-style">
+                        <label for="white-balance-style">White Balance Style</label>
+                        <select id="white-balance-style">
+                            <option value="autoWhiteBalance">Auto White Balance</option>
+                            <option value="manualWhiteBalance">Manual White Balance</option>
+                            <option value="lockingWhiteBalance">Locking White Balance</option>
+                            <option value="fluorescentLamp">Fluorescent Lamp</option>
+                            <option value="incandescent">Incandescent</option>
+                            <option value="warmLight">Warm Light</option>
+                            <option value="naturalLight">Natural Light</option>
+                        </select>
+                    </div>
+                    
+                    <div class="manual-controls" id="manual-wb-controls">
+                        <div class="slider-container">
+                            <label for="white-balance-red">Red</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="white-balance-red" class="slider" min="0" max="100" value="50">
+                                <span class="slider-value" id="white-balance-red-value">50</span>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-container">
+                            <label for="white-balance-green">Green</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="white-balance-green" class="slider" min="0" max="100" value="50">
+                                <span class="slider-value" id="white-balance-green-value">50</span>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-container">
+                            <label for="white-balance-blue">Blue</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="white-balance-blue" class="slider" min="0" max="100" value="50">
+                                <span class="slider-value" id="white-balance-blue-value">50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Settings & Overlay Controls -->
+                <div class="control-group">
+                    <h3>Video Settings & Overlay</h3>
+                    <div class="slider-container">
+                        <label for="rotation-select">Video Rotation</label>
+                        <select id="rotation-select">
+                            <option value="0">0°</option>
+                            <option value="90">90°</option>
+                            <option value="180">180°</option>
+                            <option value="270">270°</option>
+                        </select>
+                    </div>
+                    <div class="slider-container">
+                        <label for="logo-toggle">Logo Overlay</label>
+                        <input type="checkbox" id="logo-toggle"> <span id="logo-toggle-label">Disabled</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="button-section">
+                <button id="save-config" class="btn btn-success">Save Configuration</button>
+                <button id="toggle-laser" class="btn btn-primary">Laser On</button>
+            </div>
+            
+            <!-- Status Messages -->
+            <div id="status-message" class="status-message"></div>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration object to store current values
+        const config = {
+            adjustment: {
+                contrast: 50,
+                brightness: 50,
+                saturation: 50,
+                sharpness: 50,
+                hue: 50
+            },
+            white_balance: {
+                style: 'autoWhiteBalance',
+                red: 50,
+                green: 50,
+                blue: 50
+            },
+            rotation: 0,
+            logo_enabled: false
+        };
+        
+        let laserOn = false;
+        
+        // Track pending parameter updates to avoid duplicate requests
+        const pendingUpdates = {};
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSliders();
+            loadCurrentConfig();
+            setupEventListeners();
+            // Rotation select
+            const rotationSelect = document.getElementById('rotation-select');
+            rotationSelect.addEventListener('change', function() {
+                config.rotation = parseInt(this.value);
+            });
+            // Logo toggle
+            const logoToggle = document.getElementById('logo-toggle');
+            const logoLabel = document.getElementById('logo-toggle-label');
+            logoToggle.addEventListener('change', function() {
+                config.logo_enabled = this.checked;
+                logoLabel.textContent = this.checked ? 'Enabled' : 'Disabled';
+            });
+        });
+        
+        function initializeSliders() {
+            // Setup all sliders with value display
+            const sliders = document.querySelectorAll('.slider');
+            sliders.forEach(slider => {
+                const valueDisplay = document.getElementById(slider.id + '-value');
+                if (valueDisplay) {
+                    slider.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value;
+                        updateConfig(this.id, this.value);
+                    });
+                }
+            });
+            
+            // Setup white balance style selector
+            const wbStyle = document.getElementById('white-balance-style');
+            wbStyle.addEventListener('change', function() {
+                config.white_balance.style = this.value;
+                toggleManualWhiteBalance();
+            });
+        }
+        
+        function toggleManualWhiteBalance() {
+            const manualControls = document.getElementById('manual-wb-controls');
+            const wbStyle = document.getElementById('white-balance-style').value;
+            
+            if (wbStyle === 'manualWhiteBalance') {
+                manualControls.classList.add('active');
+            } else {
+                manualControls.classList.remove('active');
+            }
+        }
+        
+        function updateConfig(id, value) {
+            // Update configuration object based on slider ID
+            let parameter = null;
+            
+            switch(id) {
+                case 'contrast':
+                    config.adjustment.contrast = parseInt(value);
+                    parameter = 'contrast';
+                    break;
+                case 'brightness':
+                    config.adjustment.brightness = parseInt(value);
+                    parameter = 'brightness';
+                    break;
+                case 'saturation':
+                    config.adjustment.saturation = parseInt(value);
+                    parameter = 'saturation';
+                    break;
+                case 'sharpness':
+                    config.adjustment.sharpness = parseInt(value);
+                    parameter = 'sharpness';
+                    break;
+                case 'hue':
+                    config.adjustment.hue = parseInt(value);
+                    parameter = 'hue';
+                    break;
+                case 'white-balance-red':
+                    config.white_balance.red = parseInt(value);
+                    // White balance parameters are not sent in real-time
+                    return;
+                case 'white-balance-green':
+                    config.white_balance.green = parseInt(value);
+                    // White balance parameters are not sent in real-time
+                    return;
+                case 'white-balance-blue':
+                    config.white_balance.blue = parseInt(value);
+                    // White balance parameters are not sent in real-time
+                    return;
+            }
+            
+            // Send real-time update to device with debouncing
+            if (parameter) {
+                sendParameterUpdate(parameter, parseInt(value));
+            }
+        }
+        
+        async function sendParameterUpdate(parameter, value) {
+            // Cancel any pending request for this parameter
+            if (pendingUpdates[parameter]) {
+                pendingUpdates[parameter].abort();
+            }
+            
+            // Create new AbortController for this request
+            const controller = new AbortController();
+            pendingUpdates[parameter] = controller;
+            
+            try {
+                // Add visual feedback
+                const valueDisplay = document.getElementById(parameter + '-value');
+                if (valueDisplay) {
+                    valueDisplay.classList.add('updating');
+                }
+                
+                const response = await fetch('/api/isp-parameter-debounced', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ parameter: parameter, value: value }),
+                    signal: controller.signal
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Check if this was a superseded request
+                    if (result.superseded) {
+                        // Silently handle superseded requests - just remove updating state
+                        if (valueDisplay) {
+                            valueDisplay.classList.remove('updating');
+                        }
+                        return; // Don't show success feedback for superseded requests
+                    }
+                    
+                    // Success feedback for actual updates
+                    if (valueDisplay) {
+                        valueDisplay.classList.remove('updating');
+                        valueDisplay.classList.add('updated');
+                        setTimeout(() => {
+                            valueDisplay.classList.remove('updated');
+                        }, 1000);
+                    }
+                    console.log(`Parameter ${parameter} updated to ${value}:`, result);
+                } else {
+                    if (valueDisplay) {
+                        valueDisplay.classList.remove('updating');
+                    }
+                    // Don't show error messages for superseded requests
+                    if (!result.message || (!result.message.includes('Superseded') && !result.superseded)) {
+                        console.error('Failed to update parameter:', result.message);
+                        showMessage(`Failed to update ${parameter}: ${result.message}`, 'error');
+                    }
+                }
+            } catch (error) {
+                const valueDisplay = document.getElementById(parameter + '-value');
+                if (valueDisplay) {
+                    valueDisplay.classList.remove('updating');
+                }
+                // Don't show error messages for superseded requests or aborted requests
+                if (!error.message || (!error.message.includes('Superseded') && error.name !== 'AbortError')) {
+                    console.error('Error updating parameter:', error);
+                    showMessage(`Error updating ${parameter}`, 'error');
+                }
+            } finally {
+                // Clean up the pending request tracking
+                if (pendingUpdates[parameter] === controller) {
+                    delete pendingUpdates[parameter];
+                }
+            }
+        }
+        
+        function resetAdjustmentToDefault() {
+            // List of adjustment parameters to reset
+            const adjustmentParameters = ['contrast', 'brightness', 'saturation', 'sharpness', 'hue'];
+            
+            // Disable button during reset
+            const resetButton = document.getElementById('reset-adjustment');
+            resetButton.disabled = true;
+            resetButton.textContent = 'Resetting...';
+            
+            adjustmentParameters.forEach((param, index) => {
+                // Add a small delay between updates to create a visual effect
+                setTimeout(() => {
+                    // Update slider value
+                    const slider = document.getElementById(param);
+                    const valueDisplay = document.getElementById(param + '-value');
+                    
+                    if (slider && valueDisplay) {
+                        slider.value = 50;
+                        valueDisplay.textContent = 50;
+                        
+                        // Update local config
+                        config.adjustment[param] = 50;
+                        
+                        // Send real-time update
+                        sendParameterUpdate(param, 50);
+                    }
+                    
+                    // Re-enable button after last parameter
+                    if (index === adjustmentParameters.length - 1) {
+                        setTimeout(() => {
+                            resetButton.disabled = false;
+                            resetButton.textContent = 'Reset to Default (50)';
+                        }, 200);
+                    }
+                }, index * 100); // 100ms delay between each parameter
+            });
+            
+            showMessage('Image adjustment values reset to default (50)', 'success');
+        }
+        
+        function setupEventListeners() {
+            // Save configuration button
+            document.getElementById('save-config').addEventListener('click', saveConfiguration);
+            
+            // Toggle laser button
+            document.getElementById('toggle-laser').addEventListener('click', toggleLaser);
+            
+            // Reset adjustment button
+            document.getElementById('reset-adjustment').addEventListener('click', resetAdjustmentToDefault);
+        }
+        
+        async function loadCurrentConfig() {
+            try {
+                showLoading(true);
+                const response = await fetch('/api/lss-config');
+                
+                if (response.ok) {
+                    const currentConfig = await response.json();
+                    applyConfigToUI(currentConfig);
+                    showMessage('Configuration loaded successfully', 'success');
+                } else {
+                    showMessage('Failed to load current configuration', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading configuration:', error);
+                showMessage('Error loading configuration', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function applyConfigToUI(configData) {
+            // Apply adjustment values to sliders
+            if (configData.adjustment) {
+                Object.keys(configData.adjustment).forEach(key => {
+                    const slider = document.getElementById(key);
+                    const valueDisplay = document.getElementById(key + '-value');
+                    if (slider && valueDisplay) {
+                        slider.value = configData.adjustment[key];
+                        valueDisplay.textContent = configData.adjustment[key];
+                        config.adjustment[key] = configData.adjustment[key];
+                    }
+                });
+            }
+            // Apply white balance values
+            if (configData.white_balance) {
+                const wbStyle = document.getElementById('white-balance-style');
+                wbStyle.value = configData.white_balance.style || 'autoWhiteBalance';
+                config.white_balance.style = wbStyle.value;
+                ['red', 'green', 'blue'].forEach(color => {
+                    const slider = document.getElementById('white-balance-' + color);
+                    const valueDisplay = document.getElementById('white-balance-' + color + '-value');
+                    if (slider && valueDisplay && configData.white_balance[color] !== undefined) {
+                        slider.value = configData.white_balance[color];
+                        valueDisplay.textContent = configData.white_balance[color];
+                        config.white_balance[color] = configData.white_balance[color];
+                    }
+                });
+                toggleManualWhiteBalance();
+            }
+            // Apply rotation
+            if (configData.rotation !== undefined) {
+                const rotationSelect = document.getElementById('rotation-select');
+                rotationSelect.value = configData.rotation;
+                config.rotation = parseInt(configData.rotation);
+            }
+            // Apply logo toggle
+            if (configData.logo_enabled !== undefined) {
+                const logoToggle = document.getElementById('logo-toggle');
+                const logoLabel = document.getElementById('logo-toggle-label');
+                logoToggle.checked = !!configData.logo_enabled;
+                config.logo_enabled = !!configData.logo_enabled;
+                logoLabel.textContent = config.logo_enabled ? 'Enabled' : 'Disabled';
+            }
+        }
+        
+        async function saveConfiguration() {
+            try {
+                showLoading(true);
+                showMessage('Saving configuration...', 'info');
+                
+                const response = await fetch('/api/save-lss-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(config)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Configuration saved successfully!', 'success');
+                } else {
+                    showMessage('Failed to save configuration: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving configuration:', error);
+                showMessage('Error saving configuration', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function toggleLaser() {
+            try {
+                showLoading(true);
+                const button = document.getElementById('toggle-laser');
+                const command = laserOn ? 'OFF' : 'ON';
+                
+                const response = await fetch('/api/laser-control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command: command })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    laserOn = !laserOn;
+                    button.textContent = laserOn ? 'Laser Off' : 'Laser On';
+                    button.className = laserOn ? 'btn btn-danger' : 'btn btn-primary';
+                    showMessage(`Laser turned ${command.toLowerCase()}`, 'success');
+                } else {
+                    showMessage('Failed to control laser: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error controlling laser:', error);
+                showMessage('Error controlling laser', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('status-message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'status-message ' + type;
+            messageDiv.style.display = 'block';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoading(show) {
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.style.display = show ? 'block' : 'none';
+        };
+    </script>
+</body>
+</html>
