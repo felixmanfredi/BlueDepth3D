@@ -1,5 +1,5 @@
 {
-  "path":"http://localhost:4200?dock",
+  "path":"http://localhost?dock",
   "windowWidth": 120,
   "alwaysOnTop": true,
   "frame": true,

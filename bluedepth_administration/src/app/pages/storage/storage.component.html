@@ -23,7 +23,7 @@
             <tbody>
                 <tr *ngFor="let d of datasets">
                     <td>
-                        <a >{{d.dataset_id}}</a></td>
+                        <a (click)="openDetail(d.dataset_id)">{{d.dataset_id}}</a></td>
                     <td>{{d.created_at | date:"dd/MM/YYYY HH:mm"}}</td>
                     <td>{{d.type}}</td>
                     <td>

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -39,6 +39,11 @@ export class LogErrorsComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private errorMonitor: ErrorMonitorService
   ) {
+      if(isDevMode()){
+          this.apiUrl=""
+        }else{
+          this.apiUrl="http://192.168.1.230"
+        }
     console.log('LogErrorsComponent constructed');
   }
 

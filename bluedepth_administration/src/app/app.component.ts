@@ -32,6 +32,9 @@ export class AppComponent implements OnInit, OnDestroy {
   };
   frame=true;
 
+  lastSystemStatusTime!:Date
+  system_status:any={available_datasets:[]};
+
   hasErrors: boolean = false;
   showLogErrors: boolean = false;
   private healthSubscription?: Subscription;
@@ -77,8 +80,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.board_status=msg;
     });
 
-    this.socketService.listen('device_status').subscribe((msg) => {
-      
+    this.socketService.listen('system_status').subscribe((msg) => {
+     this.system_status=msg;
+     this.lastSystemStatusTime=new Date();
     });
     
   }
@@ -117,7 +121,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  connectWebsocket(){
+  checkStatus(){
     
   }
 }

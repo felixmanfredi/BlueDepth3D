@@ -9,6 +9,7 @@
       "build-linux": "electron-builder --linux deb"
   },
   "author": "3D Research srl",
+  "homepage": "",
   "license": "ISC",
    "build": {
     "appId": "com.3dresearch.bluedepth3d",

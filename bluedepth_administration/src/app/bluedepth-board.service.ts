@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { BlueDepthBoardEnvironment } from './enviroment';
 
@@ -14,7 +14,13 @@ export class BluedepthBoardService {
     baseUrl=BlueDepthBoardEnvironment.apiUrl
     constructor(
       private http:HttpClient
-    ) { }
+    ) { 
+      if(isDevMode()){
+        this.baseUrl="";
+      }else{
+        this.baseUrl="http://192.168.1.230";
+      }
+    }
 
 
     takePicture(takePicture=350, triggerPicture=50, isFlashing=false, rstCounter=false, isLOCKFocus=false, callback:any){

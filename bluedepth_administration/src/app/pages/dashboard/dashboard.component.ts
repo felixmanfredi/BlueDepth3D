@@ -14,8 +14,23 @@ export class DashboardComponent implements OnInit {
   get board_status(){
     return  AppComponent.app.board_status;
   }
+
+  get system_status(){
+    return  AppComponent.app.system_status;
+  }
+
+  get lastSystemStatusTime(){
+    return  AppComponent.app.lastSystemStatusTime;
+  }
+
+  get datasets(){
+    if( AppComponent.app.system_status==null){
+      return [];
+    }
+    return  AppComponent.app.system_status.available_datasets;
+  };
   version={
-    partnumber:"",
+    partnumber:"B3D.1000",
     serialnumber:"",
     firmwareversion:""
   }
@@ -26,4 +41,22 @@ export class DashboardComponent implements OnInit {
     },()=>{});
   }
 
+  
+
+
+  checkStatus(device_type:string){
+
+    if(this.system_status==null){
+      return {"status":"warning","message":"Not ready"};
+    } 
+    
+    if(this.system_status[device_type]!=null){
+      if(this.system_status[device_type].running){
+        return {"status":"success","message":"Online"};
+      }else{
+        return {"status":"danger","message":"Not running"};  
+      }
+    }
+   return {"status":"warning","message":"Not ready"};
+  }
 }

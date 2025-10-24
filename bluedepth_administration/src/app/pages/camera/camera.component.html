@@ -8,21 +8,27 @@
 
     <div class="row">
 
-        
-        
+        <div class="col-sm-4 btns_position">
+            <button class="btn btn-block btn-outline-primary"  [class.bg-warning]="statusDataset" [disabled]="isUpdating || isPhoto" (click)="triggerPhoto()">
+                <i class="fas fa-camera"></i>&nbsp;
+                <span class="badge badge-light">{{ sonyData.SuccessPictureCount }}</span>
+                    
+            </button>
+        </div>
 
         <!-- Capture -->
         <div class="col-sm-4 btns_position">
-            <div class="btn-group" style="width: 100%;">
-                <button class="btn btn-outline-primary" [disabled]="isUpdating || isPhoto" (click)="triggerPhoto()">
-                    <i class="fas fa-camera"></i>&nbsp;
-                    <span class="badge badge-light">{{ sonyData.SuccessPictureCount }}</span>
-                    
-                </button>
+            <div class="btn-group" >
+                
                
                 <button class="btn btn-outline-primary" [class.bg-warning]="isFlash" (click)="isFlash = !isFlash"  title="Attiva o disattiva i flash">
                     <i class="fa fa-lightbulb" ></i>
                 </button>
+
+                <button class="btn btn-outline-primary" [class.bg-warning]="isTimer" (click)="isTimer = !isTimer"  title="Intervallometro">
+                    <i class="fa fa-clock" ></i>
+                </button>
+
 
                 
             </div>

@@ -2,7 +2,7 @@ import { Component, Input, isDevMode, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CameraData } from './camera.model';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 //import { SonyService } from './sony.service';
 import { TickService } from './tick.service'; // <-- IMPORTA IL SERVIZIO
 import { Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { FNumber } from './fnumber.enum';
 import { IsoSensitivity } from './iso-sensitivity.enum';
 import { ExposureBiasCompensation } from './exposure-bias.enum';
 import { MpeApiService } from '../../mpe-api.service';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-camera',
@@ -39,6 +40,18 @@ export class CameraComponent implements OnInit {
   flashPulseTime = 50;
   focusTime = 500; //imposto il tempo a minimo 50ms
   
+_isTimer=false;
+
+  get isTimer(): boolean {
+    if(this.statusDataset==true){
+    return true;
+    } else{
+      return this._isTimer;
+    }
+  } 
+  set isTimer(value: boolean) {
+    this._isTimer = value;
+  }
   mode="photo";
   dataset={
     "datasetname": "test",
@@ -46,7 +59,15 @@ export class CameraComponent implements OnInit {
     "acquisition_device": "camera",
     "interval": 0.5
   }
-  statusDataset=false;
+
+  get statusDataset(): boolean {
+    if(AppComponent.app.system_status!=null && AppComponent.app.system_status.camera!=null)
+      return AppComponent.app.system_status.camera.recording;
+    return false;
+  }
+  set statusDataset(value: boolean) {
+    this.statusDataset = value;
+  }
   showPreview=false;
   
   shutterValues = Object.values(ShutterSpeedValues); // array di valori per *ngFor
@@ -66,7 +87,7 @@ export class CameraComponent implements OnInit {
     if(isDevMode()){
       this.apiUrl=""
     }else{
-      this.apiUrl="192.168.1.230"
+      this.apiUrl="http://192.168.1.230"
     }
 
 
@@ -142,18 +163,23 @@ export class CameraComponent implements OnInit {
   }
 
  triggerPhoto() {
-    if (this.isUpdating) return;
-  
-    this.isUpdating = true;
-    this.isPhoto = true;
-  
-    this.bluedepthBoardService.takePicture(350,50,this.isFlash,false,false,(result:any)=>{
-    // Attendi la durata dell'impulso prima di spegnere animazione
-          setTimeout(() => {
-            this.isPhoto = false;
-            this.isUpdating = false;
-          }, 1000);
-    });
+
+    if(this.isTimer){
+      this.startStopDataset();
+    }else{
+      if (this.isUpdating) return;
+    
+      this.isUpdating = true;
+      this.isPhoto = true;
+    
+      this.bluedepthBoardService.takePicture(350,50,this.isFlash,false,false,(result:any)=>{
+      // Attendi la durata dell'impulso prima di spegnere animazione
+            setTimeout(() => {
+              this.isPhoto = false;
+              this.isUpdating = false;
+            }, 1000);
+      });
+    }
    
   }
 
@@ -239,12 +265,16 @@ export class CameraComponent implements OnInit {
     this.isUpdating = true;
     this.isFocusing = true;
   
+
+    let headers:HttpHeaders=new HttpHeaders();
+        headers = headers.set('Access-Control-Allow-Origin', '*');
+
     // Invia POST al server
     //this.http.post('/api/mcu/flashlights', { flashPulseTime: this.mcuData?.flashPulseTime })
     
     //this.http.post('/api/mcu/flashlights', { flashPulseTime: this.flashPulseTime })
     //this.http.post('/api/sony/focus', { focusTime: this.focusTime, isFlashing: this.isFlashing, isFocusing:this.isFocusing })
-    this.http.post(`${this.apiUrl}/api/sony/focus`, { focusTime: this.focusTime, isFlashing: this.isFlash, isFocusing: this.isFocusing })    //lo stato del flash è impostato dal flòash generale della pagina
+    this.http.post(`${this.apiUrl}/api/sony/focus`, { focusTime: this.focusTime, isFlashing: this.isFlash, isFocusing: this.isFocusing },{headers:headers})    //lo stato del flash è impostato dal flòash generale della pagina
       .subscribe({
         next: () => {
           // Attendi la durata dell'impulso prima di spegnere animazione
@@ -419,32 +449,32 @@ export class CameraComponent implements OnInit {
   
       this.sendSetting("FocalDistanceInMeter");
     }
+
+    startStopDataset(){
+      if(this.statusDataset){
+        this.stopDataset();
+      }else{
+        this.startDataset();
+      }
+    }
   
     startDataset(){
   
-      (window as any).pywebview.api.startDataset(this.dataset).then((response : any)=>{
-        
-        this.statusDataset=false;
-        
-        console.log(response);
-      })
-  
-  /*
-        this.sonyApi.startDataset(this.dataset,(result:any)=>{
+   
+        this.mpeApi.startDataset(this.dataset,(result:any)=>{
           console.log(result);  
           this.statusDataset=true;
         },(error:any)=>{
   
-        });*/
+        });
     }
   
      stopDataset(){
-        (window as any).pywebview.api.stopDataset().then((response : any)=>{
-        
-        this.statusDataset=true;
-        
-        console.log(response);
-      })
+         this.mpeApi.stopDataset((result:any)=>{
+          this.statusDataset=false;
+        },(error:any)=>{
+  
+        });
   
     }
   

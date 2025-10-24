@@ -26,6 +26,7 @@ import { VideoStreamingComponent } from "./pages/camera/video-streaming/video-st
 import { DockComponent } from "./pages/dock/dock.component";
 import { FileSizePipe } from "./filesize.pipe";
 import { DatasetDetailComponent } from "./pages/storage/detail/detail.component";
+import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
 @NgModule(
     {
         declarations:[
@@ -53,12 +54,11 @@ import { DatasetDetailComponent } from "./pages/storage/detail/detail.component"
     MdbModalModule,
     MdbDropdownModule,
     HttpClientModule,
-    
     NetworkComponent,
     MaintenanceComponent,
     SystemSettingsComponent,
-    LogErrorsComponent
-    
+    LogErrorsComponent,
+    //CdkAriaLive
 ],providers:[],
         bootstrap:[AppComponent]
     }

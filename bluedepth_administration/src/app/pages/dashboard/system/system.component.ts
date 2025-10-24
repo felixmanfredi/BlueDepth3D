@@ -1,5 +1,5 @@
 
-import { Component, OnInit, NgZone,OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone,OnDestroy, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -54,7 +54,13 @@ export class SystemComponent implements OnInit, OnDestroy {
 
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+      if(isDevMode()){
+          this.apiUrl=""
+        }else{
+          this.apiUrl="http://192.168.1.230"
+        }
+  }
 
   ngOnInit(): void {
     this.startPolling();

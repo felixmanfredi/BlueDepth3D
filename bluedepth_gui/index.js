@@ -2,10 +2,29 @@ const { app, BrowserWindow,screen  } = require('electron')
 const path = require('path');
 const fs = require('fs');
 
-var basepath = app.getAppPath();
+var basepath = getAppBasePath();
+
+function getAppBasePath() {
+  // In modalità produzione (pacchettata), app.getAppPath() punta a app.asar
+  const appPath = app.getAppPath();
+
+  // Recupera la directory "base" reale, non quella dentro .asar
+  let basePath;
+  if (app.isPackaged) {
+    // In app pacchettata, __dirname o app.getAppPath() è dentro .asar
+    // Quindi saliamo fino alla directory dove si trova l’eseguibile
+    basePath = path.dirname(process.execPath);
+  } else {
+    // In sviluppo, __dirname punta al progetto sorgente
+    basePath = path.resolve(__dirname);
+  }
+
+  return basePath;
+}
 
 function loadConfig() {
   const configPath = path.join(basepath, 'config.json');
+  console.log(configPath)
   try {
     const configData = fs.readFileSync(configPath, 'utf-8');
     return JSON.parse(configData);
@@ -53,9 +72,11 @@ const createWindow = () => {
     alwaysOnTop: config.alwaysOnTop,
     frame: config.frame,
     transparent: config.transparent,
+     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+       webSecurity: false,
     },
   })
       //win.webContents.openDevTools();
@@ -64,10 +85,33 @@ const createWindow = () => {
       win.loadURL(config.path);
  
   }else{
-    const indexPath = path.join(__dirname,config.path);
+    const indexPath = path.join(basepath,config.path);
     win.loadFile(indexPath);
  
   }
+
+  win.webContents.setWindowOpenHandler(({ url, features, disposition }) => {
+    console.log('Richiesta apertura nuova finestra per:', url);
+
+    // Se vuoi applicare specifiche webPreferences alla nuova finestra
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        title: '',
+        webPreferences: {
+          preload: path.join(__dirname, 'preload-child.js'),
+          nodeIntegration: true,
+          contextIsolation: false,
+          webSecurity: false,
+        },
+        frame: true,
+        autoHideMenuBar: true,
+        
+        
+      }
+    };
+  });
+
   
 }
 
