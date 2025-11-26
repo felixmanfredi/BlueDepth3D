@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-12 col-xl-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Depthmap</h4> 
+            </div>
+            <div class="card-body">
+               <label>Max range stereocamera</label>
+               <select class="form-select mb-3" [(ngModel)]="settings.">
+                   <option [ngValue]="1">1 meters</option>
+                   <option [ngValue]="2">2 meters</option>
+                   <option [ngValue]="3">3 meters</option>
+                   <option [ngValue]="4">4 meters</option>
+                   <option [ngValue]="5">5 meters</option>
+                   <option [ngValue]="6">6 meters</option>
+                   <option [ngValue]="7">7 meters</option>
+                   <option [ngValue]="8">8 meters</option>
+                   <option [ngValue]="9">9 meters</option>
+                   <option [ngValue]="10">10 meters</option>
+                   
+                </select>
+            </div> 
+            <div class="card-footer">
+                  <button type="button" class="btn-save" (click)="save()" [disabled]="isSaving || loading">
+                        <i class="fas fa-save"></i>
+                        <span *ngIf="!loading">Save</span>
+                        <span *ngIf="loading" class="spinner-button"></span>
+                    </button>
+            </div> 
+        </div>
+    </div>
+</div>

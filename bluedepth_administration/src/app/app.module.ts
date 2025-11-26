@@ -29,6 +29,7 @@ import { DatasetDetailComponent } from "./pages/storage/detail/detail.component"
 import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
 import { LongPressDirective } from "./long-press.directive";
 import { ShortPressDirective } from "./short-press.directive";
+import { BluedepthSettingsComponent } from "./pages/settings/bluedepth/bluedepth.component";
 @NgModule(
     {
         declarations:[
@@ -46,7 +47,8 @@ import { ShortPressDirective } from "./short-press.directive";
             SystemComponent,
             DatasetDetailComponent,
             LongPressDirective,
-            ShortPressDirective
+            ShortPressDirective,
+            BluedepthSettingsComponent
         ],
         imports: [
     AppRoutingModule,
@@ -62,7 +64,7 @@ import { ShortPressDirective } from "./short-press.directive";
     MaintenanceComponent,
     SystemSettingsComponent,
     LogErrorsComponent,
-    //CdkAriaLive
+    
 ],providers:[],
         bootstrap:[AppComponent]
     }

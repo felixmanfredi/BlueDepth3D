@@ -133,4 +133,30 @@ export class MpeApiService {
         callback(result);
     })
   }
+
+  getStereocameraSettings(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/stereocamera/settings").pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  setStereocameraSettings(settings:any,callback:any,onerror:any=null){
+    let headers:HttpHeaders=new HttpHeaders();
+    headers = headers.set('Access-Control-Allow-Origin', '*');
+
+
+    this.http.put(this.baseUrl+"/camera/settings",settings,{headers:headers}).pipe(catchError(
+      
+      this.handleError
+    
+    
+    )).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  
+
 }
