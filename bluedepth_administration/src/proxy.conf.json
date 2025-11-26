@@ -47,6 +47,11 @@
     "target": "http://192.168.1.235:45032",
     "secure": false,
     "changeOrigin": true
+    },
+     "/stereocamera": {
+    "target": "http://192.168.1.235:45032",
+    "secure": false,
+    "changeOrigin": true
     }
     ,
     "/datasets": {

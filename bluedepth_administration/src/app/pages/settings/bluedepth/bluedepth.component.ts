@@ -20,17 +20,23 @@ export class BluedepthSettingsComponent implements OnInit {
   
   getSettings(){
     this.loading=true; 
-    this.mpeApi.getStereocameraSettings((settings:any)=>{
+    this.mpeApi.getStereocameraSettings((result:any)=>{
       this.loading=false; 
-      this.settings = settings;
+      console.log(result)
+      this.settings = result.data[0];
+
     },(error:any)=>{
+      console.error(error)
       this.loading=false; 
     });
   }
   
   
   save(){    
-    this.isSaving=true;  
+    this.isSaving=true;
+    
+   this.settings.save_settings=true;
+
     this.mpeApi.setStereocameraSettings(this.settings,(result:any)=>{
       this.isSaving=false; 
 

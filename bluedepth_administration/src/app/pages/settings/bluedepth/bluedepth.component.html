@@ -5,19 +5,40 @@
                 <h4 class="card-title">Depthmap</h4> 
             </div>
             <div class="card-body">
-               <label>Max range stereocamera</label>
-               <select class="form-select mb-3" [(ngModel)]="settings.">
-                   <option [ngValue]="1">1 meters</option>
-                   <option [ngValue]="2">2 meters</option>
-                   <option [ngValue]="3">3 meters</option>
-                   <option [ngValue]="4">4 meters</option>
-                   <option [ngValue]="5">5 meters</option>
-                   <option [ngValue]="6">6 meters</option>
-                   <option [ngValue]="7">7 meters</option>
-                   <option [ngValue]="8">8 meters</option>
-                   <option [ngValue]="9">9 meters</option>
-                   <option [ngValue]="10">10 meters</option>
+               <label>Max range</label>
+               <select class="form-select mb-3" [(ngModel)]="settings.zed_init_params.depth_maximum_distance" (ngModelChange)="settings.plugin_params.depth.depth_scale=$event/1000" >
+                   <option [ngValue]="1000">1 meters</option>
+                   <option [ngValue]="2000">2 meters</option>
+                   <option [ngValue]="3000">3 meters</option>
+                   <option [ngValue]="4000">4 meters</option>
+                   <option [ngValue]="5000">5 meters</option>
+                   <option [ngValue]="6000">6 meters</option>
+                   <option [ngValue]="7000">7 meters</option>
+                   <option [ngValue]="8000">8 meters</option>
+                   <option [ngValue]="9000">9 meters</option>
+                   <option [ngValue]="10000">10 meters</option>
                    
+                </select>
+                
+                <label>Fill mode</label>
+                <select class="form-select mb-3" [(ngModel)]="settings.zed_runtime_params.enable_fill_mode">
+                   <option [ngValue]="true">Enable</option>
+                   <option [ngValue]="false">Disable</option>
+                </select>
+                
+                <label>Depth stabilization</label>
+                <input type="number" class="form-control mb-3" min="0" max="100" [(ngModel)]="settings.zed_init_params.depth_stabilization">
+                
+                
+                <label>Confidence Threshold</label>
+                <input type="number" class="form-control mb-3" min="0" max="100" [(ngModel)]="settings.zed_runtime_params.confidence_threshold">
+                   
+                <label>Texture Confidence Threshold</label>
+                <input type="number" class="form-control mb-3" min="0" max="100" [(ngModel)]="settings.zed_runtime_params.texture_confidence_threshold">
+                 <label>Remove saturated areas</label>
+                <select class="form-select mb-3" [(ngModel)]="settings.zed_runtime_params.remove_saturated_areas">
+                   <option [ngValue]="true">Enable</option>
+                   <option [ngValue]="false">Disable</option>
                 </select>
             </div> 
             <div class="card-footer">

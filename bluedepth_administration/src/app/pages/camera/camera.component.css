@@ -269,3 +269,7 @@ justify-content: space-between;
   max-height: 200px; /* altezza massima della dropdown */
   overflow-y: auto;  /* scroll verticale */
 }
+
+.btn-outline-primary{
+  background-color: white !important;
+}

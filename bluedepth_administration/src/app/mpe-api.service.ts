@@ -132,7 +132,7 @@ export class MpeApiService {
     headers = headers.set('Access-Control-Allow-Origin', '*');
 
 
-    this.http.put(this.baseUrl+"/camera/settings",settings,{headers:headers}).pipe(catchError(
+    this.http.put(this.baseUrl+"/stereocamera/settings",settings,{headers:headers}).pipe(catchError(
       
       this.handleError
     

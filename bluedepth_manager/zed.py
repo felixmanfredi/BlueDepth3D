@@ -64,9 +64,10 @@ def initZed():
     )
     
     #init.optional_opencv_calibration_file="calib_ZED2i_Materia_04012023.yaml"
+    #init.optional_opencv_calibration_file="SN107624467.conf"
     
     if(is_network_stream):
-        init.set_from_stream("192.168.1.235", 34000)
+        init.set_from_stream("192.168.1.235", 34010)
     else:
         print("Load local file "+filepath)
         init.set_from_svo_file(filepath)
