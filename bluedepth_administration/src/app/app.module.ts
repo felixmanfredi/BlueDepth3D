@@ -27,6 +27,7 @@ import { DockComponent } from "./pages/dock/dock.component";
 import { FileSizePipe } from "./filesize.pipe";
 import { DatasetDetailComponent } from "./pages/storage/detail/detail.component";
 import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
+import { BluedepthSettingsComponent } from "./pages/settings/bluedepth/bluedepth.component";
 @NgModule(
     {
         declarations:[
@@ -42,7 +43,8 @@ import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
             DockComponent,
             FileSizePipe,
             SystemComponent,
-            DatasetDetailComponent
+            DatasetDetailComponent,
+            BluedepthSettingsComponent
         ],
         imports: [
     AppRoutingModule,
@@ -58,7 +60,7 @@ import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
     MaintenanceComponent,
     SystemSettingsComponent,
     LogErrorsComponent,
-    //CdkAriaLive
+    
 ],providers:[],
         bootstrap:[AppComponent]
     }
