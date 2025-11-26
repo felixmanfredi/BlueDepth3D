@@ -1,0 +1,14 @@
+[Unit]
+Description=Bluedepth Watcher
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=user
+WorkingDirectory=/home/user/bluedepth_watcher
+ExecStart=/home/user/bluedepth_watcher/bluedepth_watcher
+
+[Install]
+WantedBy=multi-user.target

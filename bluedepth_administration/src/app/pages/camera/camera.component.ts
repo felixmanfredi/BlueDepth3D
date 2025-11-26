@@ -40,8 +40,8 @@ export class CameraComponent implements OnInit {
   flashPulseTime = 50;
   focusTime = 500; //imposto il tempo a minimo 50ms
   
-_isTimer=false;
-
+  isTimer=false;
+  /*
   get isTimer(): boolean {
     if(this.statusDataset==true){
     return true;
@@ -52,21 +52,33 @@ _isTimer=false;
   set isTimer(value: boolean) {
     this._isTimer = value;
   }
+    */
   mode="photo";
-  dataset={
+  interval=1;
+
+  dataset:any={
     "datasetname": "test",
     "description": "example_desc",
-    "acquisition_device": "camera",
-    "interval": 0.5
+    "ignore_warnings":true,
+    "flash":false
   }
 
+  _statusDataset=false;
   get statusDataset(): boolean {
-    if(AppComponent.app.system_status!=null && AppComponent.app.system_status.camera!=null)
-      return AppComponent.app.system_status.camera.recording;
+    if(AppComponent.app.device_status!=null ){
+      for(let d of AppComponent.app.device_status){
+        if(d.device_type=="camera"){
+
+          return d.is_recording;
+        }
+      }
+    }
+      
+
     return false;
   }
   set statusDataset(value: boolean) {
-    this.statusDataset = value;
+    this._statusDataset = value;
   }
   showPreview=false;
   
@@ -82,6 +94,14 @@ _isTimer=false;
   isLoaded2=true;
   message_error="";
   message_loading=this.MESSAGE_LOADING
+
+  get camera_status(){
+    return AppComponent.app.checkStatus("camera").status;
+  }
+
+  get dataset_storage_status(){
+    return AppComponent.app.dataset_storage_status;
+  }
 
   constructor(private mpeApi:MpeApiService,private http: HttpClient, private tickService: TickService,private bluedepthBoardService: BluedepthBoardService) { 
     if(isDevMode()){
@@ -100,6 +120,7 @@ _isTimer=false;
         this.loadSonyData();
       }
     });
+    this.stopDataset();
   }
 
   ngOnDestroy(): void {
@@ -111,7 +132,7 @@ _isTimer=false;
   loadSonyData(): void {
     this.loading = true;
     this.error = null;
-    console.log(this.apiUrl);
+    
     this.http.get<CameraData>(`${this.apiUrl}/api/sony`).subscribe({
       next: (data) => {
         this.sonyData = data;
@@ -167,6 +188,8 @@ _isTimer=false;
     if(this.isTimer){
       this.startStopDataset();
     }else{
+      this.manualDataset();
+      /*
       if (this.isUpdating) return;
     
       this.isUpdating = true;
@@ -179,57 +202,33 @@ _isTimer=false;
               this.isUpdating = false;
             }, 1000);
       });
+      */
     }
    
   }
 
-
-  triggerPhotoOld() {
-    if (this.isUpdating) return;
-  
-    this.isUpdating = true;
-    this.isPhoto = true;
-  
-    // Invia POST al server
-    this.http.post(`${this.apiUrl}/api/sony/takepicture`, { takePicture: 350, triggerPicture: 50, isFlashing: this.isFlash, rstCounter: false, isLOCKFocus:false })
-      .subscribe({
-        next: () => {
-          // Attendi la durata dell'impulso prima di spegnere animazione
-          setTimeout(() => {
-            this.isPhoto = false;
-            this.isUpdating = false;
-          }, 1000);
-        },
-        error: (err) => {
-          console.error('Errore POST:', err);
-          this.isPhoto = false;
-          this.isUpdating = false;
-        }
+  manualDataset(){
+    if(!this.statusDataset){
+      this.startDataset(0,()=>{
+        this.trigger_capture();
       });
+      
+    }else{  
+      this.trigger_capture();
+    }
+  }
+
+  trigger_capture(){
+    
+    this.mpeApi.trigger_capture(this.isFlash,(result:any)=>{
+        console.log(result)
+    },()=>{
+
+    });
   }
 
 
 
-
-  // TakePicture(): void {
-  //   if (this.isUpdating) return;
-  //   this.isUpdating = true;
-  //   if (this.sonyData) {
-  //     //this.http.post<SonyData>(`${this.apiUrl}/sony`, { state: !this.sonyData.isPowered }).subscribe({
-  //       //this.http.post<SonyData>(`${this.apiUrl}/api/prova`, { takePicture: this.sonyData.takePicture }, { headers }).subscribe({
-  //         //this.http.post<SonyData>(`${this.apiUrl}/api/sony/takepicture`, { takePicture: this.sonyData.takePicture }).subscribe({
-  //     this.http.post<SonyData>(`${this.apiUrl}/api/sony/takepicture`, { takePicture: 150 }).subscribe({    
-  //       next: (data) => {
-  //         this.sonyData = data;
-  //         this.isUpdating = false;
-  //       },
-  //       error: (err) => {
-  //         console.error('Errore nell\'acquisizione dell\'immagine.', err);
-  //         this.isUpdating = false;
-  //       }
-  //     });
-  //   }
-  // }
 
     getStateColor(): string {
       if (this.sonyData) {
@@ -274,7 +273,7 @@ _isTimer=false;
     
     //this.http.post('/api/mcu/flashlights', { flashPulseTime: this.flashPulseTime })
     //this.http.post('/api/sony/focus', { focusTime: this.focusTime, isFlashing: this.isFlashing, isFocusing:this.isFocusing })
-    this.http.post(`${this.apiUrl}/api/sony/focus`, { focusTime: this.focusTime, isFlashing: this.isFlash, isFocusing: this.isFocusing },{headers:headers})    //lo stato del flash è impostato dal flòash generale della pagina
+    this.http.post(`${this.apiUrl}/api/sony/focus`, { focusTime: this.focusTime, isFlashing: false, isFocusing: this.isFocusing },{headers:headers})    //lo stato del flash è impostato dal flòash generale della pagina
       .subscribe({
         next: () => {
           // Attendi la durata dell'impulso prima di spegnere animazione
@@ -344,10 +343,10 @@ _isTimer=false;
 
 
 
-  capture(){
+  capturePreview(){
         
       
-      this.mpeApi.capture((img:any)=>{
+      this.mpeApi.capture(false,(img:any)=>{
         var image = new Image()
         
         image.src="data:image/jpeg,base64,"+img;
@@ -454,16 +453,21 @@ _isTimer=false;
       if(this.statusDataset){
         this.stopDataset();
       }else{
-        this.startDataset();
+        this.startDataset(this.interval);
       }
     }
   
-    startDataset(){
-  
-   
+    startDataset(interval=0,callback:any=null){
+      if(interval>0){
+        this.dataset.camera_interval=interval;
+        this.dataset.stereocamera_interval=this.interval;
+      }
+      this.dataset.flash=this.isFlash;
         this.mpeApi.startDataset(this.dataset,(result:any)=>{
-          console.log(result);  
+          
           this.statusDataset=true;
+          if(callback)
+            callback();
         },(error:any)=>{
   
         });

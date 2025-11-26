@@ -15,12 +15,23 @@ export class DashboardComponent implements OnInit {
     return  AppComponent.app.board_status;
   }
 
+  get location_status(){
+    return  AppComponent.app.location_status;
+  }
+
   get system_status(){
+    this.version.serialnumber=AppComponent.app.system_status.serial_number;
+    this.version.partnumber=AppComponent.app.system_status.part_number;
+    
     return  AppComponent.app.system_status;
   }
 
   get lastSystemStatusTime(){
     return  AppComponent.app.lastSystemStatusTime;
+  }
+
+  get logic_unit(){
+    return AppComponent.app.logic_unit;
   }
 
   get datasets(){
@@ -45,18 +56,6 @@ export class DashboardComponent implements OnInit {
 
 
   checkStatus(device_type:string){
-
-    if(this.system_status==null){
-      return {"status":"warning","message":"Not ready"};
-    } 
-    
-    if(this.system_status[device_type]!=null){
-      if(this.system_status[device_type].running){
-        return {"status":"success","message":"Online"};
-      }else{
-        return {"status":"danger","message":"Not running"};  
-      }
-    }
-   return {"status":"warning","message":"Not ready"};
+    return AppComponent.app.checkStatus(device_type);
   }
 }

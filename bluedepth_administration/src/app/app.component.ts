@@ -31,12 +31,17 @@ export class AppComponent implements OnInit, OnDestroy {
     used_ram: 0
   };
   frame=true;
-
+  location_status!:any
   lastSystemStatusTime!:Date
   system_status:any={available_datasets:[]};
-
+  device_status:any=[];
+  dataset_storage_status:any=[];
+  
   hasErrors: boolean = false;
   showLogErrors: boolean = false;
+
+  logic_unit=false;
+
   private healthSubscription?: Subscription;
   private routerSubscription?: Subscription;
 
@@ -50,7 +55,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
     if (document.location.href.indexOf('dock') > -1) {
-      console.log('Kiosk mode detected - hiding frame');
       this.frame=false;
       this.router.navigate(["/dock"]);
     }
@@ -62,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.healthSubscription = this.errorMonitor.healthStatus$.subscribe(
       (health: boolean) => {
         this.hasErrors = !health;
-        console.log('App - Health status:', health, 'hasErrors:', this.hasErrors);
+        //console.log('App - Health status:', health, 'hasErrors:', this.hasErrors);
       }
     );
 
@@ -74,10 +78,34 @@ export class AppComponent implements OnInit, OnDestroy {
           this.showLogErrors = false;
         }
       });
-      
+    
+      this.socketService.listen("connect").subscribe(()=>{
+        this.logic_unit=true;
+      });
 
     this.socketService.listen('board_status').subscribe((msg) => {
       this.board_status=msg;
+    });
+
+    this.socketService.listen('location_status').subscribe((msg) => {
+      this.location_status=msg;
+    });
+
+    this.socketService.listen('datasets_storage_status').subscribe((msg) => {
+      this.dataset_storage_status=msg;
+    });
+
+    
+
+    this.socketService.listen('device_status').subscribe((msg) => {
+     
+     for(let i=0;i<this.device_status.length;i++){
+      if(this.device_status[i].device_type==msg.device_type){
+        this.device_status[i]=msg;
+        return;
+      }
+     }
+     this.device_status.push(msg);
     });
 
     this.socketService.listen('system_status').subscribe((msg) => {
@@ -121,7 +149,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  checkStatus(){
+  checkStatus(device_type:string){
+
+    if(this.system_status==null){
+      return {"status":"warning","message":"Not ready"};
+    } 
     
+    if(this.system_status[device_type]!=null){
+      if(this.system_status[device_type].running){
+        return {"status":"success","message":"Online"};
+      }else{
+        return {"status":"danger","message":"Not running"};  
+      }
+    }
+   return {"status":"warning","message":"Not ready"};
   }
 }

@@ -11,6 +11,9 @@ export class SocketService {
 
     
     this.socket = io(this.base,{path:"/socket",transports: ["websocket", "polling"]}); // Connect to Socket.IO server
+    this.socket.on("connect",()=>{
+
+    });
   }
 
   // Ascoltare messaggi
