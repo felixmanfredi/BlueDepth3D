@@ -68,7 +68,7 @@ export class CameraControlComponent {
       console.log(response);
     })*/
     
-    this.mpeApi.capture((img:any)=>{
+    this.mpeApi.capture(true,(img:any)=>{
       var image = new Image()
       
       image.src="data:image/jpeg,base64,"+img;

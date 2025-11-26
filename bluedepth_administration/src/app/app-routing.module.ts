@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'dock', component: DockComponent, title: '',data:{icon:'fa fa-camera'},canActivate:[AuthService]},
   
   { path: 'storage', component: StorageComponent, title: 'Camera',data:{icon:'fa fa-database'},canActivate:[AuthService]},
-  //{ path: 'plugins', component: PluginsComponent, title: 'Plugin',data:{icon:'fa fa-plug'},canActivate:[AuthService]},
+  { path: 'plugins', component: PluginsComponent, title: 'Plugin',data:{icon:'fa fa-plug'},canActivate:[AuthService]},
   
   { path: 'settings', component: SettingsComponent, title: 'Camera',data:{icon:'fa fa-cog'},canActivate:[AuthService]},
 

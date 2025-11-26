@@ -4,32 +4,82 @@
     <app-video-streaming></app-video-streaming>
   </div>
   
-  <div class="col-md-6" *ngIf="sonyData; else loading">
-
+  <div class="col-md-6" *ngIf="sonyData && camera_status; else loading">
+    <div class="row" *ngIf="dataset_storage_status && dataset_storage_status.current_camera_acquisition">
+        <div class="badge" [class.badge-success]="dataset_storage_status.current_camera_acquisition.is_completed" [class.badge-warning]="!dataset_storage_status.current_camera_acquisition.is_completed">Dataset ID: {{dataset_storage_status.current_camera_acquisition.dataset_id}}</div>
+    </div>
+   
     <div class="row">
 
         <div class="col-sm-4 btns_position">
-            <button class="btn btn-block btn-outline-primary"  [class.bg-warning]="statusDataset" [disabled]="isUpdating || isPhoto" (click)="triggerPhoto()">
-                <i class="fas fa-camera"></i>&nbsp;
+            <div class="btn-group" style="width: 100%;">
+            <button class="btn btn-block btn-outline-primary p-3"  [class.bg-warning]="isTimer && statusDataset" [disabled]="isUpdating || isPhoto" (shortPress)="triggerPhoto()" (longPress)="capturePreview()">
+                <i  class="fas fa-camera fa-2x"></i>&nbsp;
+                <br/>
                 <span class="badge badge-light">{{ sonyData.SuccessPictureCount }}</span>
                     
             </button>
+            <button class="btn btn-block  p-3 m-0" [class.btn-outline-danger]="statusDataset"  [class.btn-outline-secondary]="!statusDataset" [disabled]="!statusDataset"  (click)="stopDataset()">
+                <i class="fas fa-2x fa-stop"></i>&nbsp;
+                
+            </button>
+            </div>
         </div>
 
         <!-- Capture -->
         <div class="col-sm-4 btns_position">
-            <div class="btn-group" >
-                
+            <div class="btn-group" style="width: 100%;">
                
-                <button class="btn btn-outline-primary" [class.bg-warning]="isFlash" (click)="isFlash = !isFlash"  title="Attiva o disattiva i flash">
+                    <button
+                        *ngIf="isTimer"
+                        class="btn btn-outline-primary dropdown-toggle"
+                        type="button"
+                        title="Modalità"
+                        (click)="isTimer=false"
+                        [class.bg-warning]="isTimer"
+                        >
+                        <i class="fa fa-clock"></i>
+                    
+                    </button>
+                
+
+                <div mdbDropdown class="dropdown"  *ngIf="!isTimer">
+                    <button
+                        *ngIf="!isTimer"
+                        class="btn btn-outline-primary dropdown-toggle"
+                        type="button"
+                        id="modalityVideo"
+                        aria-expanded="false"
+                        mdbDropdownToggle
+                        title="Modalità"
+                        (click)="isTimer?isTimer=false:''"
+                        [class.bg-warning]="isTimer"
+                        >
+                        <i class="fa fa-clock"></i>
+                    
+                    </button>
+                    
+
+                    
+                    <ul mdbDropdownMenu class="dropdown-menu scrollable-dropdown" aria-labelledby="modalityVideo">
+                        <li><a class="dropdown-item" (click)="interval=0.5;isTimer = !isTimer">0.5 sec</a></li>
+                        
+                        <li><a class="dropdown-item" (click)="interval=1;isTimer = !isTimer">1 sec</a></li>
+                        <li><a class="dropdown-item" (click)="interval=2;isTimer = !isTimer">2 sec</a></li>
+                        <li><a class="dropdown-item" (click)="interval=3;isTimer = !isTimer">3 sec</a></li>
+                        <li><a class="dropdown-item" (click)="interval=4;isTimer = !isTimer">4 sec</a></li>
+                        <li><a class="dropdown-item" (click)="interval=5;isTimer = !isTimer">5 sec</a></li>
+                    </ul>
+                </div>
+                 <button class="btn btn-outline-primary" [class.bg-warning]="isFlash" (shortPress)="isFlash = !isFlash" (longPress)="triggerFlash()"  title="Attiva o disattiva i flash">
                     <i class="fa fa-lightbulb" ></i>
                 </button>
-
+<!--
                 <button class="btn btn-outline-primary" [class.bg-warning]="isTimer" (click)="isTimer = !isTimer"  title="Intervallometro">
                     <i class="fa fa-clock" ></i>
                 </button>
 
-
+-->
                 
             </div>
         </div>
@@ -43,11 +93,14 @@
 
         
         <!-- Flash -->
+        <!--
         <div class="col-sm-4 btns_position">
         <button class="btn btn-outline-primary btn-block" (click)="triggerFlash()" [class.btn-secondary]="isFlashing" title="Check flash">
             <i class="fa fa-bolt"></i>
         </button>
+        
         </div>
+        -->
         <!-- PREVIEW -->
          <!--
         <div class="col-sm-4 btns_position">
@@ -68,6 +121,7 @@
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
                     id="modality"
+                    [disabled]="statusDataset"
                     aria-expanded="false"
                     mdbDropdownToggle
                     title="Modalità"
@@ -105,6 +159,7 @@
                     type="button"
                     id="modalityVideo"
                     aria-expanded="false"
+                    [disabled]="statusDataset"
                     mdbDropdownToggle
                     title="Modalità"
                     >
@@ -142,6 +197,7 @@
                 class="btn btn-light btn-block dropdown-toggle "
                 type="button"
                 id="shutterSpeedDropdown"
+                [disabled]="statusDataset"
                 aria-expanded="false"
                 mdbDropdownToggle
                 title="Shutter Speed"
@@ -165,6 +221,7 @@
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
                     id="fnumberDropdown"
+                    [disabled]="statusDataset"
                     aria-expanded="false"
                     mdbDropdownToggle
                     title="FNumber"
@@ -189,6 +246,7 @@
                 type="button"
                 id="isoDropdown"
                 aria-expanded="false"
+                [disabled]="statusDataset"
                 mdbDropdownToggle
                 title="ISO Sensitivity"
             >
@@ -212,6 +270,7 @@
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
                     id="exposureBiasDropdown"
+                    [disabled]="statusDataset"
                     aria-expanded="false"
                     mdbDropdownToggle
                     title="Exposure Bias"
@@ -236,6 +295,7 @@
                 <button
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
+                    [disabled]="statusDataset"
                     id="WB"
                     aria-expanded="false"
                     mdbDropdownToggle
@@ -272,6 +332,7 @@
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
                     id="focusArea"
+                    [disabled]="statusDataset"
                     aria-expanded="false"
                     mdbDropdownToggle
                     title="Area messa a fuoco"
@@ -298,6 +359,7 @@
                     class="btn btn-light btn-block dropdown-toggle"
                     type="button"
                     id="modeFocus"
+                    [disabled]="statusDataset"
                     aria-expanded="false"
                     mdbDropdownToggle
                     title="Modo messa a fuoco"

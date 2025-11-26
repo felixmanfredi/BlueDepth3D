@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>BlueDepth 3D Service</title>
+  <style>
+    body { font-family: monospace; background: #111; color: #0f0; margin: 0; padding: 10px; }
+    #status { font-weight: bold; color: cyan; margin-bottom: 10px; }
+    #log { white-space: pre-wrap; border-top: 1px solid #333; padding-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>BlueDepth 3D Service Status</h2>
+  <div id="status">Connessione in corso...</div>
+  <h3>Updater</h3>
+  <p>NEXT: <span id="timer_next"></span></p>
+  <p>LEFT: <span id="timer_left"></span></p>
+  <p>LAST: <span id="timer_last"></span></p>
+  <p>PASSED: <span id="timer_passed"></span></p>
+  <p>UNIT: <span id="timer_unit"></span></p>
+  <p>ACTIVATES: <span id="timer_activates"></span></p>
+  
+  <div id="log_mpe_updater"></div>
+  <h3>MPE Server</h3>
+
+  <input type="checkbox" class="typefilters" checked="checked" id="filter_type_INFO" onchange="setTypeFilters()" ><label>INFO</label>
+  <input type="checkbox" class="typefilters" checked="checked" id="filter_type_WARNING" onchange="setTypeFilters()" ><label>WARNING</label>
+  <input type="checkbox" class="typefilters" checked="checked" id="filter_type_ERROR" onchange="setTypeFilters()" ><label>ERROR</label>
+  
+  <br/>
+
+  <input type="checkbox" class="filters" checked="checked" id="filter_server" onchange="setFilters()" ><label>server</label>
+  <input type="checkbox" class="filters" checked="checked" id="filter_webserver" onchange="setFilters()" ><label>webserver</label>
+  
+  <input type="checkbox" class="filters" checked="checked" id="filter_PAUV" onchange="setFilters()" ><label>PAUV</label>
+  <input type="checkbox" class="filters" checked="checked" id="filter_sony_ilx_r1" onchange="setFilters()" ><label>sony_ilx_r1</label>
+  <input type="checkbox" class="filters" checked="checked" id="filter_dataset_manager" onchange="setFilters()" ><label>dataset_manager</label>
+  <button onclick="clearMPEServer()">Clear</button>
+  <div >
+    <table border="1" style="width:100%">
+      <th>Time</th>
+      <th>Type</th>
+      <th>Tag</th>
+      <th>Message</th>
+      <tbody id="log_mpe_server">
+        
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <script>
+    const MAXROVCOUNT=300;
+    let logDivMpeServerRowCount=0;
+    let TYPE_AVAILABLES=["INFO","WARNING","ERROR"];
+
+    let TAGS_AVAILABLES=["PAUV","sony_ilx_r1","dataset_manager","server","webserver"];
+
+    function setFilters(){
+
+      const filters=document.getElementsByClassName("filters");
+      for(let i of filters){
+        const name=i.id.replace("filter_","");
+        if(i.checked){
+          //aggiungi in TAGS
+          if(TAGS_AVAILABLES.indexOf(name)==-1)
+            TAGS_AVAILABLES.push(name);
+        }else{
+          if(TAGS_AVAILABLES.indexOf(name)>-1)
+            TAGS_AVAILABLES.splice(TAGS_AVAILABLES.indexOf(name),1);
+        }
+        
+      }
+    }
+
+    function setTypeFilters(){
+
+      const filters=document.getElementsByClassName("typefilters");
+      for(let i of filters){
+        const name=i.id.replace("filter_type_","");
+        if(i.checked){
+          //aggiungi in TAGS
+          if(TYPE_AVAILABLES.indexOf(name)==-1)
+            TYPE_AVAILABLES.push(name);
+        }else{
+          if(TYPE_AVAILABLES.indexOf(name)>-1)
+            TYPE_AVAILABLES.splice(TYPE_AVAILABLES.indexOf(name),1);
+        }
+        
+      }
+    }
+
+    function clearMPEServer(){
+      logDivMPEServer.innerHTML="";
+    }
+
+    
+
+    
+
+
+    const statusDiv = document.getElementById('status');
+    const logDivMPEServer = document.getElementById('log_mpe_server');
+    const logDivMPEUpdater = document.getElementById('log_mpe_updater');
+    
+    const ws = new WebSocket(`ws://${location.host}`);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === 'info') {
+        statusDiv.textContent = data.message;
+      }else if(data.type==='service_timer'){
+        const timer=JSON.parse(data.message);
+        console.log(timer);
+        document.getElementById('timer_next').innerHTML=new Date(timer[0].next/1000);
+        document.getElementById('timer_left').innerHTML=new Date(timer[0].left/1000);
+        document.getElementById('timer_last').innerHTML=new Date(timer[0].last/1000);
+        document.getElementById('timer_passed').innerHTML=new Date(timer[0].passed/1000);
+        document.getElementById('timer_unit').innerHTML=timer[0].unit;
+        document.getElementById('timer_activates').innerHTML=timer[0].activates;
+        
+      } else if (data.type === 'service_status') {
+        statusDiv.textContent = `🔄 ${data.message}`;
+        statusDiv.style.color = data.status === 'active' ? 'lime' : 'red';
+      } else if (data.type === 'log_line_mpe_server') {
+
+        //parserizza il log
+        const row=data.line.split(" - ");
+        
+            if(logDivMpeServerRowCount>MAXROVCOUNT){
+              clearMPEServer();
+              logDivMpeServerRowCount=0;
+            }
+            
+            if(row.length==5){
+              if(TAGS_AVAILABLES.indexOf(row[2])>-1 && TYPE_AVAILABLES.indexOf(row[1])>-1){
+                logDivMPEServer.innerHTML = `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]} ${row[4]}</td><tr>`+logDivMPEServer.innerHTML;
+                logDivMpeServerRowCount=logDivMpeServerRowCount+1;
+              }
+                }else{
+                //logDivMPEServer.innerHTML = `<tr><td colspan="4">${data.line}</td><tr>`+logDivMPEServer.innerHTML;
+              }
+              logDivMPEServer.scrollTop = logDivMPEServer.scrollHeight;
+            
+          
+        
+      } else if (data.type === 'log_line_mpe_updater') {
+        logDivMPEUpdater.innerHTML += logDivMPEUpdater.innerHTML+"<p>"+data.line + '</p>';
+        logDivMPEUpdater.scrollTop = logDiv.scrollHeight;
+      }
+    };
+
+    ws.onopen = () => statusDiv.textContent = "Connesso al monitor";
+    ws.onclose = () => statusDiv.textContent = "Disconnesso";
+  </script>
+</body>
+</html>

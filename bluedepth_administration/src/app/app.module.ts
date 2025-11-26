@@ -27,6 +27,8 @@ import { DockComponent } from "./pages/dock/dock.component";
 import { FileSizePipe } from "./filesize.pipe";
 import { DatasetDetailComponent } from "./pages/storage/detail/detail.component";
 import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
+import { LongPressDirective } from "./long-press.directive";
+import { ShortPressDirective } from "./short-press.directive";
 @NgModule(
     {
         declarations:[
@@ -42,7 +44,9 @@ import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
             DockComponent,
             FileSizePipe,
             SystemComponent,
-            DatasetDetailComponent
+            DatasetDetailComponent,
+            LongPressDirective,
+            ShortPressDirective
         ],
         imports: [
     AppRoutingModule,

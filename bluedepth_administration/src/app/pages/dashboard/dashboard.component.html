@@ -5,9 +5,9 @@
             <div class="col-12">
                 <img src="assets/bluedepth.png" alt="BlueDepth3D" class="img-fluid mb-2"/>
                 <small class="device-info">
-                <p>Part Number: <strong>{{version.partnumber}}</strong></p>
-                <p>Serial Number: <strong>{{version.serialnumber}}</strong></p>
-                <p>Firmware Version: <strong>{{version.firmwareversion}}</strong></p>
+                <p>Part Number: <strong *ngIf="system_status">{{system_status.part_number}}</strong></p>
+                <p>Serial Number: <strong *ngIf="system_status">{{system_status.serial_number}}</strong></p>
+                <p>Firmware Version: <strong *ngIf="system_status">{{system_status.version}}</strong></p>
                 </small>
             </div>
         </div>
@@ -38,7 +38,8 @@
                                                 <label>Logic module:</label>
                                             </td>
                                             <td class="text-end">
-                                                <div class="badge bg-success text-white rounded-pill">Online</div>
+                                                <div *ngIf="logic_unit" class="badge bg-success text-white rounded-pill">Online</div>
+                                                <div *ngIf="!logic_unit" class="badge bg-warning text-white rounded-pill">Not running</div>
                                             </td>
                                         </tr>
                                         <tr>
@@ -108,7 +109,9 @@
                                                 <label>Position:</label>
                                             </td>
                                             <td class="text-end">
-                                                0.000000 N, 0.000000 E
+                                                <span *ngIf="location_status">
+                                                    {{location_status.latitude[0]}} {{location_status.latitude[1]}}, {{location_status.longitude[0]}} {{location_status.longitude[1]}}
+                                                </span>
                                             </td>
                                         </tr>
                                         <tr>

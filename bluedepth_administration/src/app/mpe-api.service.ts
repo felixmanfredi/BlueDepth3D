@@ -45,6 +45,7 @@ export class MpeApiService {
     console.error(
       `Backend returned code ${error.status}, body was: `, error.error);
   }
+  alert(error.error.message[0]);
   // Return an observable with a user-facing error message.
   return throwError(() => new Error('Something bad happened; please try again later.'));
 }
@@ -56,12 +57,25 @@ export class MpeApiService {
     })
   }
 
-   capture(callback:any,callback_error:any){
-    this.http.get(this.baseUrl+"/camera/capture",{responseType:"text"}).pipe(catchError(callback_error)).subscribe((result:any)=>{
-      if(callback)
-        callback(result);
-    })
-  }
+   capture(flash:boolean,callback:any,callback_error:any){
+    let headers:HttpHeaders=new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
+
+      this.http.post(this.baseUrl+"/camera/capture",{flash:flash},{responseType:"text",headers:headers}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+        if(callback)
+          callback(result);
+      })
+    }
+
+    trigger_capture(flash:boolean,callback:any,callback_error:any){
+    let headers:HttpHeaders=new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
+
+      this.http.post(this.baseUrl+"/datasets/trigger_capture",{flash:flash},{responseType:"text",headers:headers}).pipe(catchError(callback_error)).subscribe((result:any)=>{
+        if(callback)
+          callback(result);
+      })
+    }
 
      focus(callback:any,callback_error:any){
     this.http.get(this.baseUrl+"/camera/focus",{responseType:"text"}).pipe(catchError(callback_error)).subscribe((result:any)=>{
