@@ -13,13 +13,13 @@
 
         <div class="col-sm-4 btns_position">
             <div class="btn-group" style="width: 100%;">
-            <button class="btn btn-block btn-outline-primary p-3"  [class.bg-warning]="isTimer && statusDataset" [disabled]="isUpdating || isPhoto" (shortPress)="triggerPhoto()" (longPress)="capturePreview()">
+            <button class="btn btn-block btn-outline-primary p-3"  [class.bg-warning]="isTimer && statusDataset" [disabled]="isUpdating || isPhoto" (shortPress)="triggerPhoto()">
                 <i  class="fas fa-camera fa-2x"></i>&nbsp;
                 <br/>
                 <span class="badge badge-light">{{ sonyData.SuccessPictureCount }}</span>
                     
             </button>
-            <button class="btn btn-block  p-3 m-0" [class.btn-outline-danger]="statusDataset"  [class.btn-outline-secondary]="!statusDataset" [disabled]="!statusDataset"  (click)="stopDataset()">
+            <button class="btn btn-block  p-3 m-0 bg-danger" [class.btn-outline-danger]="statusDataset"  [class.btn-outline-secondary]="!statusDataset" [disabled]="!statusDataset"  (click)="stopDataset()">
                 <i class="fas fa-2x fa-stop"></i>&nbsp;
                 
             </button>

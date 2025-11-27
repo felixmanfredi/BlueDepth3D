@@ -3,11 +3,11 @@
 
         <div class="row">
             <div class="col-12">
-                <img src="assets/bluedepth.png" alt="BlueDepth3D" class="img-fluid mb-2"/>
+                <img src="assets/{{versionBoard.part_number}}.png" class="img-fluid mb-2"/>
                 <small class="device-info">
-                <p>Part Number: <strong *ngIf="system_status">{{system_status.part_number}}</strong></p>
-                <p>Serial Number: <strong *ngIf="system_status">{{system_status.serial_number}}</strong></p>
-                <p>Firmware Version: <strong *ngIf="system_status">{{system_status.version}}</strong></p>
+                <p>Part Number: <strong *ngIf="system_status">{{versionBoard.part_number}}</strong></p>
+                <p>Serial Number: <strong *ngIf="system_status">{{versionBoard.serial_number}}</strong></p>
+                <p>Firmware Version: <strong *ngIf="system_status">{{versionBoard.version}}</strong></p>
                 </small>
             </div>
         </div>

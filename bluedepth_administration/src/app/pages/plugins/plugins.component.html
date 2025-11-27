@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-12" *ngFor="let p of plugins">
         <div class="card">
-            <div class="card-body">
+            <div class="card-header">
                 <div class="row">
                     <div class="col-10">
                         <h5 class="card-title">{{p.name}}</h5>
@@ -20,6 +20,12 @@
                 </div>
                
             </div>
+            <div class="card-body">
+                <div class="row">
+                   <app-bluedepthsettings *ngIf="p.type=='stereocamera'"></app-bluedepthsettings>
+                </div>
+            </div>
+            
          
         </div>
     </div>

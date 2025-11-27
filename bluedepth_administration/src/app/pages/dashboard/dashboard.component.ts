@@ -20,10 +20,13 @@ export class DashboardComponent implements OnInit {
   }
 
   get system_status(){
-    this.version.serialnumber=AppComponent.app.system_status.serial_number;
-    this.version.partnumber=AppComponent.app.system_status.part_number;
     
     return  AppComponent.app.system_status;
+  }
+
+
+  get versionBoard(){
+    return AppComponent.app.versionBoard
   }
 
   get lastSystemStatusTime(){

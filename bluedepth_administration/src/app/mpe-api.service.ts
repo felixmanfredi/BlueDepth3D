@@ -157,6 +157,14 @@ export class MpeApiService {
     })
   }
 
+  getVersion(callback:any,callback_error:any){
+    this.http.get(this.baseUrl+"/version").pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+
   
 
 }

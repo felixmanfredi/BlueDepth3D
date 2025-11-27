@@ -5,6 +5,7 @@ import { ErrorMonitorService } from '../app/error-monitor.service'; // Adatta il
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { SocketService } from './socket-service.service';
+import { MpeApiService } from './mpe-api.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showLogErrors: boolean = false;
 
   logic_unit=false;
-
+  versionBoard:any={}
   private healthSubscription?: Subscription;
   private routerSubscription?: Subscription;
 
@@ -49,7 +50,8 @@ export class AppComponent implements OnInit, OnDestroy {
     public modalService: MdbModalService,
     private router: Router,
     private errorMonitor: ErrorMonitorService,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private mpeApi:MpeApiService
   ) {
     AppComponent.app = this;
 
@@ -62,6 +64,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.mpeApi.getVersion((res:any)=>{
+      this.versionBoard=res.data[0]
+    },(error:any)=>{
+
+    })
+
     // Sottoscrivi al servizio di monitoraggio errori
     this.healthSubscription = this.errorMonitor.healthStatus$.subscribe(
       (health: boolean) => {

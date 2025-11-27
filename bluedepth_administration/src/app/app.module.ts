@@ -29,7 +29,7 @@ import { DatasetDetailComponent } from "./pages/storage/detail/detail.component"
 import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
 import { LongPressDirective } from "./long-press.directive";
 import { ShortPressDirective } from "./short-press.directive";
-import { BluedepthSettingsComponent } from "./pages/settings/bluedepth/bluedepth.component";
+import { BluedepthSettingsComponent } from "./pages/plugins/bluedepth/bluedepth.component";
 @NgModule(
     {
         declarations:[
