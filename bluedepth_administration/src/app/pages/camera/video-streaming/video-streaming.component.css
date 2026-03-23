@@ -1,7 +1,4 @@
 .video-streaming-card {
-  max-width: 540px;
-  margin: 24px auto;
-  border-radius: 18px;
   box-shadow: 0 4px 18px rgba(0,0,0,0.09);
   background: #fff;
   font-family: 'Segoe UI', Arial, sans-serif;
@@ -43,7 +40,7 @@
   position: relative;
   width: 100%;
   background: #000;
-  border-radius: 10px;
+ 
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

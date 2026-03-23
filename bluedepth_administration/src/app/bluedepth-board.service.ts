@@ -72,4 +72,35 @@ export class BluedepthBoardService {
         });
     }
   
+    getPowerSony(callback:any,callback_error:any){
+      let headers:HttpHeaders=new HttpHeaders();
+      headers = headers.set('Access-Control-Allow-Origin', '*');
+      headers = headers.set('Content-Type', 'application/json');
+
+
+      this.http.get(this.baseUrl+"/api/sony",{headers:headers}).pipe(catchError(
+        this.handleError
+      
+      
+      )).subscribe((result:any)=>{
+        if(callback)
+          callback(result);
+      })
+    }
+
+    setPowerSony(state=false,callback:any,callback_error:any){
+      let headers:HttpHeaders=new HttpHeaders();
+      headers = headers.set('Access-Control-Allow-Origin', '*');
+      headers = headers.set('Content-Type', 'application/json');
+
+
+      this.http.post(this.baseUrl+"/api/sony/power",{isPowered: state},{headers:headers}).pipe(catchError(
+        this.handleError
+      
+      
+      )).subscribe((result:any)=>{
+        if(callback)
+          callback(result);
+      })
+    }
 }

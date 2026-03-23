@@ -273,3 +273,20 @@ justify-content: space-between;
 .btn-outline-primary{
   background-color: white !important;
 }
+
+.video-container{
+  width: 200px;
+  right:0;
+  position: absolute;
+  z-index:9999999;
+}
+.video-container.full{
+  width: 100%;
+}
+
+.btn_preview_full{
+  position: absolute;
+    top: 9px;
+    color: white;
+    right: 14px;
+}

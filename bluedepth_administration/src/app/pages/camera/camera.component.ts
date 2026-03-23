@@ -1,4 +1,4 @@
-import { Component, Input, isDevMode, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, isDevMode, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CameraData } from './camera.model';
 import { CommonModule } from '@angular/common';
@@ -13,8 +13,11 @@ import { ShutterSpeedValues } from './shutterspeed.enum';
 import { FNumber } from './fnumber.enum';
 import { IsoSensitivity } from './iso-sensitivity.enum';
 import { ExposureBiasCompensation } from './exposure-bias.enum';
+import {CameraMode} from './mode.enum';
 import { MpeApiService } from '../../mpe-api.service';
 import { AppComponent } from '../../app.component';
+import * as L from 'leaflet';
+
 
 @Component({
   selector: 'app-camera',
@@ -22,7 +25,26 @@ import { AppComponent } from '../../app.component';
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.css']
 })
-export class CameraComponent implements OnInit {
+export class CameraComponent implements OnInit,AfterViewInit {
+  private map!: L.Map
+  markerIcon = L.icon({ iconUrl: 'src/assets/marker.png'});
+  marker?: L.Marker;  
+    coordinates:any=[];
+
+  get cameraMode(){
+    return CameraMode
+  }
+  
+  get system_status(){
+    return AppComponent.app.system_status
+  }
+
+   get location_status(){
+    this.marker?.setLatLng(L.latLng(AppComponent.app.location_status.latitude[0],AppComponent.app.location_status.longitude[1]))
+    return  AppComponent.app.location_status;
+  }
+
+  previewCameraFull=false;
   sonyData: CameraData | null = null; // Utilizza il modello
   loading = true;
   error: string | null = null;
@@ -41,24 +63,13 @@ export class CameraComponent implements OnInit {
   focusTime = 500; //imposto il tempo a minimo 50ms
   
   isTimer=false;
-  /*
-  get isTimer(): boolean {
-    if(this.statusDataset==true){
-    return true;
-    } else{
-      return this._isTimer;
-    }
-  } 
-  set isTimer(value: boolean) {
-    this._isTimer = value;
-  }
-    */
+ 
   mode="photo";
   interval=1;
 
   dataset:any={
-    "datasetname": "test",
-    "description": "example_desc",
+    "datasetname": "",
+    "description": "",
     "ignore_warnings":true,
     "flash":false
   }
@@ -67,7 +78,12 @@ export class CameraComponent implements OnInit {
   get statusDataset(): boolean {
     if(AppComponent.app.device_status!=null ){
       for(let d of AppComponent.app.device_status){
-        if(d.device_type=="camera"){
+        if(d.device_type=="camera" && this.system_status.camera!=null){
+
+          return d.is_recording;
+        }
+
+         if(d.device_type=="stereocamera" && this.system_status.stereocamera!=null){
 
           return d.is_recording;
         }
@@ -103,6 +119,8 @@ export class CameraComponent implements OnInit {
     return AppComponent.app.dataset_storage_status;
   }
 
+ 
+
   constructor(private mpeApi:MpeApiService,private http: HttpClient, private tickService: TickService,private bluedepthBoardService: BluedepthBoardService) { 
     if(isDevMode()){
       this.apiUrl=""
@@ -110,10 +128,43 @@ export class CameraComponent implements OnInit {
       this.apiUrl="http://192.168.1.230"
     }
 
+   
 
+
+  }
+  ngAfterViewInit(): void {
+    this.initMap()
+    
+  }
+
+  private initMap() {
+      const baseMapURl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      this.map = L.map('map',{center: [ 39.8282, -98.5795 ],
+      zoom: 3});
+      this.map.options.maxZoom = 22;
+      
+      
+      L.tileLayer(baseMapURl).addTo(this.map);
+      this.marker =  L.marker([this.location_status.latitude[0], this.location_status.longitude[0]],{icon: this.markerIcon,riseOnHover:true}) // Dhaka, Bangladesh
+ 
+      this.marker.addTo(this.map)
+      this.centerMap();
+    }
+
+
+  private centerMap() {
+    
+    // Fit the map into the boundary
+    this.map.setView(this.marker!.getLatLng(),18);
   }
 
   ngOnInit(): void {
+
+    //avvia la modalità di controllo PC
+    this.sendSetting('PriorityKeySettings')
+
+
+
     this.tickSub = this.tickService.tick$.subscribe(tick => {
       // Esegui la richiesta solo se il tick è allineato con il tuo ID
       if (tick % 4 === this.componentId) {
@@ -121,6 +172,8 @@ export class CameraComponent implements OnInit {
       }
     });
     this.stopDataset();
+
+     
   }
 
   ngOnDestroy(): void {
@@ -395,7 +448,7 @@ export class CameraComponent implements OnInit {
       ColorTuningGM:"M0.00",
       LiveViewDisplayEffect:"ON",
       StillImageStoreDestination:"MemoryCard",
-      PriorityKeySettings:"CameraPosition",
+      PriorityKeySettings:"PCRemote",
       AFTrackingSensitivity:"3",
       FocalDistanceInMeter:2
       
@@ -410,6 +463,12 @@ export class CameraComponent implements OnInit {
         this.isLoaded=true;
         if(result.data){
           this.settings=result.data[0];
+
+          //verifica in che modalità è il sistema
+          const cm= CameraMode.filter((x)=>x.modality==this.settings.ExposureProgramMode)[0];
+          if(cm) this.mode=cm.mode;
+            
+
         }
       },(error: HttpErrorResponse)=>{
         this.message_loading=this.MESSAGE_LOADED;
@@ -418,12 +477,14 @@ export class CameraComponent implements OnInit {
       })
     }
   
-     sendSetting(attributeName:any){
+     sendSetting(attributeName:any,onsuccess:any=null){
   
       let tosend:any={};
       tosend[attributeName]=this.settings[attributeName];
   
       this.mpeApi.setSettings(tosend,(result:any)=>{
+        if(onsuccess)
+          onsuccess();
         console.log(result);
       })
     }
@@ -462,9 +523,21 @@ export class CameraComponent implements OnInit {
         this.dataset.camera_interval=interval;
         this.dataset.stereocamera_interval=this.interval;
       }
+
+      
+      //se la stereocamera è disabilitata
+      if(this.system_status.stereocamera==null && this.system_status.camera !=null)
+        this.dataset.acquisition_device="camera"
+
+      if(this.system_status.stereocamera!=null && this.system_status.camera ==null)
+        this.dataset.acquisition_device="stereocamera"
+
+
+
+
       this.dataset.flash=this.isFlash;
         this.mpeApi.startDataset(this.dataset,(result:any)=>{
-          
+         
           this.statusDataset=true;
           if(callback)
             callback();
@@ -474,12 +547,30 @@ export class CameraComponent implements OnInit {
     }
   
      stopDataset(){
-         this.mpeApi.stopDataset((result:any)=>{
+        this.mpeApi.stopDataset((result:any)=>{
           this.statusDataset=false;
+
+          if(this.mode=="video"){
+            this.bluedepthBoardService.takePicture(350, 50, false, false, false, ()=>{});
+          }
+
         },(error:any)=>{
   
         });
   
     }
+
+
+    setMode(modality:string,mode:string){
+      this.settings.ExposureProgramMode=modality;
+      this.sendSetting('ExposureProgramMode',()=>{
+        this.mode=mode;
+      })
+    }
+
+
+
+
+
   
 }

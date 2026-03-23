@@ -13,9 +13,12 @@ export class DatasetDetailComponent  implements OnInit,AfterViewInit{
   @Input()
   id_dataset:number=0;
 
+  @Input()
+  modal:any;
+
   record:any={};
 
-   private map!: L.Map
+  private map!: L.Map
   markers: L.Marker[] = [
     L.marker([23.7771, 90.3994]) // Dhaka, Bangladesh
   ];
@@ -78,4 +81,8 @@ export class DatasetDetailComponent  implements OnInit,AfterViewInit{
   }
 
 
+
+  close(){
+    this.modal.close();
+  }
 }

@@ -30,6 +30,7 @@ import { CdkAriaLive } from "../../node_modules/@angular/cdk/a11y/index";
 import { LongPressDirective } from "./long-press.directive";
 import { ShortPressDirective } from "./short-press.directive";
 import { BluedepthSettingsComponent } from "./pages/plugins/bluedepth/bluedepth.component";
+import { SonySettingsComponent } from "./pages/plugins/sony/sony.component";
 @NgModule(
     {
         declarations:[
@@ -48,7 +49,8 @@ import { BluedepthSettingsComponent } from "./pages/plugins/bluedepth/bluedepth.
             DatasetDetailComponent,
             LongPressDirective,
             ShortPressDirective,
-            BluedepthSettingsComponent
+            BluedepthSettingsComponent,
+            SonySettingsComponent
         ],
         imports: [
     AppRoutingModule,

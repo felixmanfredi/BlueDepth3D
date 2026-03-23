@@ -46,6 +46,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private healthSubscription?: Subscription;
   private routerSubscription?: Subscription;
 
+  message_not_connected="";
+
+  get isConnected(){
+    return SocketService.isConnected
+  }
+
   constructor(
     public modalService: MdbModalService,
     private router: Router,
@@ -62,6 +68,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
   }
+
+
 
   ngOnInit(): void {
 
@@ -121,6 +129,14 @@ export class AppComponent implements OnInit, OnDestroy {
      this.system_status=msg;
      this.lastSystemStatusTime=new Date();
     });
+
+
+    this.socketService.onReconnect.subscribe(()=>{
+      this.message_not_connected="Nuovo tentativo di riconnessione";
+      setTimeout(()=>{
+        this.message_not_connected="";
+      },2000);
+    })
     
   }
 
@@ -161,16 +177,16 @@ export class AppComponent implements OnInit, OnDestroy {
   checkStatus(device_type:string){
 
     if(this.system_status==null){
-      return {"status":"warning","message":"Not ready"};
+      return {"status":"warning","message":"Not ready","running":false};
     } 
     
     if(this.system_status[device_type]!=null){
       if(this.system_status[device_type].running){
-        return {"status":"success","message":"Online"};
+        return {"status":"success","message":"Online","running":true};
       }else{
-        return {"status":"danger","message":"Not running"};  
+        return {"status":"danger","message":"Not running","running":false};  
       }
     }
-   return {"status":"warning","message":"Not ready"};
+   return {"status":"warning","message":"Not ready","running":false};
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, ViewChild, ElementRef, AfterViewInit, Input, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BlueDepthBoardEnvironment } from '../../../enviroment';
@@ -27,7 +27,15 @@ export class VideoStreamingComponent implements AfterViewInit, OnDestroy {
   
   private hls!: Hls;
   private apiUrl = BlueDepthBoardEnvironment.apiUrl;
+  
+  
   private streamUrl: string = '';
+
+  @Input()
+  host="";
+
+  @Input()
+  endpoint="";
 
   constructor(private http: HttpClient) { 
     //console.log('🎬 VideoStreamingComponent: Constructor');
@@ -39,8 +47,12 @@ export class VideoStreamingComponent implements AfterViewInit, OnDestroy {
     this.videoElement = this.videoElementRef?.nativeElement;
     
     if (this.videoElement) {
+      this.streamUrl=this.host+this.endpoint
+      if(isDevMode())
+        this.streamUrl=this.endpoint
+      this.initializeHlsPlayer();
       //console.log('✅ Video element disponibile');
-      this.loadStreamUrl();
+      //this.loadStreamUrl();
     } else {
       console.error('❌ Video element non disponibile');
       this.error = 'Errore nel caricamento del player';

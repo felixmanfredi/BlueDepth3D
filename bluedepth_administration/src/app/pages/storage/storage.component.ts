@@ -36,7 +36,7 @@ export class StorageComponent implements OnInit {
   openDetail(id_dataset:number){
     const ref=AppComponent.app.modalService.open(DatasetDetailComponent);
     ref.component.id_dataset=id_dataset;
-    
+    ref.component.modal=ref;
   }
   
 

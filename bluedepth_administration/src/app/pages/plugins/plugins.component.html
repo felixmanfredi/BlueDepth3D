@@ -6,27 +6,56 @@
 </div>
 -->
 <div class="row">
-    <div class="col-12" *ngFor="let p of plugins">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-10">
-                        <h5 class="card-title">{{p.name}}</h5>
-                        <div>Version: {{p.version}}</div>
-                    </div>
-                    <div class="col-2 text-right">
-                        <i class="text-success fas fa-check fa-2x"></i>
-                    </div>
-                </div>
-               
-            </div>
-            <div class="card-body">
-                <div class="row">
-                   <app-bluedepthsettings *ngIf="p.type=='stereocamera'"></app-bluedepthsettings>
-                </div>
-            </div>
-            
-         
-        </div>
+    <div class="col-12" >
+
+
+        <table class="table table-sm">
+            <thead>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Status</th>
+                
+                <th></th>
+            </thead>
+            <tr *ngFor="let p of plugins">
+                <td><b>{{p.type}}</b></td>
+                <td><b>{{p.name}}</b></td>
+                <td>{{p.version}}</td>
+                <td>
+                    <div class="badge badge-success" *ngIf="checkStatus(p.type).running">Running</div>
+                    <div class="badge badge-danger" *ngIf="!checkStatus(p.type).running">Stopped</div>
+                </td>
+                <td>
+                        <ng-container    *ngIf="loadingPlugins">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </ng-container>
+
+                        <ng-container    *ngIf="!loadingPlugins">
+                            <button class="btn btn-sm btn-outline-danger" *ngIf="checkStatus(p.type).running" (click)="stopPlugin(p.fullname,p.type)" >
+                                <i class="fa fa-stop" ></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" *ngIf="!checkStatus(p.type).running" (click)="startPlugin(p.fullname,p.type)" >
+                                <i class="fa fa-play" ></i>
+                            </button>
+                        </ng-container>
+
+                    
+                    <button class="btn btn-sm btn-outline-secondary" (click)="openSettings(p)" ><i class="fa fa-cog"></i></button>
+                </td>
+            </tr>
+        </table>
+        
     </div>
 </div>
+
+<ng-template #pluginSettings >
+    <div class="modal-header">
+        <h5 class="modal-title">Plugin settings - {{pluginSelected.name}}</h5>
+        <button type="button" class="btn btn-close" (click)="closePluginSettings()"></button>
+    </div>
+    <div class="modal-body">
+        <app-bluedepthsettings *ngIf="pluginSelected && pluginSelected.type=='stereocamera'"></app-bluedepthsettings>
+        <app-sonysettings *ngIf="pluginSelected && pluginSelected.type=='camera'"></app-sonysettings>
+    </div>
+</ng-template>

@@ -14,7 +14,11 @@ export class MpeApiService {
     private http:HttpClient
   ) { 
 
-    if(isDevMode()) this.baseUrl="";
+    if(isDevMode()) 
+      this.baseUrl="";
+    else
+      this.baseUrl="http://"+window.location.hostname+":45032";
+
   
   }
 
@@ -24,15 +28,24 @@ export class MpeApiService {
     headers = headers.set('Access-Control-Allow-Origin', '*');
 
 
-    this.http.put(this.baseUrl+"/camera/settings",settings,{headers:headers}).pipe(catchError(
-      
-      this.handleError
-    
-    
-    )).subscribe((result:any)=>{
-      if(callback)
-        callback(result);
-    })
+    this.http.put(this.baseUrl + "/camera/settings", settings, { headers: headers })
+    .pipe(
+      catchError((error: HttpErrorResponse) => {
+        // 1. Eseguiamo la logica comune di log/alert
+        this.handleError(error);
+
+        // 2. Se è stata passata una callback onerror, la richiamiamo
+        if (onerror) {
+          onerror(error);
+        }
+
+        // 3. Ritorniamo l'errore per completare il flusso dell'Observable
+        return throwError(() => error);
+      })
+    )
+    .subscribe((result: any) => {
+      if (callback) callback(result);
+    });
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -104,7 +117,8 @@ export class MpeApiService {
 
   stopDataset(callback:any,callback_error:any){
     this.http.put(this.baseUrl+"/datasets/stop",{}).pipe(catchError(callback_error)).subscribe((result:any)=>{
-      callback(result);
+      if(callback)
+        callback(result);
     });
   }
 
@@ -134,8 +148,74 @@ export class MpeApiService {
     })
   }
 
+  stopPlugin(type:string,name:string,callback:any,callback_error:any){
+    const payload={
+    "plugin_name": name
+    }
+
+    this.http.put(this.baseUrl+"/plugins/" + type + "/stop",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+
+  startPlugin(type:string,name:string,callback:any,callback_error:any){
+    const payload={
+    "plugin_name": name
+    }
+
+    this.http.put(this.baseUrl+"/plugins/" + type + "/start",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+   startCamera(callback:any,callback_error:any){
+    const payload={
+    "plugin_name": "sony_ilx_lr1.SonyIlxLr1"
+    } 
+     this.http.put(this.baseUrl+"/camera/start",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  stopCamera(callback:any,callback_error:any){
+    const payload={
+    "plugin_name": "sony_ilx_lr1.SonyIlxLr1"
+    }
+
+    this.http.put(this.baseUrl+"/camera/stop",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+
   getStereocameraSettings(callback:any,callback_error:any){
     this.http.get(this.baseUrl+"/stereocamera/settings").pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  startStereocamera(callback:any,callback_error:any){
+    const payload={
+    "plugin_name": "ZEDManager.ZEDXOneStereoManager"
+    } 
+     this.http.put(this.baseUrl+"/stereocamera/start",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
+      if(callback)
+        callback(result);
+    })
+  }
+
+  stopStereocamera(callback:any,callback_error:any){
+    const payload={
+    "plugin_name": "ZEDManager.ZEDXOneStereoManager"
+    }
+
+    this.http.put(this.baseUrl+"/stereocamera/stop",payload).pipe(catchError(callback_error)).subscribe((result:any)=>{
       if(callback)
         callback(result);
     })

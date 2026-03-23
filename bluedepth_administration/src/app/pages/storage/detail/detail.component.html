@@ -9,7 +9,7 @@
             
         </div>
         <div class="col-12">
-            <label>Files:</label>&nbsp;<b>{{record.camera_data.items | number}}</b><br/>  
+            <label>Files:</label>&nbsp;<b>{{record.camera_data.items | number}}</b>&nbsp;<span *ngIf="record.stereocamera_data"><b>{{record.stereocamera_data.items | number}}</b></span><br/>  
         </div>
         <div class="col-12">
             <div id="map" style="height: 500px;width: 100%;"></div>
@@ -19,6 +19,6 @@
 </div>
 
 <div class="modal-footer">
-    
+    <button type="button" class="btn btn-secondary" (click)="close()">Chiudi</button>
 </div>
 

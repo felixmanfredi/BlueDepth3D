@@ -1,0 +1,22 @@
+
+<div class="card">
+    <div class="card-header">
+        <p class="card-title">Generali</p> 
+    </div>
+    <div class="card-body">
+        <label>Sony ILX-RF1 Power</label>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary" [class.active]="state" (click)="setState(true)">On</button>
+            <button type="button" class="btn btn-secondary" [class.active]="!state" (click)="setState(false)">Off</button>
+        </div>
+    </div> 
+    <!--
+    <div class="card-footer">
+            <button type="button" class="btn-save" (click)="save()" [disabled]="isSaving || loading">
+                <i class="fas fa-save"></i>
+                <span *ngIf="!loading">Save</span>
+                <span *ngIf="loading" class="spinner-button"></span>
+            </button>
+    </div> 
+    -->
+</div>
